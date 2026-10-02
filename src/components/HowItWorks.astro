@@ -1,0 +1,100 @@
+---
+const steps = [
+  {
+    num: '01',
+    title: 'Elige tus productos',
+    desc: 'Explora nuestro catálogo de ropa corporativa, industrial y EPP. Selecciona los ítems que requieres.',
+    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`
+  },
+  {
+    num: '02',
+    title: 'Indica cantidades y logotipo',
+    desc: 'Agrega al cotizador la cantidad por producto, tallas estimadas y si necesitas bordado o estampado.',
+    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
+  },
+  {
+    num: '03',
+    title: 'Recibe propuesta formal',
+    desc: 'Un ejecutivo comercial asignado revisará tu requerimiento y te enviará la cotización con valor por volumen.',
+    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+  },
+];
+---
+
+<section id="como-funciona" class="reveal">
+  <div class="wrap">
+    <h2>Cómo funciona el proceso</h2>
+    <p class="lead">Atención directa para empresas: sin carrito de compra, cotización personalizada y asesoría experta.</p>
+
+    <div class="steps-grid">
+      {steps.map(step => (
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-num">{step.num}</span>
+            <div class="step-icon" set:html={step.svg} />
+          </div>
+          <h3 class="step-title">{step.title}</h3>
+          <p class="step-desc">{step.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+  }
+  .step-card {
+    background: white;
+    border: 2px solid var(--sky, #97B4DE);
+    border-top: 5px solid var(--blue, #263A99);
+    border-radius: 8px;
+    padding: 28px 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .step-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(38, 58, 153, 0.08);
+  }
+  .step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .step-num {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--blue, #263A99);
+    font-family: var(--display, system-ui);
+    line-height: 1;
+  }
+  .step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: var(--tint, #F3F6FC);
+    border: 1px solid var(--sky, #97B4DE);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue, #263A99);
+  }
+  .step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink, #111);
+    margin-bottom: 8px;
+    font-family: var(--display, system-ui);
+  }
+  .step-desc {
+    font-size: 15px;
+    color: var(--muted, #444);
+    margin: 0;
+    line-height: 1.5;
+  }
+</style>

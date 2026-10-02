@@ -1,0 +1,71 @@
+---
+import { PRODUCTS } from '../config';
+const categories = ['Todos', 'Corporativa', 'Industrial', 'EPP'];
+---
+
+<section id="productos" class="reveal">
+  <div class="wrap">
+    <h2>Productos destacados</h2>
+    <p class="lead">Ropa y equipamiento para empresas de todos los rubros.</p>
+    <div class="product-tabs" id="product-tabs">
+      {categories.map((cat, i) => (
+        <button class={`product-tab${i === 0 ? ' active' : ''}`} data-filter={cat === 'Todos' ? 'all' : cat} type="button">
+          {cat}
+        </button>
+      ))}
+    </div>
+    <div class="grid" id="product-grid">
+      {PRODUCTS.map(product => (
+        <div class="product-card" data-category={product.category}>
+          <img class="product-img" src={product.image} alt={product.name} loading="lazy" width="400" height="400" />
+          <div class="product-info">
+            <p class="product-name">{product.name}</p>
+            <p class="product-cat">{product.category}</p>
+            <button class="btn product-btn" data-product-id={product.id} type="button">Cotizar producto</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  var tabs = document.querySelectorAll('.product-tab');
+  var cards = document.querySelectorAll('.product-card');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.getAttribute('data-filter');
+
+      cards.forEach(function(card) {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Handle product quote buttons
+  var productBtns = document.querySelectorAll('.product-btn');
+  productBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var prodId = btn.getAttribute('data-product-id');
+      // Scroll to cotizar section
+      var cotizarSec = document.getElementById('cotizar');
+      if (cotizarSec) {
+        cotizarSec.scrollIntoView({ behavior: 'smooth' });
+      }
+      // Trigger click on product toggle in quote section if available
+      setTimeout(function() {
+        var selectorBtn = document.querySelector(`.btn-toggle[data-id="${prodId}"]`) as HTMLButtonElement;
+        if (selectorBtn && selectorBtn.getAttribute('aria-pressed') === 'false') {
+          selectorBtn.click();
+        }
+      }, 300);
+    });
+  });
+</script>

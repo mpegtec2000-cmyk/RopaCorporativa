@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import StatsBar from '../components/StatsBar.astro';
+import Benefits from '../components/Benefits.astro';
+import Categories from '../components/Categories.astro';
+import FeaturedProducts from '../components/FeaturedProducts.astro';
+import Industries from '../components/Industries.astro';
+import BrandCarousel from '../components/BrandCarousel.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Certifications from '../components/Certifications.astro';
+import QuoteSection from '../components/QuoteSection.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <Header />
+  <main>
+    <Hero />
+    <StatsBar />
+    <Benefits />
+    <Categories />
+    <FeaturedProducts />
+    <Industries />
+    <BrandCarousel />
+    <HowItWorks />
+    <Certifications />
+    <QuoteSection />
+  </main>
+  <Footer />
+  <WhatsAppFloat />
+</Layout>
+
+<script>
+  // Scroll-triggered reveal animation
+  var revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length > 0 && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(function(el) {
+      observer.observe(el);
+    });
+  }
+</script>

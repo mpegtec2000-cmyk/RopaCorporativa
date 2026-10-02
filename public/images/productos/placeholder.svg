@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" fill="#F3F6FC"/>
+  <rect x="140" y="120" width="120" height="160" rx="8" stroke="#97B4DE" stroke-width="2" fill="none"/>
+  <line x1="160" y1="180" x2="240" y2="180" stroke="#97B4DE" stroke-width="2"/>
+  <line x1="160" y1="210" x2="220" y2="210" stroke="#97B4DE" stroke-width="2"/>
+  <text x="200" y="310" text-anchor="middle" font-family="system-ui" font-size="14" fill="#97B4DE">Producto</text>
+</svg>

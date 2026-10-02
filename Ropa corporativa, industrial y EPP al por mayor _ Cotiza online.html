@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ropa corporativa, industrial y EPP al por mayor | Cotiza online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--display:'Qurova','Outfit',system-ui,sans-serif;--body:Montserrat,system-ui,sans-serif;
+--ink:#111;--muted:#444;--blue:#263A99;--sky:#97B4DE;--tint:#F3F6FC;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:400 16px/1.6 var(--body)}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;font-weight:600;letter-spacing:-.01em}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.stripe{height:6px;background:var(--blue)}
+header{background:#fff;border-bottom:2px solid var(--sky)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;max-width:1080px;margin:0 auto;gap:12px}
+.logo{font:600 24px var(--display);letter-spacing:.02em;color:#111}
+.logo span{color:var(--blue)}
+.btn{display:inline-block;background:var(--blue);color:#fff;font-weight:600;border:2px solid var(--blue);border-radius:6px;padding:12px 26px;text-decoration:none;cursor:pointer;font-size:15px;font-family:var(--body)}
+.btn:hover{background:#1c2c78;border-color:#1c2c78}
+.btn.ghost{background:#fff;color:var(--blue)}
+.btn.ghost:hover{background:var(--tint)}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.hero{background:#fff;padding:72px 0 64px;border-bottom:1px solid var(--sky)}
+.hero h1{font-size:clamp(40px,6.5vw,72px);max-width:15ch;color:#111}
+.hero p{max-width:54ch;color:var(--muted);font-size:18px;margin:22px 0 30px}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap}
+.proof{display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:48px;border:2px solid var(--sky);border-radius:6px;color:var(--muted);font-size:14px}
+.proof div{padding:18px 22px;border-right:2px solid var(--sky)}
+.proof div:last-child{border-right:0}
+.proof b{color:var(--blue);font:600 26px var(--display);display:block}
+section{padding:72px 0}
+h2{font-size:clamp(28px,4vw,40px);margin-bottom:12px;color:#111}
+.lead{color:var(--muted);max-width:60ch;margin:0 0 34px}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.cat{background:#fff;border:2px solid var(--sky);padding:22px;border-radius:6px}
+.cat h3{font-size:22px;margin-bottom:8px}
+.cat p{margin:0;color:var(--muted);font-size:15px}
+.ph{height:130px;border-radius:4px;margin-bottom:16px;background:var(--tint);border:1px dashed var(--sky);display:grid;place-items:center;color:#555;font-size:13px}
+.rubros{display:flex;flex-wrap:wrap;gap:10px}
+.rubros span{background:#fff;border:2px solid var(--sky);padding:8px 18px;border-radius:6px;font-weight:500}
+.steps{counter-reset:s;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.steps div{background:#fff;border:2px solid var(--sky);border-top:5px solid var(--blue);padding:24px;border-radius:6px}
+.steps div::before{counter-increment:s;content:counter(s);font:600 38px var(--display);color:var(--blue);display:block;line-height:1;margin-bottom:8px}
+.steps h3{font-size:21px;margin-bottom:6px}
+.steps p{margin:0;color:var(--muted);font-size:15px}
+.band{background:#fff;border-top:2px solid var(--sky);border-bottom:2px solid var(--sky)}
+.certs{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));list-style:none;padding:0;margin:0}
+.certs li{border:2px solid var(--sky);border-left:5px solid var(--blue);padding:16px 18px;border-radius:6px;color:var(--muted);font-size:15px}
+.certs b{display:block;font:600 19px var(--display);color:#111;margin-bottom:2px}
+.quote{display:grid;gap:24px;grid-template-columns:1.2fr 1fr}
+@media(max-width:820px){.quote{grid-template-columns:1fr}}
+.panel{background:#fff;border:2px solid var(--sky);border-radius:6px;padding:26px}
+.panel h3{font-size:22px;margin-bottom:14px}
+.items{display:grid;gap:8px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--sky);padding:10px 14px;border-radius:6px}
+.item small{color:var(--muted);display:block;font-size:12px}
+.item button{background:#fff;color:var(--blue);border:2px solid var(--blue);border-radius:6px;padding:6px 14px;cursor:pointer;font:600 13px var(--body);white-space:nowrap}
+.item button[aria-pressed="true"]{background:var(--blue);color:#fff}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:11px 14px;border:2px solid var(--sky);border-radius:6px;background:#fff;color:var(--ink);font:inherit}
+input:focus,select:focus{border-color:var(--blue);outline:none}
+.sel{margin:0 0 4px;padding:0;list-style:none;display:grid;gap:6px}
+.sel li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--tint);padding:8px 12px;border-radius:6px;font-size:14px}
+.sel input{width:76px;padding:6px 8px}
+.empty{color:var(--muted);font-size:14px;margin:0 0 6px}
+.msg{margin-top:12px;font-size:14px;color:var(--muted)}
+footer{background:#fff;color:var(--muted);padding:30px 0;font-size:14px;border-top:2px solid var(--sky)}
+.wa{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:#25D366;color:#06260f;font-weight:700;text-decoration:none;padding:13px 18px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:5}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<header>
+  <div class="nav">
+    <div class="logo">NOMBRE<span>EPP</span></div>
+    <a class="btn" href="#cotizar">Cotizar</a>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <h1>Viste a tu equipo. Cotiza hoy.</h1>
+    <p>Ropa corporativa, ropa industrial y elementos de seguridad al por mayor, con precios por volumen y personalización con tu logo. Arma tu cotización en minutos y un ejecutivo te contacta.</p>
+    <div class="row">
+      <a class="btn" href="#cotizar">Armar mi cotización</a>
+      <a class="btn ghost" href="#catalogo">Ver categorías</a>
+    </div>
+    <div class="proof">
+      <div><b>24 h</b>respuesta a tu cotización</div>
+      <div><b>Desde 1 unidad</b>a pedidos por volumen</div>
+      <div><b>Con logo</b>bordado y estampado</div>
+    </div>
+  </div>
+</div>
+
+<section id="catalogo">
+  <div class="wrap">
+    <h2>Lo que equipamos</h2>
+    <p class="lead">Tres líneas para que tu empresa compre todo en un solo lugar.</p>
+    <div class="grid">
+      <div class="cat"><div class="ph">Foto: ropa corporativa</div><h3>Ropa corporativa</h3><p>Polerones, polares, camisas, poleras y chaquetas con logo para tu equipo.</p></div>
+      <div class="cat"><div class="ph">Foto: ropa industrial</div><h3>Ropa industrial</h3><p>Overoles, buzos, pantalones de trabajo, parkas y ropa de invierno resistente.</p></div>
+      <div class="cat"><div class="ph">Foto: EPP</div><h3>Seguridad y EPP</h3><p>Calzado de seguridad, cascos, guantes, lentes, alta visibilidad y protección respiratoria.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>Para tu rubro</h2>
+    <p class="lead">Armamos el pack según lo que exige tu faena.</p>
+    <div class="rubros"><span>Minería</span><span>Construcción</span><span>Forestal</span><span>Agrícola</span><span>Pesquera</span><span>Transporte y logística</span><span>Salud</span><span>Gastronomía</span><span>Municipalidades</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Cómo funciona</h2>
+    <p class="lead">Sin carrito de compra: cotizas, conversamos y cerramos a tu medida.</p>
+    <div class="steps">
+      <div><h3>Elige productos</h3><p>Marca lo que necesitas y las cantidades aproximadas.</p></div>
+      <div><h3>Envía tus datos</h3><p>Empresa, contacto y plazo requerido. Toma 2 minutos.</p></div>
+      <div><h3>Recibe tu propuesta</h3><p>Un ejecutivo te contacta con precios, muestras y plazos de entrega.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Productos con respaldo técnico</h2>
+    <p class="lead">Fichas técnicas disponibles para tu prevencionista de riesgos.</p>
+    <ul class="certs">
+      <li><b>Calzado de seguridad</b>Normas ISO 20345 / ASTM F2413</li>
+      <li><b>Alta visibilidad</b>Estándar ANSI/ISEA 107</li>
+      <li><b>Ropa ignífuga</b>Según requerimiento de faena</li>
+      <li><b>Cumplimiento</b>Apoyo para Ley 16.744 y DS 594</li>
+    </ul>
+  </div>
+</section>
+
+<section id="cotizar">
+  <div class="wrap">
+    <h2>Arma tu cotización</h2>
+    <p class="lead">Selecciona productos, indica cantidades y déjanos tus datos.</p>
+    <div class="quote">
+      <div class="panel">
+        <h3>1. Productos</h3>
+        <div class="items" id="items"></div>
+      </div>
+      <form class="panel" id="f">
+        <h3>2. Tu solicitud</h3>
+        <ul class="sel" id="sel"></ul>
+        <p class="empty" id="empty">Aún no agregas productos.</p>
+        <label for="emp">Empresa</label><input id="emp" required>
+        <label for="rut">RUT</label><input id="rut" placeholder="12.345.678-9">
+        <label for="nom">Nombre de contacto</label><input id="nom" required>
+        <label for="tel">Teléfono o correo</label><input id="tel" required>
+        <label for="pers">Personalización</label>
+        <select id="pers"><option>Sin logo</option><option>Bordado</option><option>Estampado</option><option>Aún no lo sé</option></select>
+        <label for="plz">Plazo requerido</label><input id="plz" placeholder="Ej: 3 semanas">
+        <p style="margin:18px 0 0"><button class="btn" type="submit">Enviar cotización</button></p>
+        <p class="msg" id="msg" role="status"></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">NOMBRE EPP · Valparaíso, Chile · ventas@tudominio.cl · +56 9 0000 0000</div>
+</footer>
+<div class="stripe"></div>
+<a class="wa" href="https://wa.me/56900000000?text=Hola%2C%20quiero%20cotizar" aria-label="Escribir por WhatsApp">WhatsApp</a>
+
+<script>
+const P=[["Polerón corporativo","Corporativa"],["Polera piqué con logo","Corporativa"],["Overol industrial","Industrial"],["Parka térmica","Industrial"],["Chaleco alta visibilidad","EPP"],["Zapato de seguridad","EPP"],["Casco y lentes","EPP"],["Guantes de trabajo","EPP"]];
+const sel={};
+const items=document.getElementById('items'),list=document.getElementById('sel'),empty=document.getElementById('empty');
+P.forEach(([n,c])=>{const d=document.createElement('div');d.className='item';
+d.innerHTML='<div>'+n+'<small>'+c+'</small></div>';
+const b=document.createElement('button');b.type='button';b.textContent='Agregar';b.setAttribute('aria-pressed','false');
+b.onclick=()=>{if(sel[n]){delete sel[n];b.textContent='Agregar';b.setAttribute('aria-pressed','false')}else{sel[n]=10;b.textContent='Agregado';b.setAttribute('aria-pressed','true')}draw()};
+d.appendChild(b);items.appendChild(d)});
+function draw(){list.innerHTML='';const k=Object.keys(sel);empty.hidden=k.length>0;
+k.forEach(n=>{const li=document.createElement('li');li.innerHTML='<span>'+n+'</span>';
+const i=document.createElement('input');i.type='number';i.min=1;i.value=sel[n];i.setAttribute('aria-label','Cantidad de '+n);
+i.oninput=()=>{sel[n]=i.value};li.appendChild(i);list.appendChild(li)})}
+document.getElementById('f').onsubmit=e=>{e.preventDefault();
+const k=Object.keys(sel);
+if(!k.length){document.getElementById('msg').textContent='Agrega al menos un producto para cotizar.';return}
+const v=id=>document.getElementById(id).value;
+const t='Cotización: '+v('emp')+' (RUT '+v('rut')+'). Contacto: '+v('nom')+', '+v('tel')+'. Productos: '+k.map(n=>n+' x'+sel[n]).join(', ')+'. Personalización: '+v('pers')+'. Plazo: '+v('plz');
+document.getElementById('msg').textContent='Maqueta: aquí la solicitud llegaría a WhatsApp y correo de Christopher.';
+console.log(t)};
+</script>
+</body>
+</html>

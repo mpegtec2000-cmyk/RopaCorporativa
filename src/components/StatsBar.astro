@@ -1,0 +1,113 @@
+---
+import { STATS } from '../config';
+
+const STATS_ICONS = [
+  // 1. Empresas atendidas (Briefcase)
+  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+  // 2. Años de experiencia (Award)
+  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
+  // 3. Marcas disponibles (Tags)
+  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>`,
+  // 4. Respuesta garantizada (Shield Check)
+  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
+];
+---
+
+<section class="stats-bar reveal">
+  <div class="wrap">
+    <div class="stats-grid">
+      {STATS.map((stat, i) => (
+        <div class="stat-item">
+          <div class="stat-icon" set:html={STATS_ICONS[i]} />
+          <span class="stat-value" data-target={String(stat.value)} data-suffix={stat.suffix}>0{stat.suffix}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats-bar {
+    padding: 60px 0;
+    background: #ffffff;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+  .stat-item {
+    background: #ffffff;
+    border: 2px solid var(--sky, #97B4DE);
+    border-radius: 16px;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stat-item:hover {
+    transform: translateY(-6px);
+    border-color: var(--blue, #263A99);
+    box-shadow: 0 15px 30px rgba(38, 58, 153, 0.1);
+  }
+  .stat-icon {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stat-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #0f172a; /* dark ink typography */
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .stat-label {
+    font-size: 1.1rem;
+    color: #334155; /* dark ink slightly lighter */
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  function animateCounters() {
+    var counters = document.querySelectorAll('.stat-value[data-target]');
+    counters.forEach(function(counter) {
+      var target = parseInt(counter.getAttribute('data-target') || '0');
+      var suffix = counter.getAttribute('data-suffix') || '';
+      var duration = 2000;
+      var start = 0;
+      var startTime = null;
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(eased * target);
+        counter.textContent = current + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            requestAnimationFrame(step);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      observer.observe(counter);
+    });
+  }
+
+  animateCounters();
+</script>

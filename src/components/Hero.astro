@@ -1,0 +1,250 @@
+---
+import { WHATSAPP_NUMBER } from '../config';
+const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero cotizar ropa corporativa / industrial.')}`;
+---
+
+<section class="hero-section">
+  <!-- 
+    =====================================================
+    GUÍA PARA AGREGAR TUS FONDOS DE PANTALLA PERSONALIZADOS
+    =====================================================
+    Cuando tengas listos tus fondos generados en 16:9 y 9:16:
+    1. Guarda tu imagen 16:9 en /public/images/fondo-desktop-16-9.jpg
+    2. Guarda tu imagen 9:16 en /public/images/fondo-mobile-9-16.jpg
+    3. Descomenta el bloque de estilos marcado abajo en <style>.
+  -->
+
+  <div class="wrap hero-content">
+    <div class="hero-badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Distribuidor Mayorista B2B en Chile</span>
+    </div>
+    
+    <h1 class="fade-up">Los Mejores Proveedores en Ropa Corporativa, Industrial y EPP</h1>
+    <p class="hero-lead fade-up fade-up-delay">Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.</p>
+    
+    <div class="hero-actions fade-up fade-up-delay-2">
+      <a class="btn hero-btn-primary" href="#cotizar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Armar mi cotización
+      </a>
+      <a class="btn ghost hero-btn-ghost" href={waUrl} target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Cotizar por WhatsApp
+      </a>
+    </div>
+
+    <!-- Proof Badges overlay -->
+    <div class="proof-bar">
+      <div class="proof-card">
+        <div class="proof-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="proof-text">
+          <b>Respuesta 24h</b>
+          <span>Cotización formal garantizada</span>
+        </div>
+      </div>
+      
+      <div class="proof-card">
+        <div class="proof-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div class="proof-text">
+          <b>Precios por Volumen</b>
+          <span>Descuentos corporativos desde 50u</span>
+        </div>
+      </div>
+
+      <div class="proof-card">
+        <div class="proof-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="proof-text">
+          <b>Bordado de Logo</b>
+          <span>Personalización textil industrial</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    position: relative;
+    padding: 88px 0 80px;
+    background: linear-gradient(135deg, #ffffff 0%, #F3F6FC 100%);
+    background-size: cover;
+    background-position: center;
+    color: var(--ink, #111111);
+    overflow: hidden;
+    border-bottom: 2px solid var(--sky, #97B4DE);
+    display: flex;
+    align-items: center;
+  }
+
+  /* 
+    =======================================================
+    PARA ACTIVAR TUS FONDOS DE PANTALLA 16:9 Y 9:16:
+    =======================================================
+    @media (min-width: 900px) {
+      .hero-section {
+        aspect-ratio: 16 / 9;
+        min-height: 520px;
+        background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0.4) 100%), url('/images/fondo-desktop-16-9.jpg');
+      }
+    }
+
+    @media (max-width: 899px) {
+      .hero-section {
+        aspect-ratio: 9 / 16;
+        min-height: 580px;
+        background-image: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.90) 100%), url('/images/fondo-mobile-9-16.jpg');
+      }
+    }
+  */
+
+  @media (min-width: 900px) {
+    .hero-section {
+      min-height: 500px;
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  @media (max-width: 899px) {
+    .hero-section {
+      min-height: 540px;
+      aspect-ratio: 9 / 16;
+    }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: #ffffff;
+    border: 2px solid var(--sky, #97B4DE);
+    border-radius: 24px;
+    color: var(--blue, #263A99);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(38, 58, 153, 0.06);
+  }
+
+  .hero-section h1 {
+    font-size: clamp(36px, 5.2vw, 62px);
+    color: var(--ink, #111111);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 20px;
+    letter-spacing: -0.5px;
+    max-width: 22ch;
+    font-family: var(--display, system-ui);
+  }
+
+  .hero-lead {
+    max-width: 60ch;
+    color: var(--muted, #444444);
+    font-size: 19px;
+    line-height: 1.65;
+    margin: 0 0 36px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .hero-btn-primary {
+    background-color: var(--blue, #263A99) !important;
+    color: #ffffff !important;
+    border-color: var(--blue, #263A99) !important;
+    padding: 14px 32px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 20px rgba(38, 58, 153, 0.25);
+    transition: all 0.25s ease !important;
+  }
+  .hero-btn-primary:hover {
+    background-color: #1c2c78 !important;
+    border-color: #1c2c78 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(38, 58, 153, 0.35);
+  }
+
+  .hero-btn-ghost {
+    background-color: #ffffff !important;
+    color: var(--blue, #263A99) !important;
+    border: 2px solid var(--blue, #263A99) !important;
+    padding: 14px 28px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+    transition: all 0.25s ease !important;
+  }
+  .hero-btn-ghost:hover {
+    background-color: var(--tint, #F3F6FC) !important;
+    transform: translateY(-2px);
+  }
+
+  /* PROOF CARDS OVERLAY */
+  .proof-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    border-top: 2px solid var(--sky, #97B4DE);
+    padding-top: 36px;
+  }
+
+  .proof-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    background: #ffffff;
+    border: 2px solid var(--sky, #97B4DE);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .proof-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--blue, #263A99);
+    box-shadow: 0 10px 24px rgba(38, 58, 153, 0.1);
+  }
+
+  .proof-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--tint, #F3F6FC);
+    border: 2px solid var(--sky, #97B4DE);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue, #263A99);
+    flex-shrink: 0;
+  }
+
+  .proof-text b {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink, #111111);
+    margin-bottom: 2px;
+    font-family: var(--display, system-ui);
+  }
+  .proof-text span {
+    font-size: 13px;
+    color: var(--muted, #444444);
+  }
+</style>

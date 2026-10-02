@@ -1,0 +1,26 @@
+---
+import { CATEGORIES } from '../config';
+---
+
+<section id="catalogo" class="reveal">
+  <div class="wrap">
+    <h2>Lo que equipamos</h2>
+    <p class="lead">Tres líneas para que tu empresa compre todo en un solo lugar.</p>
+    <div class="cat-grid">
+      {CATEGORIES.map(cat => (
+        <a href="#cotizar" class="cat-card" id={`cat-${cat.id}`}>
+          <img class="cat-card-img" src={cat.image} alt={cat.name} loading="lazy" width="600" height="450" />
+          <div class="cat-card-overlay">
+            <h3>{cat.name}</h3>
+            <p>{cat.description}</p>
+            <div class="cat-tags">
+              {cat.subcategories.slice(0, 4).map(sub => (
+                <span class="cat-tag">{sub}</span>
+              ))}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

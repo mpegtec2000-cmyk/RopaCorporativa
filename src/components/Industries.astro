@@ -1,0 +1,131 @@
+---
+import { INDUSTRIES } from '../config';
+
+const sectorDetails = [
+  { name: 'Minería', desc: 'Indumentaria ignífuga, calzado aislante y EPP de alta visibilidad para faenas.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>` },
+  { name: 'Construcción', desc: 'Cascos de protección, chalecos ANSI y calzado con puntera de acero.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22h20M6 18v-7a6 6 0 0 1 12 0v7M12 2v3"/></svg>` },
+  { name: 'Logística y Bodega', desc: 'Parkas térmicas, vestuario cómodo de trabajo y calzado antipunzante.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>` },
+  { name: 'Forestal y Agrícola', desc: 'Ropa resistente a desgarros, guantes reforzados y antiparras.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 22h20L12 2z"/></svg>` },
+  { name: 'Transporte', desc: 'Poleras piqué, polerones corporativos y chaquetas de visibilidad.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-1.1 0-2 .9-2 2v7c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>` },
+  { name: 'Gastronomía y Salud', desc: 'Uniformes clínicos, pecheras, delantales y cofias corporativas.', icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 9l14 0"/></svg>` },
+];
+---
+
+<section id="rubros" class="rubros-section reveal">
+  <div class="wrap rubros-content">
+    <div class="section-head">
+      <h2>Soluciones por Rubro e Industria</h2>
+      <p class="lead">Equipamos a tu personal con la vestuario y protección especificada para tu tipo de faena.</p>
+    </div>
+
+    <div class="rubros-grid">
+      {sectorDetails.map(s => (
+        <div class="rubro-card">
+          <div class="rubro-icon" set:html={s.icon} />
+          <h3>{s.name}</h3>
+          <p>{s.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="rubros-pills">
+      <span class="pills-label">Rubros adicionales que atendemos:</span>
+      <div class="pills-list">
+        {INDUSTRIES.map(rubro => (
+          <span class="rubro-pill">{rubro}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rubros-section {
+    padding: 72px 0;
+    background: #0d1536;
+    color: white;
+    border-top: 2px solid var(--sky, #97B4DE);
+    border-bottom: 2px solid var(--sky, #97B4DE);
+  }
+  .rubros-content {
+    position: relative;
+    z-index: 2;
+  }
+  .section-head h2 {
+    color: white;
+    font-size: clamp(28px, 4vw, 42px);
+    margin-bottom: 8px;
+  }
+  .section-head p.lead {
+    color: var(--sky, #97B4DE);
+    margin-bottom: 40px;
+    font-size: 18px;
+  }
+  .rubros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .rubro-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(151, 180, 222, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .rubro-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--sky, #97B4DE);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .rubro-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: white;
+    color: var(--blue, #263A99);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .rubro-card h3 {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .rubro-card p {
+    color: #d1d5db;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .rubros-pills {
+    border-top: 1px solid rgba(151, 180, 222, 0.3);
+    padding-top: 24px;
+  }
+  .pills-label {
+    display: block;
+    font-size: 14px;
+    color: var(--sky, #97B4DE);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .pills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .rubro-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(151, 180, 222, 0.4);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+</style>

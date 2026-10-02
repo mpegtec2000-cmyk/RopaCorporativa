@@ -1,0 +1,435 @@
+---
+import { WHATSAPP_NUMBER } from '../config';
+---
+
+<section id="cotizar" data-wa={WHATSAPP_NUMBER}>
+  <div class="wrap">
+    <h2>Arma tu cotización</h2>
+    <p class="lead">Selecciona productos, indica cantidades y déjanos tus datos.</p>
+    
+    <div class="quote">
+      <!-- LEFT panel: Product selector -->
+      <div class="quote-products">
+        <div id="product-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+      
+      <!-- RIGHT panel: Quote form -->
+      <div class="quote-form-panel">
+        <h3>Mi cotización</h3>
+        <ul id="selected-items" class="sel"></ul>
+        <p id="empty-state" class="empty">Aún no agregas productos.</p>
+        
+        <form id="quote-form">
+          <div class="form-group">
+            <label for="empresa">Empresa *</label>
+            <input type="text" id="empresa" name="empresa" required>
+          </div>
+          <div class="form-group">
+            <label for="rut">RUT</label>
+            <input type="text" id="rut" name="rut" placeholder="12.345.678-9">
+          </div>
+          <div class="form-group">
+            <label for="contacto">Nombre de contacto *</label>
+            <input type="text" id="contacto" name="contacto" required>
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email">
+          </div>
+          <div class="form-group">
+            <label for="personalizacion">Personalización</label>
+            <select id="personalizacion" name="personalizacion">
+              <option value="Sin logo">Sin logo</option>
+              <option value="Bordado">Bordado</option>
+              <option value="Estampado">Estampado</option>
+              <option value="Aún no lo sé">Aún no lo sé</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="plazo">Plazo requerido</label>
+            <input type="text" id="plazo" name="plazo" placeholder="Ej: 3 semanas">
+          </div>
+          <div class="form-group">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="3"></textarea>
+          </div>
+          
+          <input type="text" name="honeypot" class="ohnohoney" tabindex="-1" aria-hidden="true" autocomplete="off" style="display:none;">
+          
+          <div class="form-actions">
+            <button type="submit" class="btn">Enviar cotización</button>
+            <button type="button" class="btn ghost" id="wa-quote-btn">Cotizar por WhatsApp</button>
+          </div>
+          
+          <p id="msg" class="msg" role="status"></p>
+          <div id="success-box" class="success-box" hidden>
+            <div class="check-animation">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p>¡Cotización enviada con éxito!</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const PRODUCTS = [
+    { id: 'poleron-corporativo', name: 'Polerón corporativo', category: 'Corporativa' },
+    { id: 'polera-pique', name: 'Polera piqué con logo', category: 'Corporativa' },
+    { id: 'gorro-trabajo', name: 'Gorro de trabajo', category: 'Corporativa' },
+    { id: 'camisa-manga-larga', name: 'Camisa manga larga', category: 'Corporativa' },
+    { id: 'buzo-deportivo', name: 'Buzo deportivo', category: 'Corporativa' },
+    { id: 'polar-con-cierre', name: 'Polar con cierre', category: 'Corporativa' },
+    { id: 'pantalon-trabajo', name: 'Pantalón de trabajo', category: 'Industrial' },
+    { id: 'chaqueta-polar', name: 'Chaqueta polar', category: 'Industrial' },
+    { id: 'overol-completo', name: 'Overol completo', category: 'Industrial' },
+    { id: 'parka-termica', name: 'Parka térmica', category: 'Industrial' },
+    { id: 'pantalon-cargo-reforzado', name: 'Pantalón cargo reforzado', category: 'Industrial' },
+    { id: 'chaleco-seguridad', name: 'Chaleco alta visibilidad', category: 'EPP' },
+    { id: 'zapato-seguridad', name: 'Zapato de seguridad', category: 'EPP' },
+    { id: 'casco-lentes', name: 'Casco y lentes', category: 'EPP' },
+    { id: 'guantes-seguridad', name: 'Guantes de seguridad', category: 'EPP' },
+    { id: 'lentes-proteccion', name: 'Lentes de protección', category: 'EPP' },
+  ];
+
+  const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+
+  const selectedProducts = new Map();
+
+  const productListEl = document.getElementById('product-list');
+  const selectedItemsEl = document.getElementById('selected-items');
+  const emptyStateEl = document.getElementById('empty-state');
+  const quoteForm = document.getElementById('quote-form');
+  const msgEl = document.getElementById('msg');
+  const successBox = document.getElementById('success-box');
+  const waQuoteBtn = document.getElementById('wa-quote-btn');
+  const sectionEl = document.getElementById('cotizar');
+  const whatsappNumber = sectionEl?.getAttribute('data-wa') || '';
+
+  function renderProducts() {
+    if (!productListEl) return;
+    productListEl.innerHTML = '';
+    PRODUCTS.forEach(function (p) {
+      const isSelected = selectedProducts.has(p.id);
+      const div = document.createElement('div');
+      div.className = 'product-item';
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'pi-info';
+
+      const nameP = document.createElement('p');
+      nameP.className = 'pi-name';
+      nameP.textContent = p.name;
+
+      const catSmall = document.createElement('small');
+      catSmall.className = 'pi-cat';
+      catSmall.textContent = p.category;
+
+      infoDiv.appendChild(nameP);
+      infoDiv.appendChild(catSmall);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-toggle';
+      btn.setAttribute('aria-pressed', String(isSelected));
+      btn.setAttribute('data-id', p.id);
+      btn.textContent = isSelected ? 'Agregado' : 'Agregar';
+      btn.addEventListener('click', function () {
+        toggleProduct(p.id);
+      });
+
+      div.appendChild(infoDiv);
+      div.appendChild(btn);
+      productListEl.appendChild(div);
+    });
+  }
+
+  function toggleProduct(id) {
+    if (selectedProducts.has(id)) {
+      selectedProducts.delete(id);
+    } else {
+      const p = PRODUCTS.find(function (x) { return x.id === id; });
+      if (p) {
+        selectedProducts.set(id, { name: p.name, category: p.category, qty: 1, size: 'M' });
+      }
+    }
+    renderProducts();
+    renderSelected();
+  }
+
+  function renderSelected() {
+    if (!selectedItemsEl || !emptyStateEl) return;
+    if (selectedProducts.size === 0) {
+      selectedItemsEl.style.display = 'none';
+      emptyStateEl.style.display = 'block';
+    } else {
+      selectedItemsEl.style.display = 'block';
+      emptyStateEl.style.display = 'none';
+      selectedItemsEl.innerHTML = '';
+
+      selectedProducts.forEach(function (data, id) {
+        const li = document.createElement('li');
+
+        const infoDiv = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = data.name;
+        infoDiv.appendChild(strong);
+
+        const controlsDiv = document.createElement('div');
+        controlsDiv.className = 'sel-controls';
+
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'number';
+        qtyInput.min = '1';
+        qtyInput.value = String(data.qty);
+        qtyInput.className = 'qty-input';
+        qtyInput.setAttribute('aria-label', 'Cantidad de ' + data.name);
+        qtyInput.addEventListener('change', function (e) {
+          data.qty = parseInt(e.target.value) || 1;
+        });
+
+        const sizeSelect = document.createElement('select');
+        sizeSelect.className = 'size-select';
+        sizeSelect.setAttribute('aria-label', 'Talla de ' + data.name);
+        SIZES.forEach(function (s) {
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          if (s === data.size) opt.selected = true;
+          sizeSelect.appendChild(opt);
+        });
+        sizeSelect.addEventListener('change', function (e) {
+          data.size = e.target.value;
+        });
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn-remove';
+        removeBtn.textContent = 'Quitar';
+        removeBtn.addEventListener('click', function () { toggleProduct(id); });
+
+        controlsDiv.appendChild(qtyInput);
+        controlsDiv.appendChild(sizeSelect);
+        controlsDiv.appendChild(removeBtn);
+
+        li.appendChild(infoDiv);
+        li.appendChild(controlsDiv);
+        selectedItemsEl.appendChild(li);
+      });
+    }
+  }
+
+  // WhatsApp quote button
+  if (waQuoteBtn) {
+    waQuoteBtn.addEventListener('click', function () {
+      if (selectedProducts.size === 0) {
+        if (msgEl) {
+          msgEl.textContent = 'Debes agregar al menos un producto para cotizar.';
+          msgEl.style.color = '#dc2626';
+        }
+        return;
+      }
+
+      var empresa = document.getElementById('empresa')?.value || '';
+      var contacto = document.getElementById('contacto')?.value || '';
+      var personalizacion = document.getElementById('personalizacion')?.value || '';
+      var plazo = document.getElementById('plazo')?.value || '';
+
+      if (!empresa || !contacto) {
+        if (msgEl) {
+          msgEl.textContent = 'Por favor completa Empresa y Nombre de contacto.';
+          msgEl.style.color = '#dc2626';
+        }
+        return;
+      }
+
+      var lines = ['Hola, quiero cotizar los siguientes productos:', ''];
+      selectedProducts.forEach(function (data) {
+        lines.push('- ' + data.qty + 'x ' + data.name + ' (Talla: ' + data.size + ')');
+      });
+      lines.push('');
+      lines.push('Empresa: ' + empresa);
+      lines.push('Contacto: ' + contacto);
+      lines.push('Personalización: ' + personalizacion);
+      lines.push('Plazo: ' + (plazo || 'No especificado'));
+
+      var text = lines.join('\n');
+      var url = 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+    });
+  }
+
+  // Form submission
+  if (quoteForm) {
+    quoteForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (msgEl) {
+        msgEl.textContent = '';
+        msgEl.style.color = 'inherit';
+      }
+
+      var honeypotEl = document.querySelector('input[name="honeypot"]');
+      if (honeypotEl && honeypotEl.value) return;
+
+      if (selectedProducts.size === 0) {
+        if (msgEl) {
+          msgEl.textContent = 'Debes agregar al menos un producto para cotizar.';
+          msgEl.style.color = '#dc2626';
+        }
+        return;
+      }
+
+      var items = [];
+      selectedProducts.forEach(function (data) {
+        items.push({
+          producto: data.name,
+          categoria: data.category,
+          cantidad: parseInt(data.qty) || 1,
+          talla: data.size || '',
+        });
+      });
+
+      var payload = {
+        empresa: document.getElementById('empresa')?.value || '',
+        rut: document.getElementById('rut')?.value || '',
+        nombre: document.getElementById('contacto')?.value || '',
+        telefono: document.getElementById('telefono')?.value || '',
+        correo: document.getElementById('email')?.value || '',
+        personalizacion: document.getElementById('personalizacion')?.value || 'Sin logo',
+        plazo: document.getElementById('plazo')?.value || '',
+        mensaje: document.getElementById('mensaje')?.value || '',
+        honeypot: honeypotEl ? honeypotEl.value : '',
+        items: items,
+      };
+
+      try {
+        var res = await fetch('/api/cotizar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        var result = {};
+        try { result = await res.json(); } catch (_) {}
+
+        if (!res.ok) {
+          var errors = result.errors || ['Error al enviar. Intenta de nuevo.'];
+          if (msgEl) {
+            msgEl.textContent = errors.join('. ');
+            msgEl.style.color = '#dc2626';
+          }
+          return;
+        }
+
+        if (result.demo) {
+          if (msgEl) {
+            msgEl.textContent = '✓ Cotización recibida (modo demo). En producción se guardará en la base de datos.';
+            msgEl.style.color = '#16a34a';
+          }
+          showSuccessAnimation();
+          return;
+        }
+
+        showSuccess();
+      } catch (err) {
+        // En modo estático, el endpoint no existe — modo demo
+        if (msgEl) {
+          msgEl.textContent = '✓ Cotización recibida (modo demo). En producción se guardará en la base de datos.';
+          msgEl.style.color = '#16a34a';
+        }
+        showSuccessAnimation();
+      }
+    });
+  }
+
+  function showSuccess() {
+    if (msgEl) {
+      msgEl.textContent = '✓ Tu cotización fue enviada. Un ejecutivo te contactará en menos de 24 horas.';
+      msgEl.style.color = '#16a34a';
+    }
+    showSuccessAnimation();
+  }
+
+  function showSuccessAnimation() {
+    if (successBox) successBox.hidden = false;
+    if (quoteForm) quoteForm.reset();
+    selectedProducts.clear();
+    renderProducts();
+    renderSelected();
+
+    setTimeout(function () {
+      if (successBox) successBox.hidden = true;
+      if (msgEl) msgEl.textContent = '';
+    }, 5000);
+  }
+
+  renderProducts();
+  renderSelected();
+</script>
+
+<style>
+  .embroidery-banner {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    background: white;
+    border: 2px solid var(--sky, #97B4DE);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    align-items: center;
+  }
+  @media (max-width: 768px) {
+    .embroidery-banner {
+      grid-template-columns: 1fr;
+    }
+  }
+  .embroidery-img {
+    height: 100%;
+    min-height: 180px;
+  }
+  .embroidery-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .embroidery-info {
+    padding: 20px 24px 20px 0;
+  }
+  @media (max-width: 768px) {
+    .embroidery-info {
+      padding: 0 20px 20px 20px;
+    }
+  }
+  .embroidery-badge {
+    display: inline-block;
+    background: var(--tint, #F3F6FC);
+    border: 1px solid var(--sky, #97B4DE);
+    color: var(--blue, #263A99);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .embroidery-info h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink, #111);
+    margin: 0 0 8px;
+  }
+  .embroidery-info p {
+    font-size: 14px;
+    color: var(--muted, #444);
+    margin: 0;
+    line-height: 1.5;
+  }
+</style>
