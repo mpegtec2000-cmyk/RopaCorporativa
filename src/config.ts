@@ -4,18 +4,18 @@
  */
 export const SITE = {
   /** Nombre de la marca — se usa en logo, títulos, footer, meta */
-  name: 'Nombre EPP',
+  name: 'Charles',
   /** Tagline / lema del negocio */
   tagline: 'Ropa corporativa, industrial y EPP al por mayor',
   /** Descripción SEO */
   description:
-    'Ropa corporativa, ropa industrial y elementos de seguridad al por mayor, con precios por volumen y personalización con tu logo. Cotiza online.',
+    'Charles - Ropa corporativa, ropa industrial y elementos de protección personal (EPP) al por mayor con precios por volumen y bordado personalizado. Cotiza online.',
   /** URL del sitio en producción (para OG/sitemap) */
-  url: 'https://nombre-epp.cl',
+  url: 'https://charles.cl',
   /** Ubicación física */
   location: 'Valparaíso, Chile',
   /** Email de ventas */
-  email: 'ventas@tudominio.cl',
+  email: 'ventas@charles.cl',
   /** Teléfono de contacto (display) */
   phone: '+56 9 0000 0000',
 } as const;
