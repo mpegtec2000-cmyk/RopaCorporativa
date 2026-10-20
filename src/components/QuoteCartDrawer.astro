@@ -1,0 +1,1032 @@
+---
+import { WHATSAPP_NUMBER } from '../config';
+---
+
+<!-- ========================================================= -->
+<!-- CARRITO DE COTIZACIÓN FLOTANTE & DRAWER LATERAL PREMIUM  -->
+<!-- ========================================================= -->
+
+<!-- Botón Flotante para Abrir Carrito de Cotización -->
+<button
+  type="button"
+  id="floating-cart-btn"
+  class="floating-cart-btn"
+  aria-label="Abrir carrito de cotización"
+  title="Ver productos agregados a la cotización"
+>
+  <div class="floating-cart-icon-wrap">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="21" r="1"></circle>
+      <circle cx="20" cy="21" r="1"></circle>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    </svg>
+    <span id="floating-cart-badge" class="floating-cart-badge" style="display: none;">0</span>
+  </div>
+  <span class="floating-cart-text">Cotización</span>
+</button>
+
+<!-- Drawer / Panel Lateral Deslizable de Cotización -->
+<div id="quote-cart-drawer" class="cart-drawer-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="cart-drawer-backdrop" id="cart-drawer-backdrop"></div>
+  
+  <aside class="cart-drawer-panel" id="cart-drawer-panel">
+    <!-- Header del Drawer -->
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title-group">
+        <div class="cart-drawer-icon-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="cart-drawer-title">Tu Cotización</h2>
+          <span class="cart-drawer-subtitle" id="cart-drawer-count">0 productos seleccionados</span>
+        </div>
+      </div>
+
+      <button type="button" class="cart-drawer-close" id="cart-drawer-close" aria-label="Cerrar panel de cotización">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Banner informativo de Venta al por Mayor -->
+    <div class="cart-wholesale-banner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="2.2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <span>Venta mayorista: precios preferenciales y personalización con tu logo.</span>
+    </div>
+
+    <!-- Lista de Productos en el Carrito -->
+    <div class="cart-drawer-body" id="cart-drawer-body">
+      <!-- Estado Vacío -->
+      <div class="cart-empty-state" id="cart-empty-state">
+        <div class="cart-empty-icon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.6">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
+        <h3 class="cart-empty-title">Tu lista está vacía</h3>
+        <p class="cart-empty-desc">Explora nuestro catálogo de vestuario y EPP, selecciona talla y color, y agrégalos aquí para cotizar en segundos.</p>
+        <button type="button" class="cart-empty-btn" id="cart-explore-btn">Explorar Catálogo</button>
+      </div>
+
+      <!-- Lista de Items Dinámica -->
+      <ul class="cart-items-list" id="cart-items-list" style="display: none;"></ul>
+    </div>
+
+    <!-- Footer con Totales y Botones de Acción -->
+    <div class="cart-drawer-footer" id="cart-drawer-footer" style="display: none;">
+      <!-- Barra de Resumen -->
+      <div class="cart-summary-box">
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">Total Prendas:</span>
+          <span class="cart-summary-val" id="cart-total-units">0 unidades</span>
+        </div>
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">Modelos distintos:</span>
+          <span class="cart-summary-subval" id="cart-total-models">0 ítems</span>
+        </div>
+      </div>
+
+      <!-- Acciones de Cotización -->
+      <div class="cart-actions-group">
+        <button type="button" class="cart-btn-primary" id="cart-go-form-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Completar Formulario de Cotización</span>
+        </button>
+
+        <a
+          id="cart-wa-btn"
+          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cart-btn-wa"
+          title="Cotizar directamente por WhatsApp"
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          <span>Cotizar directo por WhatsApp</span>
+        </a>
+
+        <button type="button" class="cart-btn-clear" id="cart-clear-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Vaciar lista de cotización</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<style is:global>
+  /* ─────── BOTÓN FLOTANTE DE COTIZACIÓN ─────── */
+  .floating-cart-btn {
+    position: fixed;
+    bottom: 92px;
+    right: 24px;
+    z-index: 990;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0F172A;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 12px 20px 12px 16px;
+    border-radius: 36px;
+    font-size: 14.5px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.45), 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .floating-cart-btn:hover {
+    background: #1E293B;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.55);
+  }
+
+  .floating-cart-btn.bump {
+    animation: cartBump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes cartBump {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.18); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
+
+  .floating-cart-icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .floating-cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #EF4444;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 850;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .floating-cart-text {
+    letter-spacing: 0.2px;
+  }
+
+  @media (max-width: 640px) {
+    .floating-cart-btn {
+      bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+      right: 16px;
+      padding: 0;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      justify-content: center;
+      box-shadow: 0 8px 24px -2px rgba(15, 23, 42, 0.5);
+    }
+    .floating-cart-text {
+      display: none;
+    }
+    .floating-cart-badge {
+      top: -3px;
+      right: -3px;
+      min-width: 17px;
+      height: 17px;
+      font-size: 10px;
+    }
+  }
+
+  body.cart-drawer-open .floating-cart-btn,
+  body.cart-drawer-open .wa-float {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: scale(0.85) !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+  }
+
+  /* ─────── OVERLAY & BACKDROP ─────── */
+  .cart-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    justify-content: flex-end;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 0.3s ease;
+  }
+
+  .cart-drawer-overlay.is-open {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .cart-drawer-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .cart-drawer-overlay.is-open .cart-drawer-backdrop {
+    opacity: 1;
+  }
+
+  /* ─────── PANEL LATERAL SLIDE-OVER ─────── */
+  .cart-drawer-panel {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: -10px 0 35px rgba(15, 23, 42, 0.18);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+  }
+
+  .cart-drawer-overlay.is-open .cart-drawer-panel {
+    transform: translateX(0);
+  }
+
+  /* ─────── HEADER DEL DRAWER ─────── */
+  .cart-drawer-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #E2E8F0;
+    background: #F8FAFC;
+  }
+
+  .cart-drawer-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cart-drawer-icon-pill {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #0F172A;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-drawer-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 850;
+    color: #0F172A;
+    letter-spacing: -0.02em;
+  }
+
+  .cart-drawer-subtitle {
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+  }
+
+  .cart-drawer-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cart-drawer-close:hover {
+    background: #0F172A;
+    border-color: #0F172A;
+    color: #FFFFFF;
+  }
+
+  /* ─────── BANNER WHOLESALE ─────── */
+  .cart-wholesale-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F1F5F9;
+    border-bottom: 1px solid #CBD5E1;
+    padding: 10px 20px;
+    font-size: 12px;
+    color: #0F172A;
+    font-weight: 700;
+  }
+
+  /* ─────── CUERPO Y LISTA ─────── */
+  .cart-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
+
+  .cart-drawer-body::-webkit-scrollbar {
+    width: 5px;
+  }
+  .cart-drawer-body::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+  }
+
+  /* Empty state */
+  .cart-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 16px;
+  }
+
+  .cart-empty-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .cart-empty-title {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #0F172A;
+  }
+
+  .cart-empty-desc {
+    margin: 0 0 24px;
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.5;
+    max-width: 280px;
+  }
+
+  .cart-empty-btn {
+    background: #0F172A;
+    color: #FFFFFF;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .cart-empty-btn:hover {
+    background: #1E293B;
+  }
+
+  /* Items list */
+  .cart-items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cart-item-card {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  }
+
+  .cart-item-card:hover {
+    border-color: #0F172A;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+
+  .cart-item-img-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    padding: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-item-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .cart-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cart-item-name {
+    margin: 0 0 4px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #0F172A;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cart-item-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .cart-item-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    background: #F1F5F9;
+    color: #0F172A;
+    border: 1px solid #CBD5E1;
+  }
+
+  .cart-item-pill.pill-color {
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #0F172A;
+  }
+
+  .cart-item-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(15, 23, 42, 0.2);
+  }
+
+  .cart-item-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cart-item-stepper {
+    display: inline-flex;
+    align-items: center;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .cart-stepper-btn {
+    background: none;
+    border: none;
+    padding: 3px 8px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #0F172A;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .cart-stepper-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+
+  .cart-stepper-val {
+    width: 38px;
+    height: 28px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 850;
+    color: #0F172A;
+    border: none;
+    background: transparent;
+    padding: 0;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+
+  .cart-stepper-val::-webkit-outer-spin-button,
+  .cart-stepper-val::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .cart-item-remove {
+    background: none;
+    border: none;
+    color: #64748B;
+    padding: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .cart-item-remove:hover {
+    background: #FEE2E2;
+    color: #EF4444;
+  }
+
+  /* ─────── FOOTER Y ACCIONES ─────── */
+  .cart-drawer-footer {
+    padding: 18px 24px 24px;
+    border-top: 1px solid #E2E8F0;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 -6px 20px rgba(15, 23, 42, 0.04);
+  }
+
+  .cart-summary-box {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cart-summary-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .cart-summary-val {
+    font-size: 15px;
+    font-weight: 850;
+    color: #0F172A;
+  }
+
+  .cart-summary-subval {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+
+  .cart-actions-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .cart-btn-primary {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 18px;
+    background: #0F172A;
+    color: #FFFFFF;
+    border: 1px solid #0F172A;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cart-btn-primary:hover {
+    background: #1E293B;
+    border-color: #1E293B;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.38);
+  }
+
+  .cart-btn-wa {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: #25D366;
+    color: #FFFFFF;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+    transition: all 0.2s;
+  }
+
+  .cart-btn-wa:hover {
+    background: #1EBE5D;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+  }
+
+  .cart-btn-clear {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.15s;
+  }
+
+  .cart-btn-clear:hover {
+    color: #EF4444;
+  }
+</style>
+
+<script>
+  import { WHATSAPP_NUMBER } from '../config';
+
+  // Sistema de Carrito Global para Cotizaciones
+  const STORAGE_KEY = 'zortex_quote_cart';
+
+  interface CartItem {
+    key: string;
+    id: string;
+    name: string;
+    category?: string;
+    sku?: string;
+    image: string;
+    color?: string;
+    colorHex?: string;
+    size?: string;
+    qty: number;
+  }
+
+  function getCart(): CartItem[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCart(items: CartItem[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch (e) {}
+    window.dispatchEvent(new CustomEvent('quote-cart-updated', { detail: { items } }));
+    renderCart();
+  }
+
+  function addItem(item: { id: string; name: string; category?: string; sku?: string; image?: string; color?: string; colorHex?: string; size?: string; qty?: number }) {
+    const items = getCart();
+    const cleanColor = item.color || '';
+    const cleanSize = item.size || 'M';
+    const key = `${item.id}-${cleanColor.toLowerCase().replace(/\s+/g, '-')}-${cleanSize.toLowerCase()}`;
+    const qtyToAdd = typeof item.qty === 'number' && item.qty > 0 ? item.qty : 10;
+
+    const existing = items.find(i => i.key === key);
+    if (existing) {
+      existing.qty += qtyToAdd;
+    } else {
+      items.push({
+        key,
+        id: item.id,
+        name: item.name,
+        category: item.category || 'Vestuario',
+        sku: item.sku || '',
+        image: item.image || '/images/productos/polera-pique.png',
+        color: cleanColor,
+        colorHex: item.colorHex || '#CBD5E0',
+        size: cleanSize,
+        qty: qtyToAdd,
+      });
+    }
+
+    saveCart(items);
+
+    // Animación de rebote en botón flotante
+    const floatBtn = document.getElementById('floating-cart-btn');
+    if (floatBtn) {
+      floatBtn.classList.remove('bump');
+      void floatBtn.offsetWidth;
+      floatBtn.classList.add('bump');
+    }
+  }
+
+  function updateQty(key: string, newQty: number) {
+    let items = getCart();
+    const target = items.find(i => i.key === key);
+    if (target) {
+      target.qty = Math.max(1, newQty);
+      saveCart(items);
+    }
+  }
+
+  function removeItem(key: string) {
+    let items = getCart();
+    items = items.filter(i => i.key !== key);
+    saveCart(items);
+  }
+
+  function clearCart() {
+    if (confirm('¿Deseas vaciar todos los productos de tu lista de cotización?')) {
+      saveCart([]);
+    }
+  }
+
+  // Exponer API en window para uso de otros componentes
+  (window as any).QuoteCart = {
+    getCart,
+    addItem,
+    updateQty,
+    removeItem,
+    clearCart,
+    open: openDrawer,
+    close: closeDrawer,
+  };
+
+  // Escuchar evento global desde modal o tarjetas
+  window.addEventListener('add-product-to-quote', (e: any) => {
+    const detail = e.detail;
+    if (detail && detail.id) {
+      addItem(detail);
+    }
+  });
+
+  // Elementos DOM
+  const drawerEl = document.getElementById('quote-cart-drawer');
+  const backdropEl = document.getElementById('cart-drawer-backdrop');
+  const closeBtn = document.getElementById('cart-drawer-close');
+  const floatBtn = document.getElementById('floating-cart-btn');
+  const floatBadge = document.getElementById('floating-cart-badge');
+  const emptyState = document.getElementById('cart-empty-state');
+  const itemsList = document.getElementById('cart-items-list');
+  const footerEl = document.getElementById('cart-drawer-footer');
+  const countEl = document.getElementById('cart-drawer-count');
+  const totalUnitsEl = document.getElementById('cart-total-units');
+  const totalModelsEl = document.getElementById('cart-total-models');
+  const exploreBtn = document.getElementById('cart-explore-btn');
+  const goFormBtn = document.getElementById('cart-go-form-btn');
+  const waBtn = document.getElementById('cart-wa-btn') as HTMLAnchorElement | null;
+  const clearBtn = document.getElementById('cart-clear-btn');
+
+  function openDrawer() {
+    if (!drawerEl) return;
+    drawerEl.classList.add('is-open');
+    drawerEl.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cart-drawer-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    if (!drawerEl) return;
+    drawerEl.classList.remove('is-open');
+    drawerEl.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cart-drawer-open');
+    document.body.style.overflow = '';
+  }
+
+  if (floatBtn) floatBtn.addEventListener('click', openDrawer);
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  if (backdropEl) backdropEl.addEventListener('click', closeDrawer);
+  if (exploreBtn) {
+    exploreBtn.addEventListener('click', () => {
+      closeDrawer();
+      const sec = document.getElementById('productos');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  if (clearBtn) clearBtn.addEventListener('click', clearCart);
+
+  if (goFormBtn) {
+    goFormBtn.addEventListener('click', () => {
+      closeDrawer();
+      const sec = document.getElementById('cotizar');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // Renderizar contenido del Drawer
+  function renderCart() {
+    const items = getCart();
+    const totalCount = items.length;
+    const totalUnits = items.reduce((acc, i) => acc + (i.qty || 0), 0);
+
+    // Actualizar badge flotante
+    if (floatBadge) {
+      if (totalCount > 0) {
+        floatBadge.textContent = String(totalCount);
+        floatBadge.style.display = 'inline-flex';
+      } else {
+        floatBadge.style.display = 'none';
+      }
+    }
+
+    // Actualizar badges en Header si existen
+    const headerBadges = document.querySelectorAll('.header-cart-badge');
+    headerBadges.forEach(b => {
+      b.textContent = String(totalCount);
+      (b as HTMLElement).style.display = totalCount > 0 ? 'inline-flex' : 'none';
+    });
+
+    if (countEl) countEl.textContent = `${totalCount} producto${totalCount === 1 ? '' : 's'} (${totalUnits} unidades)`;
+    if (totalUnitsEl) totalUnitsEl.textContent = `${totalUnits} unidades`;
+    if (totalModelsEl) totalModelsEl.textContent = `${totalCount} modelo${totalCount === 1 ? '' : 's'}`;
+
+    if (totalCount === 0) {
+      if (emptyState) emptyState.style.display = 'flex';
+      if (itemsList) {
+        itemsList.style.display = 'none';
+        itemsList.innerHTML = '';
+      }
+      if (footerEl) footerEl.style.display = 'none';
+    } else {
+      if (emptyState) emptyState.style.display = 'none';
+      if (footerEl) footerEl.style.display = 'flex';
+      if (itemsList) {
+        itemsList.style.display = 'flex';
+        itemsList.innerHTML = '';
+
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'cart-item-card';
+
+          const colorHtml = item.color ? `
+            <span class="cart-item-pill pill-color" title="Color ${item.color}">
+              <span class="cart-item-color-dot" style="background-color: ${item.colorHex || '#CBD5E0'};"></span>
+              ${item.color}
+            </span>
+          ` : '';
+
+          const sizeHtml = item.size ? `
+            <span class="cart-item-pill">Talla: ${item.size}</span>
+          ` : '';
+
+          li.innerHTML = `
+            <div class="cart-item-img-wrap">
+              <img src="${item.image}" alt="${item.name}" width="58" height="58" loading="lazy" />
+            </div>
+            <div class="cart-item-info">
+              <h4 class="cart-item-name" title="${item.name}">${item.name}</h4>
+              <div class="cart-item-tags">
+                ${colorHtml}
+                ${sizeHtml}
+              </div>
+              <div class="cart-item-bottom">
+                <div class="cart-item-stepper">
+                  <button type="button" class="cart-stepper-btn minus" aria-label="Restar">-</button>
+                  <input type="number" class="cart-stepper-val" value="${item.qty}" min="1" max="9999" />
+                  <button type="button" class="cart-stepper-btn plus" aria-label="Sumar">+</button>
+                </div>
+                <button type="button" class="cart-item-remove" title="Quitar producto" aria-label="Quitar ${item.name}">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+
+          // Event listeners
+          const minusBtn = li.querySelector('.cart-stepper-btn.minus');
+          const plusBtn = li.querySelector('.cart-stepper-btn.plus');
+          const qtyInput = li.querySelector('.cart-stepper-val') as HTMLInputElement | null;
+          const removeBtn = li.querySelector('.cart-item-remove');
+
+          if (minusBtn) {
+            minusBtn.addEventListener('click', () => {
+              updateQty(item.key, Math.max(1, item.qty - (item.qty > 10 ? 5 : 1)));
+            });
+          }
+          if (plusBtn) {
+            plusBtn.addEventListener('click', () => {
+              updateQty(item.key, item.qty + (item.qty >= 10 ? 5 : 1));
+            });
+          }
+          if (qtyInput) {
+            qtyInput.addEventListener('change', () => {
+              const val = parseInt(qtyInput.value) || 1;
+              updateQty(item.key, Math.max(1, val));
+            });
+          }
+          if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+              removeItem(item.key);
+            });
+          }
+
+          itemsList.appendChild(li);
+        });
+      }
+    }
+
+    // Actualizar link de WhatsApp con el desglose exacto
+    if (waBtn) {
+      if (items.length === 0) {
+        waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, me gustaría cotizar vestuario corporativo y EPP al por mayor.')}`;
+      } else {
+        const lines = [
+          'Hola Zortex! Quisiera solicitar cotización al por mayor para los siguientes productos:',
+          ''
+        ];
+        items.forEach(it => {
+          const extras = [];
+          if (it.color) extras.push(`Color: ${it.color}`);
+          if (it.size) extras.push(`Talla: ${it.size}`);
+          if (it.sku) extras.push(`SKU: ${it.sku}`);
+          const extraStr = extras.length > 0 ? ` (${extras.join(', ')})` : '';
+          lines.push(`• ${it.qty}x ${it.name}${extraStr}`);
+        });
+        lines.push('');
+        lines.push(`Total de unidades: ${totalUnits}`);
+        lines.push('¿Me podrían enviar la cotización formal con precios por volumen y tiempos de entrega?');
+        waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+      }
+    }
+  }
+
+  // Inicializar al cargar
+  document.addEventListener('DOMContentLoaded', renderCart);
+  // También ejecutar de inmediato por si el DOM ya está listo
+  renderCart();
+</script>

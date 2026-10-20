@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <!-- Isotipo Oficial Inser Impresores: Hojas / folios traslúcidos superpuestos -->
+  <g transform="translate(10, 8)">
+    <!-- Lámina 1: Violeta -->
+    <polygon points="6,6 18,7 15,41 3,40" fill="#3D297A" opacity="0.95"/>
+    <!-- Lámina 2: Azul marino -->
+    <polygon points="12,8 24,9 20,44 8,43" fill="#1C659E" opacity="0.85"/>
+    <!-- Lámina 3: Cyan verdoso -->
+    <polygon points="18,10 29,11 25,46 14,45" fill="#3BA273" opacity="0.85"/>
+    <!-- Lámina 4: Lima / amarillo -->
+    <polygon points="24,7 35,9 31,48 20,46" fill="#D3D934" opacity="0.85"/>
+    <!-- Lámina 5: Naranja rojizo -->
+    <polygon points="30,5 41,7 37,45 26,43" fill="#CE4D46" opacity="0.85"/>
+    <!-- Lámina 6: Magenta vino -->
+    <polygon points="36,10 47,11 43,42 32,41" fill="#991B52" opacity="0.9"/>
+  </g>
+  <!-- Tipografía Oficial inser en minúsculas -->
+  <g transform="translate(64, 13)" fill="#23496D">
+    <!-- i -->
+    <rect x="0" y="0" width="6" height="6" rx="0.5"/>
+    <rect x="0" y="9" width="6" height="23" rx="0.5"/>
+    <!-- n -->
+    <path d="M12,9 L18,9 L18,13 C19.5,10.2 23,8.5 27,8.5 C34,8.5 37,12.5 37,19 L37,32 L31,32 L31,20 C31,16 29,14 26,14 C22,14 18,17 18,22 L18,32 L12,32 Z"/>
+    <!-- s -->
+    <path d="M42,26 C43,28 46,30 49,30 C53,30 55,28 55,25.5 C55,23 52,21.5 48,20.5 C43,19.5 39,17.5 39,13 C39,9.5 42,7 48,7 C53,7 57,9 58,12 L53,15 C52,13.5 50,12.5 48,12.5 C45,12.5 44,13.5 44,15 C44,16.5 46,17.5 50,18.5 C56,20 60,22 60,26 C60,30.5 56,34 49,34 C43,34 39,31 38,27 Z"/>
+    <!-- e -->
+    <path d="M64,20 C64,13 69,8.5 76,8.5 C83,8.5 88,13 88,20 L88,22 L70,22 C70.5,26 73,28.5 77,28.5 C80,28.5 83,27 84.5,25 L88,28 C85.5,31.5 82,33.5 77,33.5 C69,33.5 64,28 64,20 Z M82,18 C81.5,14.5 79,13 76,13 C73,13 70.5,14.5 70,18 Z"/>
+    <!-- r -->
+    <path d="M92,9 L98,9 L98,14 C99.5,10.5 103,8.5 107,8.5 L107,15 C101.5,15 98,18 98,24 L98,32 L92,32 Z"/>
+  </g>
+</svg>

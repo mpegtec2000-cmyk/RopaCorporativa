@@ -2,16 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import ClientsCarousel from '../components/ClientsCarousel.astro';
 import StatsBar from '../components/StatsBar.astro';
 import Benefits from '../components/Benefits.astro';
 import Categories from '../components/Categories.astro';
 import FeaturedProducts from '../components/FeaturedProducts.astro';
 import Industries from '../components/Industries.astro';
-import BrandCarousel from '../components/BrandCarousel.astro';
-import HowItWorks from '../components/HowItWorks.astro';
 import Certifications from '../components/Certifications.astro';
 import QuoteSection from '../components/QuoteSection.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import QuoteCartDrawer from '../components/QuoteCartDrawer.astro';
 import Footer from '../components/Footer.astro';
 ---
 
@@ -19,18 +19,18 @@ import Footer from '../components/Footer.astro';
   <Header />
   <main>
     <Hero />
+    <ClientsCarousel />
     <StatsBar />
     <Benefits />
     <Categories />
     <FeaturedProducts />
     <Industries />
-    <BrandCarousel />
-    <HowItWorks />
     <Certifications />
     <QuoteSection />
   </main>
   <Footer />
   <WhatsAppFloat />
+  <QuoteCartDrawer />
 </Layout>
 
 <script>

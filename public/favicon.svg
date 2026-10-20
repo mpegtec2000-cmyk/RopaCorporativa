@@ -1,4 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="4" fill="#263A99"/>
-  <text x="4" y="23" font-family="system-ui,sans-serif" font-weight="700" font-size="14" fill="#fff">EPP</text>
+  <defs>
+    <linearGradient id="zBg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="zFill" x1="7" y1="7" x2="25" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Base Squircle -->
+  <rect width="32" height="32" rx="7" fill="url(#zBg)"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" stroke="#38BDF8" stroke-opacity="0.35"/>
+  
+  <!-- Modern Geometric Z (Zortex) -->
+  <polygon points="7,7 25,7 25,11.5 13.5,20.5 25,20.5 25,25 7,25 7,20.5 18.5,11.5 7,11.5" fill="url(#zFill)"/>
+  
+  <!-- Subtle Industrial Accent Tag -->
+  <circle cx="23" cy="9.25" r="1.25" fill="#38BDF8"/>
 </svg>

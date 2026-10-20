@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60" fill="none">
+  <!-- Estrella Mercedes-Benz tridimensional sólida -->
+  <g transform="translate(10, 8)">
+    <circle cx="22" cy="22" r="20" stroke="#1E293B" stroke-width="3" fill="#F8FAFC"/>
+    <!-- Puntas sombreadas de la estrella -->
+    <polygon points="22,4 25,22 22,19" fill="#64748B"/>
+    <polygon points="22,4 19,22 22,19" fill="#0F172A"/>
+    <polygon points="6,31 22,22 20,25" fill="#64748B"/>
+    <polygon points="6,31 22,22 23,20" fill="#0F172A"/>
+    <polygon points="38,31 22,22 24,25" fill="#64748B"/>
+    <polygon points="38,31 22,22 21,20" fill="#0F172A"/>
+  </g>
+  <!-- Tipografía Mercedes-Benz -->
+  <text x="64" y="38" font-family="'Outfit', 'Montserrat', serif, system-ui, sans-serif" font-size="27" font-weight="800" fill="#0F172A" letter-spacing="0.2">Mercedes-Benz</text>
+</svg>

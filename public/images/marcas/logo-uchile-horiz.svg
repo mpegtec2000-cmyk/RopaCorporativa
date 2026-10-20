@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 60" width="270" height="60" fill="none">
+  <!-- Escudo U. de Chile -->
+  <g transform="translate(10, 8)">
+    <path d="M4,4 L36,4 L36,28 C36,37 20,44 20,44 C20,44 4,37 4,28 Z" fill="#003566"/>
+    <path d="M4,18 L36,18 L36,30 C36,36 20,42 20,42 C20,42 4,36 4,30 Z" fill="#D90429"/>
+    <!-- Estrella blanca de Chile -->
+    <polygon points="20,6 22,12 28,12 23,15 25,21 20,18 15,21 17,15 12,12 18,12" fill="#FFFFFF"/>
+    <!-- Bordura dorada -->
+    <path d="M4,4 L36,4 L36,28 C36,37 20,44 20,44 C20,44 4,37 4,28 Z" fill="none" stroke="#FFD166" stroke-width="2.5"/>
+  </g>
+  <!-- Tipografía UCHILE -->
+  <text x="56" y="28" font-family="'Outfit', 'Montserrat', serif, sans-serif" font-size="13" font-weight="900" fill="#003566" letter-spacing="2">UNIVERSIDAD DE</text>
+  <text x="56" y="47" font-family="'Outfit', 'Montserrat', serif, sans-serif" font-size="21" font-weight="900" fill="#003566" letter-spacing="2">CHILE</text>
+  <rect x="145" y="36" width="36" height="3" rx="1.5" fill="#D90429"/>
+</svg>

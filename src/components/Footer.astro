@@ -1,190 +1,648 @@
 ---
-import { SITE } from '../config';
+import { SITE, WHATSAPP_NUMBER } from '../config';
 ---
 
 <footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      
-      <!-- Brand & Slogan -->
-      <div class="footer-col brand-col">
-        <div class="footer-logo">
-          {SITE.name.toUpperCase()}<span>EPP</span>
+  <!-- Accent Line Superior -->
+  <div class="footer-top-accent"></div>
+  
+  <div class="wrap footer-container">
+    <!-- Corporate Trust & Badges Strip -->
+    <div class="footer-trust-strip">
+      <div class="trust-pill">
+        <div class="trust-pill-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
         </div>
-        <p class="footer-desc">{SITE.tagline}</p>
-        <p class="footer-subdesc">Distribución mayorista y corporativa de vestuario de trabajo y elementos de seguridad personal para empresas en Chile.</p>
+        <div class="trust-pill-content">
+          <strong>EPP & Ropa Certificada</strong>
+          <span>Normativa chilena e internacional</span>
+        </div>
       </div>
 
-      <!-- Quick Links Column 1 -->
+      <div class="trust-pill">
+        <div class="trust-pill-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="trust-pill-content">
+          <strong>Escala Mayorista</strong>
+          <span>Precios especiales por volumen B2B</span>
+        </div>
+      </div>
+
+      <div class="trust-pill">
+        <div class="trust-pill-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+            <line x1="7" y1="7" x2="7.01" y2="7"/>
+          </svg>
+        </div>
+        <div class="trust-pill-content">
+          <strong>Personalización & Taller</strong>
+          <span>Bordado corporativo y DTF textil</span>
+        </div>
+      </div>
+
+      <div class="trust-pill">
+        <div class="trust-pill-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <div class="trust-pill-content">
+          <strong>Cobertura Nacional</strong>
+          <span>Despacho ágil a faenas y sucursales</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Footer Columns -->
+    <div class="footer-main-grid">
+      
+      <!-- Columna 1: Marca & Propósito -->
+      <div class="footer-col footer-col-brand">
+        <div class="footer-brand-header">
+          <a href="/" class="footer-logo-link" aria-label="Inicio Zortex">
+            <img 
+              src="/images/zortex_logo_transparente.png" 
+              alt={SITE.name} 
+              class="footer-logo-img" 
+              width="155" 
+              height="40" 
+              loading="lazy"
+            />
+          </a>
+        </div>
+
+        <p class="brand-tagline">{SITE.tagline}</p>
+        <p class="brand-desc">
+          Líderes en abastecimiento de ropa corporativa, uniformes técnicos y equipos de protección personal certificados para minería, construcción e industrias.
+        </p>
+
+        <div class="brand-cta-box">
+          <a href="#cotizar" class="footer-quote-btn">
+            <span>Solicitar Cotización</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna 2: Catálogo de Productos -->
       <div class="footer-col">
-        <h4 class="footer-title">Categorías</h4>
-        <ul class="footer-links">
-          <li><a href="#catalogo">Ropa Corporativa</a></li>
-          <li><a href="#catalogo">Ropa Industrial</a></li>
-          <li><a href="#catalogo">Calzado de Seguridad</a></li>
-          <li><a href="#catalogo">Protección EPP</a></li>
-          <li><a href="#catalogo">Accesorios y Gorros</a></li>
+        <h3 class="col-title">Catálogo</h3>
+        <ul class="footer-nav-list">
+          <li>
+            <a href="#productos" data-category-trigger="Ropa Corporativa">
+              <span class="col-chevron">›</span>
+              Ropa Corporativa e Imagen
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="Ropa Industrial">
+              <span class="col-chevron">›</span>
+              Ropa Industrial & Térmica
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="Ropa de Seguridad">
+              <span class="col-chevron">›</span>
+              Alta Visibilidad y Seguridad
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="EPP">
+              <span class="col-chevron">›</span>
+              Protección Personal (EPP)
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="Ropa Personalizada">
+              <span class="col-chevron">›</span>
+              Vestuario Personalizado
+            </a>
+          </li>
         </ul>
       </div>
 
-      <!-- Quick Links Column 2 -->
+      <!-- Columna 3: Soluciones y Servicios B2B -->
       <div class="footer-col">
-        <h4 class="footer-title">Servicios B2B</h4>
-        <ul class="footer-links">
-          <li><a href="#cotizar">Cotización Formal</a></li>
-          <li><a href="#cotizar">Descuentos por Volumen</a></li>
-          <li><a href="#cotizar">Bordados con Logo</a></li>
-          <li><a href="#cotizar">Estampado Textil</a></li>
-          <li><a href="#como-funciona">Envíos a Regiones</a></li>
+        <h3 class="col-title">Servicios B2B</h3>
+        <ul class="footer-nav-list">
+          <li>
+            <a href="#cotizar">
+              <span class="col-chevron">›</span>
+              Cotizaciones Formales en 24h
+            </a>
+          </li>
+          <li>
+            <a href="#cotizar">
+              <span class="col-chevron">›</span>
+              Convenios Marco por Volumen
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="Ropa Personalizada">
+              <span class="col-chevron">›</span>
+              Bordado Computarizado
+            </a>
+          </li>
+          <li>
+            <a href="#productos" data-category-trigger="Ropa Personalizada">
+              <span class="col-chevron">›</span>
+              Estampado DTF y Termotransferible
+            </a>
+          </li>
+          <li>
+            <a href="#como-funciona">
+              <span class="col-chevron">›</span>
+              Logística y Envíos a Obra
+            </a>
+          </li>
         </ul>
       </div>
 
-      <!-- Contact -->
-      <div class="footer-col">
-        <h4 class="footer-title">Contacto Comercial</h4>
-        <ul class="footer-contact">
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>{SITE.location}</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span>{SITE.phone}</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span>{SITE.email}</span>
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Lun a Vie: 08:30 - 18:00 hrs</span>
-          </li>
-        </ul>
+      <!-- Columna 4: Contacto Comercial Directo -->
+      <div class="footer-col footer-col-contact">
+        <h3 class="col-title">Contacto Comercial</h3>
+        <div class="footer-contact-list">
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="contact-meta">
+              <span class="contact-label">Ubicación y Despacho</span>
+              <span class="contact-val">{SITE.location} — Todo Chile</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="contact-meta">
+              <span class="contact-label">Teléfono Ventas</span>
+              <a href={`tel:${SITE.phone.replace(/\s+/g, '')}`} class="contact-link">{SITE.phone}</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div class="contact-meta">
+              <span class="contact-label">Correo Corporativo</span>
+              <a href={`mailto:${SITE.email}`} class="contact-link">{SITE.email}</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="contact-meta">
+              <span class="contact-label">Horario Comercial</span>
+              <span class="contact-val">Lunes a Viernes 08:30 – 18:00 hrs</span>
+            </div>
+          </div>
+
+        </div>
       </div>
 
     </div>
   </div>
 
-  <!-- Legal Strip -->
-  <div class="footer-bottom">
-    <div class="wrap footer-bottom-wrap">
-      <p>&copy; {new Date().getFullYear()} {SITE.name}. Todos los derechos reservados.</p>
-      <div class="footer-legal-links">
+  <!-- Bottom Legal Bar -->
+  <div class="footer-legal-bar">
+    <div class="wrap footer-legal-inner">
+      <div class="legal-left">
+        <p>&copy; {new Date().getFullYear()} <strong>{SITE.name}</strong> &bull; Abastecimiento Mayorista de Ropa Corporativa, Industrial y EPP. Todos los derechos reservados.</p>
+      </div>
+      <div class="legal-right">
         <a href="#cotizar">Cotización B2B</a>
-        <span>·</span>
-        <a href="#como-funciona">Términos de Servicio</a>
+        <span class="legal-dot">&bull;</span>
+        <a href="#como-funciona">Condiciones Comerciales</a>
+        <span class="legal-dot">&bull;</span>
+        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer">Mesa WhatsApp Directa</a>
       </div>
     </div>
   </div>
 </footer>
 
-<style>
-  .site-footer {
-    background: white;
-    color: var(--ink, #111);
-    border-top: 2px solid var(--sky, #97B4DE);
-    padding-top: 60px;
+<style is:global>
+  /* Root Footer Styles (is:global previene pérdida de selectores en Vite HMR / Dev) */
+  footer.site-footer {
+    background-color: #FFFFFF !important;
+    color: #0F2744 !important;
+    border-top: 1px solid #E2E8F0;
+    position: relative;
+    padding-top: 0;
+    margin-top: 0;
+    font-family: var(--body, 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif);
+    display: block;
+    width: 100%;
   }
-  .footer-grid {
+
+  /* Accent Stripe */
+  .footer-top-accent {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(90deg, #1E3A8A 0%, #2563EB 50%, #38BDF8 100%);
+  }
+
+  .footer-container {
+    padding-top: 10px;
+  }
+
+  /* Trust Strip */
+  .footer-trust-strip {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 36px;
-    margin-bottom: 48px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 32px 0;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 44px;
   }
-  .footer-logo {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--ink, #111);
-    font-family: var(--display, system-ui);
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
+
+  @media (max-width: 1024px) {
+    .footer-trust-strip {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
   }
-  .footer-logo span {
-    color: var(--blue, #263A99);
+
+  @media (max-width: 580px) {
+    .footer-trust-strip {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
   }
-  .footer-desc {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--blue, #263A99);
-    margin-bottom: 8px;
-  }
-  .footer-subdesc {
-    font-size: 14px;
-    color: var(--muted, #444);
-    line-height: 1.5;
-    margin: 0;
-  }
-  .footer-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--ink, #111);
-    margin-bottom: 16px;
-    font-family: var(--display, system-ui);
-    border-bottom: 2px solid var(--sky, #97B4DE);
-    padding-bottom: 8px;
-    display: inline-block;
-  }
-  .footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .footer-links a {
-    color: var(--muted, #444);
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s ease;
-  }
-  .footer-links a:hover {
-    color: var(--blue, #263A99);
-  }
-  .footer-contact {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .footer-contact li {
+
+  .trust-pill {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: var(--muted, #444);
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .footer-contact svg {
-    color: var(--blue, #263A99);
+
+  .trust-pill:hover {
+    background: #EFF6FF;
+    border-color: #BFDBFE;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+  }
+
+  .trust-pill-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    border: 1px solid #DBEAFE;
+    transition: all 0.2s ease;
   }
-  .footer-bottom {
-    background: var(--tint, #F3F6FC);
-    border-top: 2px solid var(--sky, #97B4DE);
-    border-bottom: 4px solid var(--blue, #263A99);
-    padding: 18px 0;
+
+  .trust-pill:hover .trust-pill-icon {
+    background: #1D4ED8;
+    color: #FFFFFF;
+    border-color: #1D4ED8;
   }
-  .footer-bottom-wrap {
+
+  .trust-pill-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .trust-pill-content strong {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0F2744;
+    line-height: 1.25;
+  }
+
+  .trust-pill-content span {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.3;
+  }
+
+  /* Main Grid */
+  .footer-main-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr 1fr 1.15fr;
+    gap: 48px;
+    padding-bottom: 50px;
+  }
+
+  @media (max-width: 1024px) {
+    .footer-main-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 36px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-main-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+
+  /* Columna Marca */
+  .footer-brand-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .footer-logo-link {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .footer-logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .corp-pill {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border: 1px solid #BFDBFE;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: var(--mono, monospace);
+  }
+
+  .brand-tagline {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #0F2744;
+    margin: 0 0 10px;
+    line-height: 1.35;
+  }
+
+  .brand-desc {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+
+  .brand-cta-box {
+    margin-top: 4px;
+  }
+
+  .footer-quote-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1D4ED8;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    padding: 9px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .footer-quote-btn:hover {
+    background: #1D4ED8;
+    color: #FFFFFF;
+    border-color: #1D4ED8;
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.25);
+    transform: translateY(-1px);
+  }
+
+  /* Encabezados de Columna */
+  .col-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0F2744;
+    margin: 0 0 18px;
+    position: relative;
+    padding-bottom: 10px;
+    font-family: var(--display, system-ui);
+    display: flex;
+    align-items: center;
+  }
+
+  .col-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 26px;
+    height: 2.5px;
+    background: #1D4ED8;
+    border-radius: 2px;
+  }
+
+  /* Listas Limpias */
+  .footer-nav-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .footer-nav-list li {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer-nav-list a {
+    color: #334155;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .col-chevron {
+    color: #94A3B8;
+    font-size: 15px;
+    line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .footer-nav-list a:hover {
+    color: #1D4ED8;
+    transform: translateX(3px);
+  }
+
+  .footer-nav-list a:hover .col-chevron {
+    color: #1D4ED8;
+    transform: translateX(2px);
+  }
+
+  /* Lista de Contacto */
+  .footer-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .contact-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #DBEAFE;
+    margin-top: 2px;
+  }
+
+  .contact-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .contact-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #64748B;
+  }
+
+  .contact-val {
+    font-size: 13.5px;
+    color: #0F2744;
+    font-weight: 600;
+  }
+
+  .contact-link {
+    font-size: 13.5px;
+    color: #0F2744;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    color: #1D4ED8;
+    text-decoration: underline;
+  }
+
+  /* Barra Legal Inferior */
+  .footer-legal-bar {
+    background-color: #F8FAFC !important;
+    border-top: 1px solid #E2E8F0;
+    padding: 20px 0;
+    width: 100%;
+  }
+
+  .footer-legal-inner {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    color: var(--muted, #444);
+    gap: 16px;
+    font-size: 13px;
+    color: #64748B;
   }
-  .footer-legal-links {
+
+  .legal-left p {
+    margin: 0;
+    color: #64748B;
+    line-height: 1.5;
+  }
+
+  .legal-left strong {
+    color: #0F2744;
+    font-weight: 700;
+  }
+
+  .legal-right {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
   }
-  .footer-legal-links a {
-    color: var(--muted, #444);
+
+  .legal-dot {
+    color: #CBD5E1;
+    font-size: 14px;
+  }
+
+  .legal-right a {
+    color: #334155;
     text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
   }
-  .footer-legal-links a:hover {
-    color: var(--blue, #263A99);
+
+  .legal-right a:hover {
+    color: #1D4ED8;
+  }
+
+  @media (max-width: 640px) {
+    .footer-legal-inner {
+      flex-direction: column;
+      text-align: center;
+      gap: 12px;
+    }
+    .legal-right {
+      justify-content: center;
+    }
   }
 </style>

@@ -1,21 +1,480 @@
 ---
 import { CERTIFICATIONS } from '../config';
+
+// Datos extendidos de especificaciones técnicas para cada tarjeta
+const DETAILED_CERTS = [
+  {
+    normCode: 'NCh 772 • REGISTRO ISP',
+    category: 'CALZADO TÉCNICO',
+    title: 'Calzado de Seguridad Dieléctrico',
+    badge: 'NORMA NCh 772/1',
+    specs: [
+      'Puntera de composite no metálica resistente a 200 Joules',
+      'Aislación dieléctrica certificada para trabajos de hasta 14 kV',
+      'Suela antideslizante certificada EN ISO 20345 / ASTM F2413',
+    ],
+    status: 'Registro ISP Vigente en Chile',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18v2H3z"/><path d="M4 18v-3l4-2 3-5h4v5l4 2v3"/><path d="M11 6l-2 3h3l-2 3"/></svg>`,
+  },
+  {
+    normCode: 'ANSI / ISEA 107 CLASE 3',
+    category: 'ALTA VISIBILIDAD',
+    title: 'Vestuario Reflectivo y Vial',
+    badge: 'CLASE 3 OPERACIONAL',
+    specs: [
+      'Cintas retrorreflectivas 3M Scotchlite™ de alto coeficiente',
+      'Tejidos fluorescentes normados para faena diurna y nocturna',
+      'Cumplimiento estricto para vialidad, minería y logística pesada',
+    ],
+    status: 'Visibilidad 360° Certificada',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l3 5-3 13H6L3 8l3-5z"/><path d="M10 3v5a2 2 0 0 0 4 0V3"/><line x1="5" y1="13" x2="19" y2="13"/><line x1="5" y1="17" x2="19" y2="17"/></svg>`,
+  },
+  {
+    normCode: 'NFPA 2112 • EN ISO 11612',
+    category: 'PROTECCIÓN TÉRMICA',
+    title: 'Ropa Ignífuga y Arco Eléctrico',
+    badge: 'PROTECCIÓN TÉRMICA',
+    specs: [
+      'Tejidos con protección térmica inherente antiflama (no tratada)',
+      'Resistencia comprobada a fuego repentino y riesgo de Arc Flash',
+      'Exigido en plantas químicas, faenas mineras y subestaciones',
+    ],
+    status: 'Respaldo NFPA / ISO Homologado',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 7c1 2 2.5 3 2.5 5a2.5 2.5 0 0 1-5 0c0-1.5 1-2.5 2.5-5z"/></svg>`,
+  },
+  {
+    normCode: 'DS 594 • LEY 16.744',
+    category: 'CUMPLIMIENTO LEGAL',
+    title: 'Auditorías y Fiscalización Laboral',
+    badge: 'MARCO REGULATORIO',
+    specs: [
+      'Dossier técnico y certificados de fábrica disponibles para descarga',
+      'Apto para aprobación en Comités Paritarios de Faena y Mutuales',
+      'Cumplimiento de fiscalizaciones ante Seremi de Salud y DT',
+    ],
+    status: 'Documentación Técnica Completa',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>`,
+  },
+];
+
+const COMPLIANCE_ENTITIES = [
+  { name: 'Instituto de Salud Pública (ISP)', desc: 'Registro y homologación técnica de EPP' },
+  { name: 'Decreto Supremo Nº 594', desc: 'Condiciones sanitarias y ambientales en el trabajo' },
+  { name: 'Ley Nº 16.744', desc: 'Seguro social contra accidentes del trabajo y enfermedades' },
+  { name: 'Mutuales de Seguridad (ACHS • CChC • IST)', desc: 'Validación en programas de prevención de riesgos' },
+  { name: 'Comités Paritarios de Higiene y Seguridad', desc: 'Aprobación técnica de dotación para cuadrillas' },
+];
 ---
 
-<section class="band" style="padding: 4rem 0; background: #eef2ff;">
+<section class="certs-section reveal" aria-label="Respaldo técnico y normativo de seguridad">
   <div class="wrap">
-    <h2 style="color: #263A99; margin-bottom: 0.5rem; text-align: center;">Productos con respaldo técnico</h2>
-    <p class="lead" style="color: #64748b; text-align: center; margin-bottom: 3rem;">Fichas técnicas disponibles para tu prevencionista de riesgos.</p>
-    <ul class="certs" style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-      {CERTIFICATIONS.map(cert => (
-        <li style="display: flex; align-items: flex-start; gap: 1rem; background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#263A99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 0.25rem;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-          <div>
-            <b style="display: block; color: #1e293b; margin-bottom: 0.25rem; font-size: 1.1rem;">{cert.title}</b>
-            <span style="color: #64748b; line-height: 1.5;">{cert.description}</span>
+    
+    <!-- Section Header -->
+    <div class="certs-header">
+      <div class="certs-eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span>ESTÁNDARES TÉCNICOS • SEGURIDAD INDUSTRIAL HOMOLOGADA</span>
+      </div>
+      <h2>Equipamiento Certificado con Respaldo Técnico y Normativo</h2>
+      <p class="certs-lead">
+        Documentación técnica completa, ensayos de laboratorio y certificados de origen homologados para auditorías de seguridad, comités paritarios, mutualidades y fiscalizaciones oficiales en todo Chile.
+      </p>
+    </div>
+
+    <!-- 4 Structured Technical Cards -->
+    <div class="certs-grid">
+      {DETAILED_CERTS.map((cert) => (
+        <article class="cert-card">
+          <!-- Top Card Meta -->
+          <div class="cert-card-header">
+            <div class="cert-icon-box" set:html={cert.svg} />
+            <div class="cert-badge-wrapper">
+              <span class="cert-code-pill">{cert.normCode}</span>
+            </div>
           </div>
-        </li>
+
+          <!-- Title -->
+          <h3 class="cert-title">{cert.title}</h3>
+
+          <!-- Technical Specs -->
+          <ul class="cert-specs-list">
+            {cert.specs.map((spec) => (
+              <li>
+                <svg class="spec-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>{spec}</span>
+              </li>
+            ))}
+          </ul>
+
+          <!-- Card Bottom Status Indicator -->
+          <div class="cert-card-footer">
+            <div class="cert-status-tag">
+              <span class="status-dot"></span>
+              <span>{cert.status}</span>
+            </div>
+          </div>
+        </article>
       ))}
-    </ul>
+    </div>
+
+    <!-- Legal Framework & Compliance Panel -->
+    <div class="certs-compliance-panel">
+      <div class="compliance-header">
+        <div class="compliance-title-group">
+          <div class="compliance-shield-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <h4 class="compliance-heading">Marco Legal y Organismos Respaldados en Chile</h4>
+            <p class="compliance-subheading">Nuestras líneas cuentan con especificaciones alineadas a las exigencias de fiscalización nacional:</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="compliance-entities-grid">
+        {COMPLIANCE_ENTITIES.map((item) => (
+          <div class="entity-card">
+            <div class="entity-check">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="entity-content">
+              <strong class="entity-name">{item.name}</strong>
+              <span class="entity-desc">{item.desc}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
   </div>
 </section>
+
+<style is:global>
+  /* =========================================================
+     CERTIFICATIONS SECTION (ESTÁNDAR CORPORATIVO B2B)
+     ========================================================= */
+  .certs-section {
+    padding: 84px 0 80px;
+    background-color: #F8FAFC !important;
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+    position: relative;
+    font-family: var(--body, 'Plus Jakarta Sans', system-ui, sans-serif);
+  }
+
+  /* Header */
+  .certs-header {
+    text-align: center;
+    max-width: 840px;
+    margin: 0 auto 48px;
+  }
+
+  .certs-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono, monospace);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #1E3A8A;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+
+  .certs-eyebrow svg {
+    color: #2563EB;
+    flex-shrink: 0;
+  }
+
+  .certs-header h2 {
+    font-size: clamp(28px, 3.2vw, 38px);
+    font-weight: 800;
+    color: #0F2744;
+    margin: 0 0 16px;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    font-family: var(--display, 'Outfit', sans-serif);
+  }
+
+  .certs-lead {
+    color: #475569;
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 0;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 4-Column Grid */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    margin-bottom: 36px;
+  }
+
+  @media (max-width: 1120px) {
+    .certs-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .certs-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  /* Professional Technical Card */
+  .cert-card {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 14px -3px rgba(15, 39, 68, 0.06), 0 1px 3px rgba(15, 39, 68, 0.03);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s ease;
+    position: relative;
+  }
+
+  .cert-card:hover {
+    transform: translateY(-4px);
+    border-color: #93C5FD !important;
+    box-shadow: 0 16px 30px -6px rgba(15, 39, 68, 0.1), 0 4px 10px rgba(15, 39, 68, 0.04);
+  }
+
+  /* Card Header */
+  .cert-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .cert-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 9px;
+    background: #EFF6FF;
+    border: 1px solid #DBEAFE;
+    color: #1E3A8A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .cert-card:hover .cert-icon-box {
+    background: #1E3A8A;
+    color: #FFFFFF;
+    border-color: #1E3A8A;
+  }
+
+  .cert-code-pill {
+    font-family: var(--mono, monospace);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #0F2744;
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    padding: 4px 9px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  /* Title */
+  .cert-title {
+    font-family: var(--display, 'Outfit', sans-serif);
+    font-size: 17.5px;
+    font-weight: 700;
+    color: #0F2744;
+    line-height: 1.3;
+    margin: 0 0 14px;
+    letter-spacing: -0.015em;
+  }
+
+  /* Specs List */
+  .cert-specs-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 0 20px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .cert-specs-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .spec-check {
+    color: #2563EB;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  /* Card Footer Status */
+  .cert-card-footer {
+    padding-top: 14px;
+    border-top: 1px solid #F1F5F9;
+    margin-top: auto;
+  }
+
+  .cert-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #1E3A8A;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+
+  /* Compliance & Legal Panel */
+  .certs-compliance-panel {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px 26px;
+    box-shadow: 0 2px 8px rgba(15, 39, 68, 0.04);
+  }
+
+  .compliance-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .compliance-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .compliance-shield-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1D4ED8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .compliance-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0F2744;
+    margin: 0 0 3px;
+    letter-spacing: -0.01em;
+  }
+
+  .compliance-subheading {
+    font-size: 13px;
+    color: #64748B;
+    margin: 0;
+  }
+
+  .compliance-entities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .entity-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #F8FAFC;
+    border: 1px solid #EEF2F6;
+    transition: all 0.2s ease;
+  }
+
+  .entity-card:hover {
+    background: #EFF6FF;
+    border-color: #BFDBFE;
+    transform: translateY(-1px);
+  }
+
+  .entity-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    border: 1px solid #DBEAFE;
+  }
+
+  .entity-card:hover .entity-check {
+    background: #1D4ED8;
+    color: #FFFFFF;
+    border-color: #1D4ED8;
+  }
+
+  .entity-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .entity-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0F2744;
+    line-height: 1.3;
+  }
+
+  .entity-desc {
+    font-size: 11.5px;
+    color: #64748B;
+    line-height: 1.35;
+  }
+</style>

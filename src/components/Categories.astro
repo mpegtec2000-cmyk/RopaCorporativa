@@ -1,23 +1,139 @@
 ---
-import { CATEGORIES } from '../config';
+const QUICK_CATALOG_CARDS = [
+  {
+    id: 'certificados',
+    tag: 'CERTIFICADO',
+    titleLine1: 'Productos',
+    titleLine2: 'Certificados',
+    certifiedBadge: true,
+    categoryTrigger: 'Ropa de Seguridad',
+    cutoutImg: '/images/cutouts/zortex-certificados.png',
+    imgClass: 'cutout-certificados',
+    alt: 'Productos Certificados Zortex',
+  },
+  {
+    id: 'pantalones',
+    tag: 'FAENA Y CARGO',
+    titleLine1: 'Pantalones',
+    titleLine2: 'y Cargo',
+    certifiedBadge: false,
+    searchTrigger: 'Pantalon',
+    cutoutImg: '/images/cutouts/zortex-pantalones.png',
+    imgClass: 'cutout-pantalones',
+    alt: 'Pantalones y Cargo Zortex',
+  },
+  {
+    id: 'camisas',
+    tag: 'OXFORD Y RIPSTOP',
+    titleLine1: 'Camisas',
+    titleLine2: 'y Blusas',
+    certifiedBadge: false,
+    searchTrigger: 'Camisa',
+    cutoutImg: '/images/cutouts/zortex-camisas.png',
+    imgClass: 'cutout-camisas',
+    alt: 'Camisas y Blusas Zortex',
+  },
+  {
+    id: 'parkas',
+    tag: 'TÉRMICO Y SOFTSHELL',
+    titleLine1: 'Parkas y',
+    titleLine2: 'Chaquetas',
+    certifiedBadge: false,
+    searchTrigger: 'Chaqueta',
+    cutoutImg: '/images/cutouts/zortex-parkas.png',
+    imgClass: 'cutout-parkas',
+    alt: 'Parkas y Chaquetas Zortex',
+  },
+  {
+    id: 'poleras',
+    tag: 'ALGODÓN Y PIQUÉ',
+    titleLine1: 'Poleras y',
+    titleLine2: 'Polerones',
+    certifiedBadge: false,
+    searchTrigger: 'Polera',
+    cutoutImg: '/images/cutouts/zortex-poleras.png',
+    imgClass: 'cutout-poleras',
+    alt: 'Poleras y Polerones Zortex',
+  },
+];
 ---
 
-<section id="catalogo" class="reveal">
-  <div class="wrap">
-    <h2>Lo que equipamos</h2>
-    <p class="lead">Tres líneas para que tu empresa compre todo en un solo lugar.</p>
-    <div class="cat-grid">
-      {CATEGORIES.map(cat => (
-        <a href="#cotizar" class="cat-card" id={`cat-${cat.id}`}>
-          <img class="cat-card-img" src={cat.image} alt={cat.name} loading="lazy" width="600" height="450" />
-          <div class="cat-card-overlay">
-            <h3>{cat.name}</h3>
-            <p>{cat.description}</p>
-            <div class="cat-tags">
-              {cat.subcategories.slice(0, 4).map(sub => (
-                <span class="cat-tag">{sub}</span>
-              ))}
-            </div>
+<section id="catalogo" class="reveal quick-catalog-section">
+  <div class="quick-catalog-wrap">
+    <div class="quick-catalog-grid">
+      {QUICK_CATALOG_CARDS.map((card) => (
+        <a
+          href="#productos"
+          class="zortex-cat-card"
+          id={`cat-${card.id}`}
+          data-category-trigger={card.categoryTrigger}
+          data-search-trigger={card.searchTrigger}
+          aria-label={`Ver catálogo de ${card.titleLine1} ${card.titleLine2}`}
+        >
+          <!-- Original ZORTEX® Carbon-Slate & Cyan-Blue Technical Background -->
+          <div class="zortex-cat-bg">
+            <!-- Diagonal Zortex cyan-blue light beam behind the garments -->
+            <div class="zortex-bg-glow"></div>
+            <div class="zortex-bg-stripe"></div>
+            <!-- Subtle geometric tech pattern & ZORTEX® brand signature -->
+            <svg class="zortex-bg-pattern" viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M-20 145 L95 30 L145 30 L30 145 Z" fill="rgba(13, 116, 184, 0.10)" />
+              <path d="M35 160 L150 45 L172 45 L57 160 Z" fill="rgba(151, 180, 222, 0.07)" />
+              <text
+                x="14"
+                y="94"
+                fill="rgba(255, 255, 255, 0.045)"
+                font-family="'Outfit', system-ui, sans-serif"
+                font-weight="900"
+                font-size="28"
+                letter-spacing="2"
+              >
+                ZORTEX®
+              </text>
+            </svg>
+          </div>
+
+          <!-- Left content: Badge/Tag, 2-line Title, Single-line CTA Pill -->
+          <div class="zortex-cat-content">
+            {card.certifiedBadge ? (
+              <div class="zortex-badge-cert">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 12 11 14 15 10"></polyline>
+                </svg>
+                <span>CERTIFICADO</span>
+              </div>
+            ) : (
+              <div class="zortex-badge-tag">
+                <span class="zortex-tag-dot"></span>
+                <span>{card.tag}</span>
+              </div>
+            )}
+
+            <h3 class="zortex-cat-title">
+              <span>{card.titleLine1}</span>{' '}
+              <span>{card.titleLine2}</span>
+            </h3>
+
+            <span class="zortex-cat-cta">
+              <span>Ver Catálogo</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="13 6 19 12 13 18"></polyline>
+              </svg>
+            </span>
+          </div>
+
+          <!-- Right 3D ghost-mannequin ZORTEX® garments popping out at the top -->
+          <div class="zortex-cat-visual">
+            <img
+              src={card.cutoutImg}
+              alt={card.alt}
+              class={`zortex-cutout-img ${card.imgClass}`}
+              loading="lazy"
+              width="240"
+              height="280"
+            />
           </div>
         </a>
       ))}

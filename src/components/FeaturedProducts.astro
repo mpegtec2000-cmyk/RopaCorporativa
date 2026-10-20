@@ -1,71 +1,2747 @@
 ---
-import { PRODUCTS } from '../config';
-const categories = ['Todos', 'Corporativa', 'Industrial', 'EPP'];
+import { PRODUCTS, WHATSAPP_NUMBER } from '../config';
+
+const categories = [
+  { name: 'Todos', filter: 'all', count: PRODUCTS.length, icon: 'grid' },
+  { name: 'Ropa Corporativa', filter: 'Ropa Corporativa', count: PRODUCTS.filter(p => p.category === 'Ropa Corporativa').length, icon: 'corporate' },
+  { name: 'Ropa Industrial', filter: 'Ropa Industrial', count: PRODUCTS.filter(p => p.category === 'Ropa Industrial').length, icon: 'industrial' },
+  { name: 'Ropa de Seguridad', filter: 'Ropa de Seguridad', count: PRODUCTS.filter(p => p.category === 'Ropa de Seguridad').length, icon: 'safety' },
+  { name: 'EPP', filter: 'EPP', count: PRODUCTS.filter(p => p.category === 'EPP').length, icon: 'epp' },
+  { name: 'Ropa Personalizada', filter: 'Ropa Personalizada', count: PRODUCTS.filter(p => p.category === 'Ropa Personalizada').length, icon: 'custom' },
+];
+
+// Catálogo serializado ligero para el modal interactivo de ficha técnica con todos los colores
+const modalCatalog = PRODUCTS.map(p => ({
+  id: p.id,
+  baseId: p.baseId || p.id,
+  name: p.name,
+  displayName: p.displayName || p.name,
+  color: p.color || '',
+  colorHex: p.colorHex || '',
+  category: p.category,
+  sku: p.sku || '',
+  image: p.image,
+  images: (p.images && p.images.length > 0) ? p.images : [p.image],
+  colors: p.colors || [],
+  sizes: p.sizes || [],
+  features: p.features || [],
+  summary: p.summary || '',
+  line: p.line || '',
+  gender: p.gender || '',
+}));
 ---
 
-<section id="productos" class="reveal">
-  <div class="wrap">
-    <h2>Productos destacados</h2>
-    <p class="lead">Ropa y equipamiento para empresas de todos los rubros.</p>
-    <div class="product-tabs" id="product-tabs">
-      {categories.map((cat, i) => (
-        <button class={`product-tab${i === 0 ? ' active' : ''}`} data-filter={cat === 'Todos' ? 'all' : cat} type="button">
-          {cat}
-        </button>
-      ))}
+<section id="productos" class="reveal" data-wa={WHATSAPP_NUMBER}>
+  <div class="products-wrap">
+    <div class="products-header">
+      <div class="products-title-col">
+        <div class="products-eyebrow-badge">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <span class="eyebrow-text">CATÁLOGO MAYORISTA B2B</span>
+          <span class="eyebrow-dot">•</span>
+          <span class="eyebrow-stat">{PRODUCTS.length} MODELOS ACTIVOS</span>
+        </div>
+        <h2>Catálogo Técnico de Vestuario y EPP</h2>
+        <p class="products-lead">Explora nuestra colección técnica de vestuario corporativo, faena industrial de alta resistencia, indumentaria de seguridad certificada y equipamiento de protección personal (EPP).</p>
+        
+        <div class="products-trust-row">
+          <span class="trust-chip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Precios mayoristas por escala
+          </span>
+          <span class="trust-chip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Taller propio de bordado y estampado
+          </span>
+          <span class="trust-chip">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Despacho rápido a todo Chile
+          </span>
+        </div>
+      </div>
+
+      <!-- Barra de búsqueda en vivo con botón limpiar -->
+      <div class="catalog-search-wrap">
+        <div class="search-input-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="search"
+            id="catalog-search"
+            class="catalog-search-input"
+            placeholder="Buscar por modelo, SKU, tela o color (ej: softshell, cargo, marino...)"
+            aria-label="Buscar en catálogo de productos"
+          />
+          <button type="button" id="catalog-search-clear" class="search-clear-btn" aria-label="Limpiar búsqueda" style="display: none;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="search-quick-hints">
+          <span class="hint-label">Búsquedas rápidas:</span>
+          <button type="button" class="hint-btn" data-search-trigger="Softshell">Softshell</button>
+          <button type="button" class="hint-btn" data-search-trigger="Cargo">Cargo</button>
+          <button type="button" class="hint-btn" data-search-trigger="Parka">Parka</button>
+          <button type="button" class="hint-btn" data-search-trigger="Polerón">Polerón</button>
+        </div>
+      </div>
     </div>
-    <div class="grid" id="product-grid">
-      {PRODUCTS.map(product => (
-        <div class="product-card" data-category={product.category}>
-          <img class="product-img" src={product.image} alt={product.name} loading="lazy" width="400" height="400" />
+
+    <!-- Barra de control y navegación de filtros de categoría -->
+    <div class="catalog-control-panel">
+      <div class="product-tabs-scroll-wrapper">
+        <div class="product-tabs" id="product-tabs" role="tablist" aria-label="Filtrar por categoría">
+          {categories.map((cat, i) => (
+            <button
+              class={`product-tab${i === 0 ? ' active' : ''}`}
+              data-filter={cat.filter}
+              type="button"
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+            >
+              {cat.icon === 'grid' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                  <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+              )}
+              {cat.icon === 'corporate' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 3H8l-2 5 4 1 2-4 2 4 4-1-2-5z"/>
+                  <path d="M10 11l2 8 2-8"/>
+                  <path d="M12 19l2 2-2 1-2-1 2-2z"/>
+                </svg>
+              )}
+              {cat.icon === 'industrial' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                  <path d="M17 18h.01"></path>
+                  <path d="M7 18h.01"></path>
+                </svg>
+              )}
+              {cat.icon === 'safety' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              )}
+              {cat.icon === 'epp' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 13h20"></path>
+                  <path d="M4 13a8 8 0 0 1 16 0"></path>
+                  <path d="M12 4v4"></path>
+                  <path d="M9 13v3a3 3 0 0 0 6 0v-3"></path>
+                </svg>
+              )}
+              {cat.icon === 'custom' && (
+                <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path>
+                </svg>
+              )}
+              <span class="tab-label">{cat.name}</span>
+              <span class="tab-count">{cat.count}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Barra de estado y retroalimentación activa -->
+      <div class="catalog-status-bar" id="catalog-status-bar">
+        <div class="catalog-status-info">
+          <span class="catalog-status-dot"></span>
+          <span class="catalog-status-text" id="catalog-status-text">
+            Mostrando todos los modelos (<strong>{PRODUCTS.length}</strong>)
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de productos: 6 por fila en escritorio con todos los colores -->
+    <div class="products-grid" id="product-grid">
+      {PRODUCTS.map((product, index) => (
+        <div
+          class="product-card"
+          data-id={product.id}
+          data-base-id={product.baseId || product.id}
+          data-category={product.category}
+          data-name={product.name.toLowerCase()}
+          data-color={product.color ? product.color.toLowerCase() : ''}
+          data-sku={product.sku ? product.sku.toLowerCase() : ''}
+          data-summary={product.summary ? product.summary.toLowerCase() : ''}
+          data-colors={product.colors ? product.colors.map(c => c.name.toLowerCase()).join(' ') : (product.color ? product.color.toLowerCase() : '')}
+          data-default-img={product.image}
+          data-selected-color={product.color || (product.colors && product.colors[0] ? product.colors[0].name : '')}
+          data-index={index}
+          tabindex="0"
+          role="button"
+          aria-label={`Ver ficha técnica de ${product.name} en color ${product.color || 'estándar'}`}
+        >
+          <div class="product-img-wrapper">
+            <img
+              class="product-img"
+              src={product.image}
+              alt={`${product.name} ${product.color ? `- ${product.color}` : ''}`}
+              loading="lazy"
+              decoding="async"
+              width="300"
+              height="300"
+            />
+            <span class="product-quick-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              Ficha técnica
+            </span>
+          </div>
           <div class="product-info">
-            <p class="product-name">{product.name}</p>
-            <p class="product-cat">{product.category}</p>
-            <button class="btn product-btn" data-product-id={product.id} type="button">Cotizar producto</button>
+            <div class="product-cat-row">
+              <span class="product-cat">{product.category}</span>
+              {product.colors && product.colors.length > 0 ? (
+                <span class="product-color-pill-tag" title={`${product.colors.length} colores disponibles`}>
+                  <span class="color-dot-indicator" style={`background-color: ${product.colors[0].hex};`}></span>
+                  {product.colors.length > 1 ? `${product.colors.length} colores` : product.colors[0].name}
+                </span>
+              ) : null}
+            </div>
+
+            <h3 class="product-name" title={product.name}>{product.name}</h3>
+
+            <!-- Swatches de variedad en colores para el modelo -->
+            {product.colors && product.colors.length > 1 && (
+              <div class="card-swatches" aria-label="Variedad en colores">
+                {product.colors.slice(0, 6).map((col, cIdx) => (
+                  <button
+                    type="button"
+                    class={`card-swatch-dot${cIdx === 0 ? ' active' : ''}`}
+                    style={`background-color: ${col.hex};`}
+                    title={col.name}
+                    data-color-name={col.name}
+                    data-color-img={col.image || product.image}
+                    aria-label={`Ver en color ${col.name}`}
+                  />
+                ))}
+                {product.colors.length > 6 && (
+                  <span class="card-swatch-more" title={`${product.colors.length - 6} colores más disponibles en la ficha`}>
+                    +{product.colors.length - 6}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {product.sku && <span class="product-sku">SKU: {product.sku}</span>}
+            <button class="product-btn" data-product-id={product.id} type="button" title={`Agregar ${product.name} (${product.color || 'estándar'}) al cotizador`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              <span>Cotizar</span>
+            </button>
           </div>
         </div>
       ))}
     </div>
+
+    <!-- Mensaje sin resultados -->
+    <div id="no-products-msg" class="no-products-msg" style="display: none;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p>No se encontraron modelos que coincidan con tu búsqueda.</p>
+      <button type="button" id="reset-filter-btn" class="reset-filter-btn">Restablecer catálogo completo</button>
+    </div>
+
+    <!-- Botón Cargar Más -->
+    <div class="load-more-wrap" id="load-more-wrap">
+      <button type="button" id="load-more-btn" class="load-more-btn">
+        <span>Cargar más modelos del catálogo</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <span class="load-more-status" id="load-more-status"></span>
+    </div>
   </div>
+
+  <!-- Catálogo ligero para scripts cliente -->
+  <script id="catalog-products-json" type="application/json" set:html={JSON.stringify(modalCatalog)}></script>
 </section>
 
+<!-- ================================================================= -->
+<!-- MODAL DE FICHA TÉCNICA ULTRA-INMERSIVA (PORTAL AL BODY VIEWPORT)  -->
+<!-- ================================================================= -->
+<div id="product-modal" class="pmodal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+  <div class="pmodal-backdrop" id="pmodal-backdrop"></div>
+  <div class="pmodal-dialog" id="pmodal-dialog">
+    <!-- Botón de Cerrar Flotante de Lujo -->
+    <button type="button" class="pmodal-close" id="pmodal-close" aria-label="Cerrar ficha">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="pmodal-grid">
+      <!-- ─────── COLUMNA IZQUIERDA: STUDIO FOTOGRÁFICO INTERACTIVO ─────── -->
+      <div class="pmodal-gallery">
+        <div class="pmodal-stage-wrapper">
+          <div class="pmodal-main-img-wrap" id="pmodal-main-img-wrap" title="Pasa el cursor para inspeccionar textura del tejido en Zoom HD">
+            <!-- Badges flotantes en la imagen -->
+            <div class="pmodal-stage-topbar">
+              <span class="pmodal-stage-pill">
+                <span class="stage-dot-live"></span>
+                <span>Foto de Estudio Real</span>
+              </span>
+              <span class="pmodal-zoom-hint" id="pmodal-zoom-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+                <span>Zoom HD</span>
+              </span>
+            </div>
+
+            <!-- Imagen Principal -->
+            <img id="pmodal-main-img" src="" alt="" width="560" height="560" />
+
+            <!-- Pill flotante del color actual sobre la foto -->
+            <div class="pmodal-stage-color-tag" id="pmodal-stage-color-tag">
+              <span class="pmodal-stage-color-dot" id="pmodal-stage-color-dot"></span>
+              <span id="pmodal-stage-color-name">Color</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Garantías Corporativas en la columna de imagen -->
+        <div class="pmodal-trust-cards">
+          <div class="pmodal-trust-item">
+            <div class="trust-icon-wrap">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div>
+              <strong>Calidad Corporativa</strong>
+              <span>Confección de alta resistencia al uso intensivo</span>
+            </div>
+          </div>
+          <div class="pmodal-trust-item">
+            <div class="trust-icon-wrap">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <div>
+              <strong>Personalización Disponible</strong>
+              <span>Bordado computarizado o DTF con tu logo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────── COLUMNA DERECHA: INFORMACIÓN, SELECTOR DE COLOR Y COTIZADOR ─────── -->
+      <div class="pmodal-details">
+        <!-- Badges Superiores -->
+        <div class="pmodal-badges">
+          <span class="pmodal-cat-badge" id="pmodal-cat">Ropa Corporativa</span>
+          <button type="button" class="pmodal-sku-badge" id="pmodal-sku" title="Clic para copiar SKU">
+            <span id="pmodal-sku-text">SKU: --</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+          <span class="pmodal-stock-badge">
+            <span class="stock-pulse"></span>
+            <span>Venta por Mayor</span>
+          </span>
+          <span class="pmodal-extra-badge" id="pmodal-extra"></span>
+        </div>
+
+        <!-- Título y Resumen -->
+        <h2 class="pmodal-title" id="pmodal-title">Nombre del Producto</h2>
+        <p class="pmodal-summary" id="pmodal-summary">Descripción técnica del producto.</p>
+
+        <!-- ─────── SELECCIÓN DE COLOR ─────── -->
+        <div class="pmodal-color-hub" id="pmodal-colors-field">
+          <div class="pmodal-section-header">
+            <span class="pmodal-section-label">Color:</span>
+            <span class="pmodal-selected-color-title" id="pmodal-selected-color-name">Selecciona un color</span>
+          </div>
+          <div class="pmodal-color-grid" id="pmodal-colors"></div>
+        </div>
+
+        <!-- ─────── SELECTOR DE TALLA ─────── -->
+        <div class="pmodal-field" id="pmodal-sizes-field">
+          <div class="pmodal-section-header">
+            <span class="pmodal-section-label">Talla:</span>
+            <span class="pmodal-size-selected-tag">Seleccionada: <strong id="pmodal-current-size-label">M</strong></span>
+          </div>
+          <div class="pmodal-sizes-list" id="pmodal-sizes"></div>
+        </div>
+
+        <!-- ─────── FICHA TÉCNICA ─────── -->
+        <div class="pmodal-field" id="pmodal-specs-field">
+          <div class="pmodal-section-header">
+            <span class="pmodal-section-label">Ficha Técnica y Materialidad</span>
+          </div>
+          <div class="pmodal-specs-grid" id="pmodal-specs"></div>
+        </div>
+
+        <!-- ─────── CHECKOUT Y COTIZACIÓN ─────── -->
+        <div class="pmodal-checkout-card">
+          <div class="pmodal-qty-wrapper">
+            <span class="pmodal-qty-label">Cantidad a cotizar:</span>
+            <div class="pmodal-qty-stepper">
+              <button type="button" class="stepper-btn" id="pmodal-qty-minus" aria-label="Restar 5 unidades">−5</button>
+              <input type="number" id="pmodal-qty-input" min="1" max="9999" value="10" />
+              <button type="button" class="stepper-btn" id="pmodal-qty-plus" aria-label="Sumar 5 unidades">+5</button>
+            </div>
+            <div class="pmodal-qty-presets">
+              <button type="button" class="qty-preset-btn" data-qty="10">10 u.</button>
+              <button type="button" class="qty-preset-btn" data-qty="25">25 u.</button>
+              <button type="button" class="qty-preset-btn" data-qty="50">50 u.</button>
+              <button type="button" class="qty-preset-btn" data-qty="100">100 u.</button>
+            </div>
+          </div>
+
+          <div class="pmodal-actions-row">
+            <button type="button" class="pmodal-btn-add" id="pmodal-add-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <span id="pmodal-add-btn-text">Agregar a Solicitud de Cotización</span>
+            </button>
+
+            <a id="pmodal-wa-btn" href="#" target="_blank" rel="noopener noreferrer" class="pmodal-btn-wa" title="Consultar por WhatsApp">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+
+          <div id="pmodal-toast" class="pmodal-toast" style="display: none;">
+            <div class="pmodal-toast-content">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span id="pmodal-toast-msg">¡Producto agregado al cotizador con el color seleccionado!</span>
+            </div>
+            <button type="button" id="pmodal-go-quote-btn" class="pmodal-toast-link">Ir al formulario de cotización →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #productos {
+    padding: 80px 0 90px;
+    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    border-top: 1px solid #E2E8F0;
+    border-bottom: 1px solid #E2E8F0;
+    position: relative;
+  }
+
+  .products-wrap {
+    width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+  }
+
+  /* Header de la sección */
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  .products-title-col {
+    flex: 1 1 560px;
+    max-width: 780px;
+  }
+
+  .products-eyebrow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-family: var(--mono, monospace);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #0F172A;
+    margin-bottom: 14px;
+  }
+
+  .live-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10B981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: livePulse 2s infinite ease-in-out;
+  }
+
+  @keyframes livePulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.35);
+    }
+  }
+
+  .eyebrow-text {
+    font-weight: 700;
+    color: #0F172A;
+  }
+
+  .eyebrow-dot {
+    color: #94A3B8;
+  }
+
+  .eyebrow-stat {
+    color: #475569;
+  }
+
+  .products-header h2 {
+    font-size: clamp(28px, 3.2vw, 40px);
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0 0 10px;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    font-family: var(--display, system-ui);
+  }
+
+  .products-lead {
+    color: #475569;
+    font-size: 15.5px;
+    margin: 0 0 16px;
+    line-height: 1.55;
+  }
+
+  .products-trust-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .trust-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    padding: 3px 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  }
+
+  .trust-chip svg {
+    color: #059669;
+    flex-shrink: 0;
+  }
+
+  /* Buscador B2B */
+  .catalog-search-wrap {
+    flex: 1 1 380px;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-input-box {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748B;
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  .catalog-search-input {
+    width: 100%;
+    height: 46px;
+    padding: 0 42px 0 44px;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 10px;
+    font-size: 13.5px;
+    color: #0F172A;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    font-family: var(--body, system-ui);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .catalog-search-input:focus {
+    border-color: #0F172A;
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+  }
+
+  .catalog-search-input:focus + .search-clear-btn + .search-icon,
+  .search-input-box:focus-within .search-icon {
+    color: #0F172A;
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.2s;
+  }
+
+  .search-clear-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+
+  .search-quick-hints {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+
+  .hint-label {
+    color: #64748B;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+
+  .hint-btn {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 11.5px;
+    color: #475569;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .hint-btn:hover {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+    color: #0F172A;
+  }
+
+  /* Panel y filtros de categoría */
+  .catalog-control-panel {
+    margin-bottom: 28px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .product-tabs-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -4px;
+    padding: 4px 4px 10px;
+    max-width: 100%;
+  }
+
+  .product-tabs-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-tabs {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    .product-tabs-scroll-wrapper {
+      margin: 0 -16px;
+      padding: 4px 16px 12px;
+      scroll-snap-type: x proximity;
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
+      mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
+    }
+
+    .product-tabs {
+      flex-wrap: nowrap;
+      width: max-content;
+    }
+
+    .product-tab {
+      padding: 7px 13px;
+      font-size: 12.5px;
+      scroll-snap-align: start;
+    }
+
+    .product-tab .tab-count {
+      font-size: 11px;
+      height: 18px;
+      padding: 0 6px;
+    }
+  }
+
+  .product-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 9999px;
+    color: #334155;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: var(--body, system-ui);
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    user-select: none;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    flex-shrink: 0;
+  }
+
+  .product-tab .tab-icon {
+    color: #64748B;
+    flex-shrink: 0;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  .product-tab:hover {
+    border-color: #0F172A;
+    color: #0F172A;
+    background: #FFFFFF;
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+
+  .product-tab:hover .tab-icon {
+    color: #0F172A;
+    transform: scale(1.1);
+  }
+
+  .product-tab.active {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    color: #FFFFFF;
+    border-color: #0F172A;
+    box-shadow: 0 6px 18px -2px rgba(15, 23, 42, 0.28), 0 2px 4px rgba(15, 23, 42, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .product-tab.active .tab-icon {
+    color: #38BDF8;
+  }
+
+  .product-tab .tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 7px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: var(--mono, monospace);
+    font-feature-settings: "tnum";
+    background: #F1F5F9;
+    color: #334155;
+    border: 1px solid #E2E8F0;
+    transition: all 0.2s ease;
+  }
+
+  .product-tab:hover .tab-count {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+
+  .product-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Barra de estado en tiempo real */
+  .catalog-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 9px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 9999px;
+    margin-top: 6px;
+    width: fit-content;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  }
+
+  .catalog-status-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .catalog-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.2);
+    flex-shrink: 0;
+  }
+
+  .catalog-status-text {
+    font-size: 13px;
+    color: #475569;
+  }
+
+  .catalog-status-text strong {
+    color: #0F172A;
+    font-weight: 700;
+  }
+
+  /* Grid: 6 columnas en escritorio */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 18px;
+  }
+
+  @media (max-width: 1320px) {
+    .products-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* Tarjetas de Producto Ejecutivas */
+  .product-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-3px);
+    border-color: #0F172A;
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.05);
+  }
+
+  .product-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 192px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #F1F5F9;
+    overflow: hidden;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  }
+
+  .product-card:hover .product-img {
+    transform: scale(1.05);
+  }
+
+  .product-quick-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(4px);
+    color: #FFFFFF;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    opacity: 0;
+    transition: all 0.22s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    white-space: nowrap;
+  }
+
+  .product-card:hover .product-quick-hint {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .product-info {
+    padding: 12px 13px 14px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    box-sizing: border-box;
+  }
+
+  .product-cat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .product-cat {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #334155;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .product-color-pill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #0F172A;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    padding: 1px 6px;
+    border-radius: 5px;
+    max-width: 108px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .color-dot-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    flex-shrink: 0;
+  }
+
+  .product-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.32;
+    color: #0F172A;
+    margin: 0 0 8px;
+    min-height: 36px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--display, system-ui);
+    letter-spacing: -0.01em;
+  }
+
+  /* Swatches de variedad en colores en la tarjeta */
+  .card-swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+    min-height: 18px;
+  }
+
+  .card-swatch-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid #FFFFFF;
+    box-shadow: 0 0 0 1px #CBD5E1;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    flex-shrink: 0;
+  }
+
+  .card-swatch-dot:hover {
+    transform: scale(1.25);
+    z-index: 2;
+  }
+
+  .card-swatch-dot.active {
+    box-shadow: 0 0 0 1.5px #0F172A;
+    transform: scale(1.15);
+  }
+
+  .card-swatch-more {
+    font-size: 9.5px;
+    font-weight: 700;
+    font-family: var(--mono, monospace);
+    color: #0F172A;
+    background: #F1F5F9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    line-height: 13px;
+  }
+
+  .product-sku {
+    font-size: 11px;
+    color: #475569;
+    margin-bottom: 10px;
+    font-family: var(--mono, monospace);
+    font-weight: 500;
+  }
+
+  .product-btn {
+    margin-top: auto;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9.5px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--body, system-ui);
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .product-btn:hover {
+    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+    border-color: #1E40AF;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  @media (max-width: 640px) {
+    .product-img-wrapper {
+      height: 145px;
+      padding: 8px;
+    }
+    .product-info {
+      padding: 10px 10px 12px;
+    }
+    .product-name {
+      font-size: 13px;
+      min-height: 34px;
+      margin-bottom: 6px;
+    }
+    .product-btn {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+  }
+
+  .no-products-msg {
+    text-align: center;
+    padding: 60px 20px;
+    color: #334155;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+  }
+
+  .reset-filter-btn {
+    padding: 9px 18px;
+    background: #0F172A;
+    color: #FFFFFF;
+    border: 1px solid #0F172A;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .reset-filter-btn:hover {
+    background: #1E293B;
+  }
+
+  .load-more-wrap {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .load-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: var(--body, system-ui);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  }
+
+  .load-more-btn:hover {
+    background: #0F172A;
+    border-color: #0F172A;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.16);
+  }
+
+  .load-more-status {
+    font-size: 12.5px;
+    color: #64748B;
+    font-family: var(--mono, monospace);
+  }
+</style>
+
+<style is:global>
+  /* ───────────────────────── Modal de Ficha Técnica Ejecutiva B2B ───────────────────────── */
+  .pmodal {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 9999999 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(10px, 2vw, 24px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  }
+
+  .pmodal.is-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .pmodal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    transition: opacity 0.25s ease;
+  }
+
+  .pmodal-dialog {
+    position: relative;
+    z-index: 2;
+    margin: auto;
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 1100px;
+    max-height: min(94vh, 920px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 20px;
+    box-shadow: 0 32px 80px -15px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    padding: clamp(20px, 2.5vw, 32px);
+    box-sizing: border-box;
+    transform: scale(0.97) translateY(12px);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+    opacity: 0;
+  }
+
+  .pmodal.is-open .pmodal-dialog {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  /* Custom scrollbar for dialog */
+  .pmodal-dialog::-webkit-scrollbar {
+    width: 6px;
+  }
+  .pmodal-dialog::-webkit-scrollbar-track {
+    background: #F8FAFC;
+    border-radius: 8px;
+  }
+  .pmodal-dialog::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 8px;
+  }
+  .pmodal-dialog::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+
+  .pmodal-close {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #475569;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+    z-index: 10;
+  }
+
+  .pmodal-close:hover {
+    background: #0F172A;
+    border-color: #0F172A;
+    color: #FFFFFF;
+    transform: rotate(90deg) scale(1.06);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  }
+
+  .pmodal-grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 960px) {
+    .pmodal-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .pmodal-dialog {
+      padding: 20px;
+      max-height: 95vh;
+      border-radius: 16px;
+    }
+  }
+
+  /* Studio Stage (Left Column) */
+  .pmodal-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .pmodal-stage-wrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 45%, #FFFFFF 0%, #F8FAFC 100%);
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  }
+
+  .pmodal-main-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  @media (max-width: 640px) {
+    .pmodal-main-img-wrap {
+      height: 290px;
+      padding: 14px;
+    }
+  }
+
+  .pmodal-main-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s ease-out;
+    transform-origin: center center;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Smooth crossfade when switching colors without abrupt shrink glitch */
+  .pmodal-main-img-wrap img.switching {
+    opacity: 0.3;
+  }
+
+  .pmodal-stage-topbar {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .pmodal-stage-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #334155;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  }
+
+  .stage-dot-live {
+    width: 6.5px;
+    height: 6.5px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.25);
+  }
+
+  .pmodal-zoom-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+  }
+
+  .pmodal-stage-color-tag {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #0F172A;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    pointer-events: none;
+    z-index: 3;
+    transition: all 0.2s ease;
+  }
+
+  .pmodal-stage-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(15, 23, 42, 0.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+  }
+
+  .pmodal-trust-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .pmodal-trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    transition: all 0.2s;
+  }
+
+  .pmodal-trust-item:hover {
+    border-color: #CBD5E1;
+    background: #F1F5F9;
+  }
+
+  .trust-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0F172A;
+    flex-shrink: 0;
+  }
+
+  .pmodal-trust-item strong {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 750;
+    color: #0F172A;
+    line-height: 1.25;
+  }
+
+  .pmodal-trust-item span {
+    display: block;
+    font-size: 10.5px;
+    color: #64748B;
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+
+  /* Details Column (Right) */
+  .pmodal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-right: 0;
+    min-width: 0;
+  }
+
+  .pmodal-badges {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    padding-right: 48px;
+  }
+
+  .pmodal-cat-badge {
+    background: #0F172A;
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 750;
+    padding: 4px 11px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pmodal-sku-badge {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 11px;
+    font-family: var(--mono, monospace);
+    font-weight: 600;
+    padding: 3.5px 10px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .pmodal-sku-badge:hover {
+    background: #F1F5F9;
+    border-color: #CBD5E1;
+    color: #0F172A;
+  }
+
+  .pmodal-stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5.5px;
+    background: #ECFDF5;
+    border: 1px solid #D1FAE5;
+    color: #047857;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3.5px 10px;
+    border-radius: 9999px;
+    letter-spacing: 0.2px;
+  }
+
+  .stock-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  }
+
+  .pmodal-extra-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #475569;
+    font-size: 10.5px;
+    font-weight: 650;
+    padding: 3.5px 10px;
+    border-radius: 9999px;
+    letter-spacing: 0.2px;
+  }
+
+  .pmodal-extra-badge:empty {
+    display: none;
+  }
+
+  .pmodal-title {
+    font-size: clamp(21px, 2.3vw, 27px);
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+    line-height: 1.22;
+    letter-spacing: -0.025em;
+    font-family: var(--display, system-ui);
+  }
+
+  .pmodal-summary {
+    color: #475569;
+    font-size: 13.5px;
+    line-height: 1.58;
+    margin: 0;
+  }
+
+  /* ─────── SECCIONES DE DETALLES EDITORIALES Y MODERNAS (SIN CAJAS PESADAS) ─────── */
+  .pmodal-color-hub,
+  .pmodal-field {
+    padding-top: 15px;
+    border-top: 1px solid #F1F5F9;
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .pmodal-section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .pmodal-section-label {
+    font-size: 11px;
+    font-weight: 750;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pmodal-selected-color-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #0F172A;
+  }
+
+  /* Grid de Cuadros Profesionales de Color (Pills Modernos) */
+  .pmodal-color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 1px;
+  }
+
+  .pmodal-color-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 8px;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: left;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    outline: none;
+  }
+
+  .pmodal-color-card:hover {
+    border-color: #94A3B8;
+    background: #F8FAFC;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
+  }
+
+  .pmodal-color-card.active {
+    background: #0F172A;
+    border-color: #0F172A;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.2);
+  }
+
+  .pmodal-swatch-disc {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  }
+
+  .swatch-check-icon {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .pmodal-color-card.active .swatch-check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .pmodal-color-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .pmodal-color-card.active .pmodal-color-card-title {
+    color: #FFFFFF;
+  }
+
+  .pmodal-size-selected-tag {
+    font-size: 11.5px;
+    color: #64748B;
+    font-weight: 500;
+  }
+
+  .pmodal-size-selected-tag strong {
+    color: #0F172A;
+    font-weight: 800;
+  }
+
+  .pmodal-sizes-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .pmodal-size-pill {
+    min-width: 44px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 750;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pmodal-size-pill:hover {
+    border-color: #0F172A;
+    color: #0F172A;
+    background: #F8FAFC;
+  }
+
+  .pmodal-size-pill.selected {
+    background: #0F172A;
+    color: #FFFFFF;
+    border-color: #0F172A;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.22);
+  }
+
+  /* Ficha Técnica Grid y Celdas */
+  .pmodal-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+  }
+
+  @media (max-width: 640px) {
+    .pmodal-specs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pmodal-spec-row {
+    font-size: 11.5px;
+    background: #F8FAFC;
+    border: 1px solid #F1F5F9;
+    padding: 9px 12px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+    transition: background 0.18s;
+  }
+
+  .pmodal-spec-row:hover {
+    background: #F1F5F9;
+  }
+
+  .pmodal-spec-row.span-2 {
+    grid-column: 1 / -1;
+  }
+
+  .pmodal-spec-row .spec-k {
+    font-size: 9.5px;
+    color: #64748B;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .pmodal-spec-row .spec-v {
+    color: #0F172A;
+    font-weight: 750;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  /* Checkout Card (Sticky Footer inside Modal Details) */
+  .pmodal-checkout-card {
+    position: sticky;
+    bottom: -20px;
+    z-index: 6;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0;
+    padding: 14px 0 2px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    box-shadow: none;
+    margin-top: 4px;
+  }
+
+  .pmodal-qty-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .pmodal-qty-label {
+    font-size: 12px;
+    font-weight: 750;
+    color: #0F172A;
+  }
+
+  .pmodal-qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .stepper-btn {
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #0F172A;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .stepper-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+
+  .pmodal-qty-stepper input {
+    width: 52px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    color: #0F172A;
+    outline: none;
+    padding: 4px 0;
+  }
+
+  .pmodal-qty-presets {
+    display: flex;
+    gap: 6px;
+  }
+
+  .qty-preset-btn {
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 7px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .qty-preset-btn:hover {
+    background: #0F172A;
+    border-color: #0F172A;
+    color: #FFFFFF;
+  }
+
+  .pmodal-actions-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .pmodal-btn-add {
+    flex: 1.6;
+    min-width: 190px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 22px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .pmodal-btn-add:hover {
+    background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .pmodal-btn-add.success {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    border-color: #16A34A;
+    box-shadow: 0 4px 16px rgba(22, 163, 74, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .pmodal-btn-wa {
+    flex: 1;
+    min-width: 130px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 20px;
+    background: linear-gradient(135deg, #16A34A 0%, #22C55E 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 750;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .pmodal-btn-wa:hover {
+    background: linear-gradient(135deg, #15803D 0%, #16A34A 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  @media (max-width: 560px) {
+    .pmodal-actions-row {
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    .pmodal-btn-add,
+    .pmodal-btn-wa {
+      width: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+  }
+
+  .pmodal-toast {
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    color: #065F46;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 14px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    animation: toastSlide 0.22s ease-out;
+  }
+
+  @keyframes toastSlide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .pmodal-toast-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pmodal-toast-link {
+    background: none;
+    border: none;
+    color: #065F46;
+    font-weight: 800;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-size: 12px;
+  }
+
+  .pmodal-toast-link:hover {
+    color: #047857;
+  }
+</style>
+
 <script>
-  var tabs = document.querySelectorAll('.product-tab');
-  var cards = document.querySelectorAll('.product-card');
+  const tabs = document.querySelectorAll('.product-tab');
+  const cards = document.querySelectorAll('.product-card') as NodeListOf<HTMLElement>;
+  const searchInput = document.getElementById('catalog-search') as HTMLInputElement | null;
+  const searchClearBtn = document.getElementById('catalog-search-clear') as HTMLButtonElement | null;
+  const noProductsMsg = document.getElementById('no-products-msg');
+  const resetFilterBtn = document.getElementById('reset-filter-btn');
+  const loadMoreWrap = document.getElementById('load-more-wrap');
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  const loadMoreStatus = document.getElementById('load-more-status');
+  const sectionEl = document.getElementById('productos');
+  const whatsappNumber = sectionEl?.getAttribute('data-wa') || '56958639727';
 
-  tabs.forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      tabs.forEach(function(t) { t.classList.remove('active'); });
-      tab.classList.add('active');
-      var filter = tab.getAttribute('data-filter');
+  // Modal elements & Portal Setup
+  const modalEl = document.getElementById('product-modal');
+  const modalBackdrop = document.getElementById('pmodal-backdrop');
+  const modalDialog = document.getElementById('pmodal-dialog');
+  const modalClose = document.getElementById('pmodal-close');
+  const mainImgWrap = document.getElementById('pmodal-main-img-wrap');
+  const mainImg = document.getElementById('pmodal-main-img') as HTMLImageElement;
+  const stageColorDot = document.getElementById('pmodal-stage-color-dot');
+  const stageColorName = document.getElementById('pmodal-stage-color-name');
+  const thumbsContainer = document.getElementById('pmodal-thumbs');
+  const catBadge = document.getElementById('pmodal-cat');
+  const skuBadge = document.getElementById('pmodal-sku');
+  const skuText = document.getElementById('pmodal-sku-text');
+  const extraBadge = document.getElementById('pmodal-extra');
+  const titleEl = document.getElementById('pmodal-title');
+  const summaryEl = document.getElementById('pmodal-summary');
+  const colorsField = document.getElementById('pmodal-colors-field');
+  const colorsContainer = document.getElementById('pmodal-colors');
+  const selectedColorNameEl = document.getElementById('pmodal-selected-color-name');
+  const headerColorDot = document.getElementById('pmodal-header-color-dot');
+  const sizesField = document.getElementById('pmodal-sizes-field');
+  const sizesContainer = document.getElementById('pmodal-sizes');
+  const currentSizeLabel = document.getElementById('pmodal-current-size-label');
+  const specsField = document.getElementById('pmodal-specs-field');
+  const specsContainer = document.getElementById('pmodal-specs');
+  const qtyInput = document.getElementById('pmodal-qty-input') as HTMLInputElement;
+  const qtyMinusBtn = document.getElementById('pmodal-qty-minus');
+  const qtyPlusBtn = document.getElementById('pmodal-qty-plus');
+  const qtyPresetBtns = document.querySelectorAll('.qty-preset-btn');
+  const addBtn = document.getElementById('pmodal-add-btn') as HTMLButtonElement;
+  const addBtnText = document.getElementById('pmodal-add-btn-text');
+  const waBtn = document.getElementById('pmodal-wa-btn') as HTMLAnchorElement;
+  const toastEl = document.getElementById('pmodal-toast');
+  const goQuoteBtn = document.getElementById('pmodal-go-quote-btn');
 
-      cards.forEach(function(card) {
-        if (filter === 'all' || card.getAttribute('data-category') === filter) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
+  // TELEPORT: Asegurar que el modal esté directamente en <body>
+  if (modalEl && modalEl.parentElement !== document.body) {
+    document.body.appendChild(modalEl);
+  }
 
-  // Handle product quote buttons
-  var productBtns = document.querySelectorAll('.product-btn');
-  productBtns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var prodId = btn.getAttribute('data-product-id');
-      // Scroll to cotizar section
-      var cotizarSec = document.getElementById('cotizar');
-      if (cotizarSec) {
-        cotizarSec.scrollIntoView({ behavior: 'smooth' });
+  // Parse lightweight catalog JSON
+  const catalogEl = document.getElementById('catalog-products-json');
+  const catalogData: any[] = catalogEl ? JSON.parse(catalogEl.textContent || '[]') : [];
+  const catalogMap = new Map<string, any>(catalogData.map(p => [p.id, p]));
+
+  let activeCategory = 'all';
+  let searchTerm = '';
+  const BATCH_SIZE = 36; // 6 filas de 6 productos
+  let visibleLimit = BATCH_SIZE;
+
+  // Normalización de texto sin acentos
+  function normalizeText(s: string) {
+    return (s || '')
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  // Diccionario de sinónimos para el rubro corporativo, industrial y EPP en Chile
+  const SYNONYMS: Record<string, string[]> = {
+    calzado: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico', 'puntera'],
+    botin: ['botin', 'zapato', 'calzado', 'bota'],
+    botines: ['botin', 'zapato', 'calzado', 'bota'],
+    zapato: ['zapato', 'botin', 'calzado', 'bota'],
+    zapatos: ['zapato', 'botin', 'calzado', 'bota'],
+    casco: ['casco', 'barbiquejo'],
+    cascos: ['casco', 'barbiquejo'],
+    lente: ['lente', 'antiparra', 'uv'],
+    lentes: ['lente', 'antiparra', 'uv'],
+    antiparra: ['antiparra', 'lente'],
+    antiparras: ['antiparra', 'lente'],
+    guante: ['guante', 'cabritilla', 'nitrilo'],
+    guantes: ['guante', 'cabritilla', 'nitrilo'],
+    pantalon: ['pantalon', 'cargo', 'bermuda', 'jean'],
+    pantalones: ['pantalon', 'cargo', 'bermuda'],
+    polar: ['polar', 'fleece', 'micropolar'],
+    fleece: ['polar', 'fleece'],
+    termico: ['termico', 'softshell', 'parka', 'polar', 'abrigo'],
+    termica: ['termica', 'termico', 'softshell', 'parka', 'polar'],
+    geologo: ['geologo', 'chaleco'],
+    chaleco: ['chaleco', 'geologo'],
+    ignifugo: ['ignifugo', 'retardante', 'arco'],
+    ignifuga: ['ignifuga', 'ignifugo', 'retardante', 'arco'],
+    overol: ['overol', 'buzo'],
+    buzo: ['buzo', 'overol'],
+    polera: ['polera', 'polo', 'pique'],
+    poleras: ['polera', 'polo', 'pique'],
+    polo: ['polo', 'polera'],
+    camisa: ['camisa', 'oxford', 'poplin'],
+    camisas: ['camisa', 'oxford', 'poplin'],
+    blusa: ['blusa', 'oxford'],
+    blusas: ['blusa', 'oxford'],
+    epp: ['epp', 'casco', 'lente', 'guante', 'zapato', 'botin', 'auditivo', 'fono', 'rodillera'],
+    marino: ['azul marino', 'marino', 'navy'],
+    azul: ['azul', 'marino', 'celeste', 'azulino'],
+    negro: ['negro', 'black'],
+    blanco: ['blanco', 'white'],
+    rojo: ['rojo', 'red'],
+    amarillo: ['amarillo', 'fluor'],
+    fluor: ['amarillo fluor', 'naranjo fluor', 'fluor'],
+    gris: ['gris', 'grey'],
+    verde: ['verde', 'green', 'verde pino'],
+    burdeo: ['burdeo', 'bordeaux'],
+    naranjo: ['naranjo', 'orange', 'naranjo fluor'],
+  };
+
+  function matchesQuery(query: string, text: string) {
+    if (!query) return true;
+    if (text.includes(query)) return true;
+    const syns = SYNONYMS[query];
+    if (syns) {
+      for (const syn of syns) {
+        if (text.includes(syn)) return true;
       }
-      // Trigger click on product toggle in quote section if available
-      setTimeout(function() {
-        var selectorBtn = document.querySelector(`.btn-toggle[data-id="${prodId}"]`) as HTMLButtonElement;
-        if (selectorBtn && selectorBtn.getAttribute('aria-pressed') === 'false') {
-          selectorBtn.click();
-        }
-      }, 300);
+    }
+    return false;
+  }
+
+  function updateVisibility() {
+    let matchedCards: HTMLElement[] = [];
+
+    cards.forEach((card) => {
+      const cardCategory = card.getAttribute('data-category') || '';
+      const cardName = card.getAttribute('data-name') || '';
+      const cardColor = card.getAttribute('data-color') || '';
+      const cardSku = card.getAttribute('data-sku') || '';
+      const cardSummary = card.getAttribute('data-summary') || '';
+      const cardColors = card.getAttribute('data-colors') || '';
+
+      const targetText = normalizeText(`${cardName} ${cardColor} ${cardSku} ${cardCategory} ${cardSummary} ${cardColors}`);
+
+      const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+      const matchesSearch = matchesQuery(searchTerm, targetText);
+
+      if (matchesCategory && matchesSearch) {
+        matchedCards.push(card);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const limit = searchTerm ? matchedCards.length : visibleLimit;
+
+    matchedCards.forEach((card, index) => {
+      if (index < limit) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (noProductsMsg) {
+      noProductsMsg.style.display = matchedCards.length === 0 ? 'block' : 'none';
+    }
+
+    if (loadMoreWrap && loadMoreStatus && loadMoreBtn) {
+      if (searchTerm || matchedCards.length <= limit) {
+        loadMoreWrap.style.display = 'none';
+      } else {
+        loadMoreWrap.style.display = 'flex';
+        const currentShown = Math.min(limit, matchedCards.length);
+        loadMoreStatus.textContent = `Mostrando ${currentShown} de ${matchedCards.length} productos`;
+      }
+    }
+
+    const statusTextEl = document.getElementById('catalog-status-text');
+    if (statusTextEl) {
+      if (searchTerm) {
+        const queryDisplay = searchInput?.value || searchTerm;
+        statusTextEl.innerHTML = `Mostrando <strong>${matchedCards.length}</strong> resultados para "${queryDisplay}"${activeCategory !== 'all' ? ` en <strong>${activeCategory}</strong>` : ''}`;
+      } else if (activeCategory !== 'all') {
+        statusTextEl.innerHTML = `Mostrando <strong>${matchedCards.length}</strong> modelos en <strong>${activeCategory}</strong>`;
+      } else {
+        statusTextEl.innerHTML = `Mostrando todos los modelos (<strong>${matchedCards.length}</strong>)`;
+      }
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      activeCategory = tab.getAttribute('data-filter') || 'all';
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
     });
   });
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      searchTerm = normalizeText(this.value || '');
+      if (searchClearBtn) {
+        searchClearBtn.style.display = searchTerm ? 'inline-flex' : 'none';
+      }
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
+    });
+  }
+
+  if (searchClearBtn && searchInput) {
+    searchClearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchTerm = '';
+      searchClearBtn.style.display = 'none';
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
+      searchInput.focus();
+    });
+  }
+
+  if (resetFilterBtn && searchInput) {
+    resetFilterBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchTerm = '';
+      if (searchClearBtn) searchClearBtn.style.display = 'none';
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tabs[0]?.classList.add('active');
+      tabs[0]?.setAttribute('aria-selected', 'true');
+      activeCategory = 'all';
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
+    });
+  }
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', () => {
+      visibleLimit += BATCH_SIZE;
+      updateVisibility();
+    });
+  }
+
+  // Swatches interactivos en tarjetas de productos
+  document.querySelectorAll('.card-swatch-dot').forEach((dot) => {
+    function activateSwatch(e: Event) {
+      e.stopPropagation();
+      const parentCard = dot.closest('.product-card');
+      if (!parentCard) return;
+      const img = parentCard.querySelector('.product-img') as HTMLImageElement;
+      const targetSrc = dot.getAttribute('data-color-img');
+      const colorName = dot.getAttribute('data-color-name');
+      if (img && targetSrc) {
+        img.src = targetSrc;
+      }
+      parentCard.querySelectorAll('.card-swatch-dot').forEach((d) => d.classList.remove('active'));
+      dot.classList.add('active');
+      if (colorName) {
+        parentCard.setAttribute('data-selected-color', colorName);
+        const tag = parentCard.querySelector('.product-color-pill-tag');
+        if (tag) {
+          const dotInd = tag.querySelector('.color-dot-indicator') as HTMLElement;
+          if (dotInd) dotInd.style.backgroundColor = (dot as HTMLElement).style.backgroundColor;
+          tag.innerHTML = '';
+          if (dotInd) tag.appendChild(dotInd);
+          tag.appendChild(document.createTextNode(' ' + colorName));
+        }
+      }
+    }
+
+    dot.addEventListener('mouseenter', activateSwatch);
+    dot.addEventListener('click', activateSwatch);
+  });
+
+  // Zoom interactivo en imagen de estudio
+  if (mainImgWrap && mainImg) {
+    mainImgWrap.addEventListener('mousemove', (e) => {
+      const rect = mainImgWrap.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      mainImg.style.transformOrigin = `${x}% ${y}%`;
+      mainImg.style.transform = 'scale(1.55)';
+    });
+
+    mainImgWrap.addEventListener('mouseleave', () => {
+      mainImg.style.transformOrigin = 'center center';
+      mainImg.style.transform = 'scale(1)';
+    });
+  }
+
+  // Copiar SKU al portapapeles
+  if (skuBadge && skuText) {
+    skuBadge.addEventListener('click', () => {
+      const txt = skuText.textContent?.replace('SKU: ', '').trim() || '';
+      if (txt && txt !== '--') {
+        navigator.clipboard.writeText(txt).then(() => {
+          const original = skuText.textContent;
+          skuText.textContent = '✓ Copiado';
+          setTimeout(() => { skuText.textContent = original; }, 1500);
+        }).catch(() => {});
+      }
+    });
+  }
+
+  // Controles de cantidad (Stepper y presets)
+  if (qtyMinusBtn && qtyInput) {
+    qtyMinusBtn.addEventListener('click', () => {
+      let val = parseInt(qtyInput.value) || 10;
+      val = Math.max(1, val - 5);
+      qtyInput.value = String(val);
+      updateWaUrl();
+    });
+  }
+  if (qtyPlusBtn && qtyInput) {
+    qtyPlusBtn.addEventListener('click', () => {
+      let val = parseInt(qtyInput.value) || 10;
+      val = Math.min(9999, val + 5);
+      qtyInput.value = String(val);
+      updateWaUrl();
+    });
+  }
+  qtyPresetBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-qty');
+      if (q && qtyInput) {
+        qtyInput.value = q;
+        updateWaUrl();
+      }
+    });
+  });
+  if (qtyInput) {
+    qtyInput.addEventListener('input', () => {
+      updateWaUrl();
+    });
+  }
+
+  // ───────────────────────── Modal de Ficha Técnica ─────────────────────────
+  let currentModalProduct: any = null;
+  let selectedModalSize = 'M';
+  let selectedModalColor = '';
+
+  function isLightColorHex(hex: string) {
+    if (!hex) return false;
+    const clean = hex.replace('#', '');
+    if (clean.length !== 6) return false;
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 185;
+  }
+
+  function updateWaUrl() {
+    if (!waBtn || !currentModalProduct) return;
+    const qty = qtyInput ? (parseInt(qtyInput.value) || 10) : 10;
+    const colorTxt = selectedModalColor ? ` (Color: ${selectedModalColor})` : '';
+    const sizeTxt = selectedModalSize ? ` (Talla: ${selectedModalSize})` : '';
+    const waText = encodeURIComponent(`Hola Zortex, quisiera cotizar ${qty} unidades de "${currentModalProduct.name}"${colorTxt}${sizeTxt} (SKU: ${currentModalProduct.sku || 'N/A'}).`);
+    waBtn.href = `https://wa.me/${whatsappNumber}?text=${waText}`;
+  }
+
+  function switchMainImage(newSrc: string) {
+    if (!mainImg || !newSrc) return;
+    if (mainImg.src.endsWith(newSrc)) return;
+    mainImg.classList.add('switching');
+    const preloader = new Image();
+    preloader.src = newSrc;
+    preloader.onload = () => {
+      mainImg.src = newSrc;
+      requestAnimationFrame(() => {
+        setTimeout(() => mainImg.classList.remove('switching'), 30);
+      });
+    };
+    preloader.onerror = () => {
+      mainImg.src = newSrc;
+      mainImg.classList.remove('switching');
+    };
+  }
+
+  function openModal(id: string, initialColor?: string) {
+    const prod = catalogMap.get(id);
+    if (!prod || !modalEl) return;
+    currentModalProduct = prod;
+
+    const baseColorObj = (prod.colors && prod.colors[0]) ? prod.colors[0] : { name: prod.color || 'Estándar', hex: prod.colorHex || '#0F172A', image: prod.image };
+    selectedModalColor = initialColor || baseColorObj.name;
+
+    let initialImg = prod.image;
+    let initialHex = baseColorObj.hex || '#0F172A';
+    if (selectedModalColor && prod.colors) {
+      const matchCol = prod.colors.find((c: any) => c.name === selectedModalColor);
+      if (matchCol) {
+        if (matchCol.image) initialImg = matchCol.image;
+        if (matchCol.hex) initialHex = matchCol.hex;
+      }
+    }
+
+    if (mainImg) {
+      mainImg.src = initialImg;
+      mainImg.alt = `${prod.name} - ${selectedModalColor}`;
+    }
+
+    function updateStageColorIndicator(label: string, hex: string) {
+      if (stageColorName) stageColorName.textContent = label || 'Color Estándar';
+      if (stageColorDot) stageColorDot.style.backgroundColor = hex || '#0F172A';
+    }
+
+    function syncSelectedColorUI(colorName: string, colorHex: string) {
+      selectedModalColor = colorName;
+      if (selectedColorNameEl) selectedColorNameEl.textContent = colorName || 'Color Estándar';
+      if (headerColorDot) headerColorDot.style.backgroundColor = colorHex || '#0F172A';
+      updateStageColorIndicator(colorName, colorHex);
+      if (colorsContainer) {
+        colorsContainer.querySelectorAll('.pmodal-color-card').forEach(b => {
+          const isMatch = b.getAttribute('data-color-name') === colorName;
+          b.classList.toggle('active', isMatch);
+        });
+      }
+      updateWaUrl();
+    }
+
+    updateStageColorIndicator(selectedModalColor, initialHex);
+    if (headerColorDot) headerColorDot.style.backgroundColor = initialHex;
+    if (selectedColorNameEl) selectedColorNameEl.textContent = selectedModalColor || 'Color Estándar';
+
+    if (catBadge) catBadge.textContent = prod.category;
+    if (skuText) skuText.textContent = prod.sku ? `SKU: ${prod.sku}` : 'SKU: N/A';
+    if (extraBadge) extraBadge.textContent = [prod.line, prod.gender].filter(Boolean).join(' • ');
+
+    if (titleEl) titleEl.textContent = prod.name;
+    if (summaryEl) summaryEl.textContent = prod.summary || 'Vestuario y equipamiento técnico confeccionado bajo estrictos estándares corporativos e industriales, ideal para alta durabilidad y presentación institucional.';
+
+    // Renderizado de variedad en cuadros profesionales de color
+    if (colorsField && colorsContainer) {
+      colorsContainer.innerHTML = '';
+      if (prod.colors && prod.colors.length > 0) {
+        colorsField.style.display = 'block';
+
+        prod.colors.forEach((c: { name: string; hex: string; image?: string }) => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          const isSelected = c.name === selectedModalColor;
+          card.className = `pmodal-color-card${isSelected ? ' active' : ''}`;
+          card.setAttribute('data-color-name', c.name);
+          card.setAttribute('aria-label', `Seleccionar color ${c.name}`);
+
+          const isLight = isLightColorHex(c.hex);
+          const checkStroke = isLight ? '#0F172A' : '#FFFFFF';
+
+          card.innerHTML = `
+            <span class="pmodal-swatch-disc" style="background-color: ${c.hex};">
+              <svg class="swatch-check-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${checkStroke}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <span class="pmodal-color-card-title">${c.name}</span>
+          `;
+
+          card.addEventListener('click', () => {
+            const newImg = c.image || prod.image;
+            syncSelectedColorUI(c.name, c.hex);
+            switchMainImage(newImg);
+            if (mainImg) mainImg.alt = `${prod.name} - ${c.name}`;
+          });
+
+          colorsContainer.appendChild(card);
+        });
+      } else {
+        colorsField.style.display = 'none';
+      }
+    }
+
+    // Tallas
+    if (sizesField && sizesContainer) {
+      sizesContainer.innerHTML = '';
+      const sizes = prod.sizes && prod.sizes.length > 0 ? prod.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
+      selectedModalSize = sizes[0] || 'M';
+      if (currentSizeLabel) currentSizeLabel.textContent = selectedModalSize;
+
+      sizes.forEach((s: string, idx: number) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `pmodal-size-pill${idx === 0 ? ' selected' : ''}`;
+        btn.textContent = s;
+        btn.addEventListener('click', () => {
+          sizesContainer.querySelectorAll('.pmodal-size-pill').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedModalSize = s;
+          if (currentSizeLabel) currentSizeLabel.textContent = s;
+          updateWaUrl();
+        });
+        sizesContainer.appendChild(btn);
+      });
+    }
+
+    // Ficha técnica y materialidad
+    if (specsField && specsContainer) {
+      specsContainer.innerHTML = '';
+      if (prod.features && prod.features.length > 0) {
+        specsField.style.display = 'block';
+        prod.features.slice(0, 8).forEach((f: { name: string; value: string }) => {
+          const row = document.createElement('div');
+          const isLong = f.value.length > 34 || f.name.toLowerCase() === 'atributos' || f.name.toLowerCase() === 'tecnologías';
+          row.className = `pmodal-spec-row${isLong ? ' span-2' : ''}`;
+          row.innerHTML = `<span class="spec-k">${f.name}</span><span class="spec-v">${f.value}</span>`;
+          specsContainer.appendChild(row);
+        });
+      } else {
+        specsField.style.display = 'none';
+      }
+    }
+
+    if (qtyInput) qtyInput.value = '10';
+    if (toastEl) toastEl.style.display = 'none';
+    if (addBtnText) addBtnText.textContent = 'Agregar a Solicitud de Cotización';
+    if (addBtn) addBtn.classList.remove('success');
+
+    updateWaUrl();
+
+    // Mostrar modal con animación fluida y centrado incondicional
+    modalEl.style.display = 'flex';
+    void modalEl.offsetHeight; // Forzar reflujo
+    modalEl.classList.add('is-open');
+    modalEl.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    // Reiniciar posición de scroll interno del modal
+    modalEl.scrollTop = 0;
+    if (modalDialog) modalDialog.scrollTop = 0;
+  }
+
+  function closeModal() {
+    if (!modalEl) return;
+    modalEl.classList.remove('is-open');
+    modalEl.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      if (!modalEl.classList.contains('is-open')) {
+        modalEl.style.display = 'none';
+      }
+    }, 280);
+    currentModalProduct = null;
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalEl && modalEl.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+
+  // Agregar desde el modal con color y talla seleccionados
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      if (!currentModalProduct) return;
+      const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 10;
+
+      const matchCol = currentModalProduct.colors?.find((c: any) => c.name === selectedModalColor);
+      const chosenImg = matchCol?.image || currentModalProduct.image;
+      const chosenHex = matchCol?.hex || currentModalProduct.colorHex || '#CBD5E0';
+
+      const itemPayload = {
+        id: currentModalProduct.id,
+        name: currentModalProduct.name,
+        category: currentModalProduct.category,
+        sku: currentModalProduct.sku,
+        image: chosenImg,
+        qty: qty,
+        size: selectedModalSize,
+        color: selectedModalColor,
+        colorHex: chosenHex,
+      };
+
+      if ((window as any).QuoteCart) {
+        (window as any).QuoteCart.addItem(itemPayload);
+      } else {
+        window.dispatchEvent(new CustomEvent('add-product-to-quote', { detail: itemPayload }));
+      }
+
+      if (toastEl) toastEl.style.display = 'flex';
+      addBtn.classList.add('success');
+      if (addBtnText) addBtnText.textContent = '✓ Agregado al Cotizador';
+      setTimeout(() => {
+        if (addBtnText) addBtnText.textContent = 'Agregar a Cotización';
+        addBtn.classList.remove('success');
+      }, 2500);
+    });
+  }
+
+  if (goQuoteBtn) {
+    goQuoteBtn.addEventListener('click', () => {
+      closeModal();
+      if ((window as any).QuoteCart) {
+        (window as any).QuoteCart.open();
+      } else {
+        const cotizarSec = document.getElementById('cotizar');
+        if (cotizarSec) cotizarSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  // Click en tarjeta abre modal; click en "+ Cotizar" cotiza directo
+  cards.forEach((card) => {
+    card.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('.product-btn') || (e.target as HTMLElement).closest('.card-swatch-dot')) return;
+      const id = card.getAttribute('data-id');
+      const chosenColor = card.getAttribute('data-selected-color') || card.getAttribute('data-color') || undefined;
+      if (id) openModal(id, chosenColor);
+    });
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if ((e.target as HTMLElement).closest('.product-btn') || (e.target as HTMLElement).closest('.card-swatch-dot')) return;
+        e.preventDefault();
+        const id = card.getAttribute('data-id');
+        const chosenColor = card.getAttribute('data-selected-color') || card.getAttribute('data-color') || undefined;
+        if (id) openModal(id, chosenColor);
+      }
+    });
+  });
+
+  // Botón "+ Cotizar" en tarjeta con el color activo
+  const productBtns = document.querySelectorAll('.product-btn');
+  productBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const prodId = btn.getAttribute('data-product-id');
+      if (!prodId) return;
+
+      const prod = catalogMap.get(prodId);
+      if (!prod) return;
+
+      const parentCard = btn.closest('.product-card');
+      const chosenColor = parentCard?.getAttribute('data-selected-color') || parentCard?.getAttribute('data-color') || (prod.colors && prod.colors[0] ? prod.colors[0].name : '');
+      const matchCol = prod.colors?.find((c: any) => c.name === chosenColor);
+      const chosenImg = matchCol?.image || prod.image;
+      const chosenHex = matchCol?.hex || prod.colorHex || '#CBD5E0';
+
+      const itemPayload = {
+        id: prod.id,
+        name: prod.name,
+        category: prod.category,
+        sku: prod.sku,
+        image: chosenImg,
+        qty: 10,
+        size: 'M',
+        color: chosenColor,
+        colorHex: chosenHex,
+      };
+
+      if ((window as any).QuoteCart) {
+        (window as any).QuoteCart.addItem(itemPayload);
+      } else {
+        window.dispatchEvent(new CustomEvent('add-product-to-quote', { detail: itemPayload }));
+      }
+
+      btn.classList.add('added');
+      const span = btn.querySelector('span');
+      if (span) {
+        const originalText = span.textContent;
+        span.textContent = '✓ En Cotizador';
+        setTimeout(() => { span.textContent = originalText; }, 2000);
+      }
+    });
+  });
+
+  // Triggers globales (desde Menú Header y sección Categorías)
+  document.addEventListener('click', (e) => {
+    const catTrigger = (e.target as HTMLElement).closest('[data-category-trigger]');
+    if (catTrigger) {
+      const cat = catTrigger.getAttribute('data-category-trigger');
+      if (cat) {
+        tabs.forEach((t) => {
+          if (t.getAttribute('data-filter') === cat) {
+            (t as HTMLElement).click();
+          }
+        });
+        const sec = document.getElementById('productos');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+
+    const searchTrigger = (e.target as HTMLElement).closest('[data-search-trigger]');
+    if (searchTrigger) {
+      e.preventDefault();
+      const term = searchTrigger.getAttribute('data-search-trigger');
+      if (term && searchInput) {
+        tabs.forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tabs[0]?.classList.add('active');
+        tabs[0]?.setAttribute('aria-selected', 'true');
+        activeCategory = 'all';
+        searchInput.value = term;
+        searchTerm = normalizeText(term);
+        if (searchClearBtn) searchClearBtn.style.display = 'inline-flex';
+        visibleLimit = BATCH_SIZE;
+        updateVisibility();
+        const sec = document.getElementById('productos');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  // Inicializar estado al cargar
+  updateVisibility();
 </script>

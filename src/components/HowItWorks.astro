@@ -1,30 +1,33 @@
 ---
 const steps = [
   {
-    num: '01',
-    title: 'Elige tus productos',
-    desc: 'Explora nuestro catálogo de ropa corporativa, industrial y EPP. Selecciona los ítems que requieres.',
-    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`
+    num: 'PASO 01',
+    title: 'Selección de Modelos y Tallas',
+    desc: 'Explora nuestro catálogo técnico de vestuario corporativo, industrial y EPP. Selecciona los modelos, colores institucionales y curvas de tallas.',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`
   },
   {
-    num: '02',
-    title: 'Indica cantidades y logotipo',
-    desc: 'Agrega al cotizador la cantidad por producto, tallas estimadas y si necesitas bordado o estampado.',
-    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
+    num: 'PASO 02',
+    title: 'Especificación de Volumen y Branding',
+    desc: 'Indica las unidades requeridas por ítem y define si tu pedido incluye bordado computarizado, estampado DTF o parches corporativos.',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
   },
   {
-    num: '03',
-    title: 'Recibe propuesta formal',
-    desc: 'Un ejecutivo comercial asignado revisará tu requerimiento y te enviará la cotización con valor por volumen.',
-    svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+    num: 'PASO 03',
+    title: 'Propuesta Comercial Formal en < 24h',
+    desc: 'Un ejecutivo de cuentas B2B revisará tu solicitud y enviará la cotización formal con precios escalonados por volumen y plazos de despacho.',
+    svg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
   },
 ];
 ---
 
-<section id="como-funciona" class="reveal">
+<section id="como-funciona" class="how-section reveal">
   <div class="wrap">
-    <h2>Cómo funciona el proceso</h2>
-    <p class="lead">Atención directa para empresas: sin carrito de compra, cotización personalizada y asesoría experta.</p>
+    <div class="how-header">
+      <span class="how-eyebrow">PROTOCOLO DE ADQUISICIÓN EMPRESARIAL</span>
+      <h2>Cómo Funciona el Proceso B2B</h2>
+      <p class="lead">Atención comercial directa para empresas e instituciones: cotización formal con precios mayoristas, muestra de bordado y despacho a todo Chile.</p>
+    </div>
 
     <div class="steps-grid">
       {steps.map(step => (
@@ -42,59 +45,96 @@ const steps = [
 </section>
 
 <style>
+  .how-section {
+    padding: 76px 0;
+    background: #FFFFFF;
+  }
+  .how-eyebrow {
+    display: inline-block;
+    font-family: var(--mono, monospace);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0F172A;
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .how-header h2 {
+    font-size: clamp(28px, 3.2vw, 38px);
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.03em;
+    margin-bottom: 10px;
+  }
   .steps-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin-top: 30px;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) {
+    .steps-grid {
+      grid-template-columns: 1fr;
+    }
   }
   .step-card {
-    background: white;
-    border: 2px solid var(--sky, #97B4DE);
-    border-top: 5px solid var(--blue, #263A99);
-    border-radius: 8px;
-    padding: 28px 24px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-top: 3px solid #0F172A;
+    border-radius: 12px;
+    padding: 28px 26px;
+    box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .step-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(38, 58, 153, 0.08);
+    border-color: #CBD5E1;
+    border-top-color: #0F172A;
+    box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.1);
   }
   .step-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
   .step-num {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--blue, #263A99);
-    font-family: var(--display, system-ui);
-    line-height: 1;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0F172A;
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: var(--mono, monospace);
+    letter-spacing: 0.05em;
   }
   .step-icon {
     width: 44px;
     height: 44px;
-    border-radius: 8px;
-    background: var(--tint, #F3F6FC);
-    border: 1px solid var(--sky, #97B4DE);
+    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--blue, #263A99);
+    color: #0F172A;
   }
   .step-title {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
-    color: var(--ink, #111);
-    margin-bottom: 8px;
+    color: #0F172A;
+    margin: 0 0 10px;
     font-family: var(--display, system-ui);
+    letter-spacing: -0.015em;
   }
   .step-desc {
-    font-size: 15px;
-    color: var(--muted, #444);
+    font-size: 14.5px;
+    color: #475569;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 </style>

@@ -1,0 +1,371 @@
+---
+// Logos oficiales de empresas e instituciones que confían en Zortex
+const clientBrands = [
+  { name: "Empack", logo: "/images/marcas/logo-empack.svg" },
+  { name: "DealerNet", logo: "/images/marcas/logo-dealernet.svg" },
+  { name: "Construplaza", logo: "/images/marcas/logo-construplaza.svg" },
+  { name: "Copec", logo: "/images/marcas/logo-copec.svg" },
+  { name: "Valtek", logo: "/images/marcas/logo-valtek.svg" },
+  { name: "Inser Impresiones", logo: "/images/marcas/logo-inser.svg" },
+  { name: "Rotter & Krauss", logo: "/images/marcas/logo-rotter-krauss.svg" },
+  { name: "Merrell", logo: "/images/marcas/logo-merrell.svg" },
+  { name: "Mercedes Benz", logo: "/images/marcas/logo-mercedes-benz.svg" },
+  { name: "Universidad del Desarrollo", logo: "/images/marcas/logo-udd.svg" },
+  { name: "Universidad de los Andes", logo: "/images/marcas/logo-uandes.svg" },
+  { name: "Universidad de Chile", logo: "/images/marcas/logo-uchile.svg" },
+];
+---
+
+<section id="clientes" class="clients-carousel-section" aria-label="Empresas que confían en nosotros">
+  <!-- Imagen de fondo corporativa y capas de iluminación -->
+  <div class="clients-bg-overlay"></div>
+  <div class="clients-bg-glow"></div>
+
+  <div class="wrap clients-header">
+    <div class="clients-badge">
+      <svg class="badge-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <path d="m9 12 2 2 4-4"></path>
+      </svg>
+      <span class="badge-text">Confianza Empresarial &amp; Corporativa</span>
+      <span class="badge-dot" aria-hidden="true"></span>
+    </div>
+    <h2 class="clients-title">Empresas e Instituciones que Confían en <span class="highlight-brand">Zortex</span></h2>
+    <p class="clients-subtitle">
+      Proveemos vestuario corporativo, ropa técnica de faena y equipamiento de seguridad a las organizaciones más exigentes de Chile.
+    </p>
+  </div>
+
+  <!-- Carrusel Estilo Nexbu (Píldoras Blancas de Alto Contraste con Marquee Fluido) -->
+  <div class="carousel-nexbu-wrap" aria-label="Carrusel de clientes">
+    <!-- Degradados laterales sin cortes -->
+    <div class="fade-overlay fade-left"></div>
+    <div class="fade-overlay fade-right"></div>
+
+    <!-- Pista de animación continua con script suave -->
+    <div class="marquee-track" id="client-marquee-track">
+      <!-- Copia 1 -->
+      <div class="marquee-group">
+        {clientBrands.map(brand => (
+          <div class="nexbu-card" title={brand.name}>
+            <img
+              src={brand.logo}
+              alt={brand.name}
+              class="client-logo-img"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- Copia 2 (Loop continuo sin saltos) -->
+      <div class="marquee-group" aria-hidden="true">
+        {clientBrands.map(brand => (
+          <div class="nexbu-card" title={brand.name}>
+            <img
+              src={brand.logo}
+              alt={brand.name}
+              class="client-logo-img"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .clients-carousel-section {
+    position: relative;
+    padding: 72px 0 60px;
+    background-color: #0B132B;
+    background-image: url('/images/fondos nuevos/FONDO 1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    overflow: hidden;
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .clients-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 19, 43, 0.88) 0%, rgba(13, 27, 62, 0.78) 50%, rgba(11, 19, 43, 0.92) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .clients-bg-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30, 64, 175, 0.35), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .clients-header {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+
+  .clients-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 18px 7px 14px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(30, 58, 138, 0.35) 100%);
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    box-shadow: 
+      0 4px 20px -2px rgba(2, 6, 23, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    margin-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .clients-badge:hover {
+    border-color: rgba(147, 197, 253, 0.5);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(37, 99, 235, 0.45) 100%);
+    box-shadow: 
+      0 6px 24px -2px rgba(37, 99, 235, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    transform: translateY(-1px);
+  }
+
+  .badge-icon {
+    color: #60A5FA;
+    filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.6));
+    flex-shrink: 0;
+  }
+
+  .badge-text {
+    font-family: var(--body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #F8FAFC;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38BDF8;
+    box-shadow: 0 0 8px #38BDF8, 0 0 14px rgba(56, 189, 248, 0.7);
+    animation: pulseGlow 2.2s infinite ease-in-out;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+  }
+
+  .clients-title {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.4vw, 42px);
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 14px;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .highlight-brand {
+    background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.25));
+  }
+
+  .clients-subtitle {
+    max-width: 660px;
+    margin: 0 auto;
+    font-family: var(--body);
+    font-size: 15.5px;
+    color: #CBD5E1;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+  }
+
+  /* Contenedor principal Nexbu: interacción suave */
+  .carousel-nexbu-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+    padding: 16px 0;
+    cursor: grab;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .carousel-nexbu-wrap:active {
+    cursor: grabbing;
+  }
+
+  /* Fades degradados en los laterales */
+  .fade-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(60px, 12vw, 180px);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .fade-left {
+    left: 0;
+    background: linear-gradient(to right, #0B132B 15%, rgba(11, 19, 43, 0.85) 55%, transparent 100%);
+  }
+
+  .fade-right {
+    right: 0;
+    background: linear-gradient(to left, #0B132B 15%, rgba(11, 19, 43, 0.85) 55%, transparent 100%);
+  }
+
+  /* Pista continua Marquee */
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    gap: 20px;
+  }
+
+  .marquee-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Card estilo Nexbu: fondo blanco puro para máximo contraste de logos a color */
+  .nexbu-card {
+    height: 84px;
+    min-width: 200px;
+    padding: 0 32px;
+    border-radius: 14px;
+    background: #FFFFFF;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 4px 16px rgba(11, 19, 43, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .nexbu-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 14px 30px rgba(11, 19, 43, 0.35), 0 0 20px rgba(56, 189, 248, 0.25);
+    border-color: #38BDF8;
+  }
+
+  .client-logo-img {
+    height: 48px;
+    max-width: 175px;
+    width: auto;
+    object-fit: contain;
+    user-select: none;
+    image-rendering: -webkit-optimize-contrast;
+    transition: transform 0.3s ease;
+  }
+
+  .nexbu-card:hover .client-logo-img {
+    transform: scale(1.04);
+  }
+
+  @media (max-width: 640px) {
+    .clients-carousel-section {
+      padding: 46px 0 40px;
+    }
+    .nexbu-card {
+      height: 68px;
+      min-width: 160px;
+      padding: 0 20px;
+      border-radius: 14px;
+    }
+    .client-logo-img {
+      height: 38px;
+      max-width: 140px;
+    }
+    .marquee-track {
+      gap: 16px;
+    }
+    .marquee-group {
+      gap: 16px;
+    }
+  }
+</style>
+
+<script is:inline>
+  function setupClientsSmoothMarquee() {
+    const wrap = document.querySelector('.carousel-nexbu-wrap');
+    const track = document.getElementById('client-marquee-track');
+    if (!wrap || !track) return;
+
+    let offset = 0;
+    // Velocidad normal continua
+    const normalSpeed = 0.55;
+    // Reducción suave a cámara lenta al pasar el cursor
+    const slowSpeed = 0.12;
+
+    let targetSpeed = normalSpeed;
+    let currentSpeed = normalSpeed;
+    let animationId = null;
+
+    wrap.addEventListener('mouseenter', () => {
+      targetSpeed = slowSpeed;
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      targetSpeed = normalSpeed;
+    });
+
+    // Soporte táctil en móviles
+    wrap.addEventListener('touchstart', () => {
+      targetSpeed = slowSpeed;
+    }, { passive: true });
+
+    wrap.addEventListener('touchend', () => {
+      targetSpeed = normalSpeed;
+    }, { passive: true });
+
+    function step() {
+      // Interpolación lineal suave (lerp)
+      currentSpeed += (targetSpeed - currentSpeed) * 0.05;
+      offset -= currentSpeed;
+
+      const halfWidth = track.scrollWidth / 2;
+      if (halfWidth > 0 && Math.abs(offset) >= halfWidth) {
+        offset += halfWidth;
+      }
+
+      track.style.transform = `translate3d(${offset}px, 0, 0)`;
+      animationId = requestAnimationFrame(step);
+    }
+
+    if (animationId) cancelAnimationFrame(animationId);
+    animationId = requestAnimationFrame(step);
+  }
+
+  // Inicializar al cargar el DOM y en transiciones de página
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupClientsSmoothMarquee);
+  } else {
+    setupClientsSmoothMarquee();
+  }
+  document.addEventListener('astro:page-load', setupClientsSmoothMarquee);
+</script>

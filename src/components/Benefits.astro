@@ -1,75 +1,215 @@
 ---
-import { BENEFITS } from '../config';
+import { PRODUCTS } from '../config';
 
-const ICONS = [
-  // 1. Despacho a todo Chile (Truck)
-  `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>`,
-  // 2. Pedidos por volumen (Factory/Boxes)
-  `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
-  // 3. Personalización con logo (Shirt/Needle)
-  `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>`,
-  // 4. Cotización en 24h (Clock)
-  `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--blue, #263A99)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`
+const countByCat = (cat: string) => PRODUCTS.filter(p => p.category === cat).length;
+
+// Componente de Líneas Especializadas de Vestuario y EPP (Showcase Corporativo)
+const LINES_DATA = [
+  {
+    id: 'corporativa',
+    filterName: 'Ropa Corporativa',
+    number: '01',
+    badge: 'LÍNEA 01 • ESTÁNDAR EJECUTIVO',
+    accentColor: '#0F172A',
+    accentBg: 'rgba(15, 23, 42, 0.25)',
+    accentBorder: '#94A3B8',
+    countBadge: `${countByCat('Ropa Corporativa')} Modelos`,
+    title: 'Ropa Corporativa',
+    description: 'Polerones, camisas ejecutivas, poleras piqué, micropolares y prendas confeccionadas para proyectar una imagen institucional impecable.',
+    image: '/images/lineas/corporativa.jpg',
+    subcategories: ['Poleras Piqué', 'Camisas Oxford', 'Softshell', 'Micropolar', 'Parkas'],
+    ctaText: 'Explorar Ropa Corporativa',
+    spanClass: 'nl-card-hero',
+  },
+  {
+    id: 'industrial',
+    filterName: 'Ropa Industrial',
+    number: '02',
+    badge: 'LÍNEA 02 • ALTA RESISTENCIA',
+    accentColor: '#0F172A',
+    accentBg: 'rgba(15, 23, 42, 0.25)',
+    accentBorder: '#94A3B8',
+    countBadge: `${countByCat('Ropa Industrial')} Modelos`,
+    title: 'Ropa Industrial',
+    description: 'Pantalones cargo reforzados, overoles faeneros, parkas térmicas y prendas técnicas diseñadas para resistir jornadas de trabajo pesado.',
+    image: '/images/lineas/industrial.jpg',
+    subcategories: ['Pantalones Cargo', 'Overoles Faena', 'Parkas Térmicas', 'Buzos de Trabajo'],
+    ctaText: 'Explorar Ropa Industrial',
+    spanClass: 'nl-card-medium',
+  },
+  {
+    id: 'seguridad',
+    filterName: 'Ropa de Seguridad',
+    number: '03',
+    badge: 'LÍNEA 03 • NORMA ANSI / REFLECTANTE',
+    accentColor: '#0F172A',
+    accentBg: 'rgba(15, 23, 42, 0.25)',
+    accentBorder: '#94A3B8',
+    countBadge: `${countByCat('Ropa de Seguridad')} Modelos`,
+    title: 'Ropa de Seguridad',
+    description: 'Chalecos geólogo multipropósito, parkas de alta visibilidad día/noche y vestuario ignífugo con cintas reflectantes normadas.',
+    image: '/images/lineas/seguridad.jpg',
+    subcategories: ['Chalecos Geólogo', 'Parkas Reflectantes', 'Ropa Ignífuga'],
+    ctaText: 'Explorar Seguridad',
+    spanClass: 'nl-card-third',
+  },
+  {
+    id: 'epp',
+    filterName: 'EPP',
+    number: '04',
+    badge: 'LÍNEA 04 • PROTECCIÓN CERTIFICADA',
+    accentColor: '#0F172A',
+    accentBg: 'rgba(15, 23, 42, 0.25)',
+    accentBorder: '#94A3B8',
+    countBadge: `${countByCat('EPP')} Equipos Certificados`,
+    title: 'Equipos EPP',
+    description: 'Calzado dieléctrico con puntera composite, cascos de faena, arneses, protección respiratoria, ocular y guantes de alta resistencia.',
+    image: '/images/lineas/epp.jpg',
+    subcategories: ['Calzado Dieléctrico', 'Cascos de Faena', 'Protección Respiratoria', 'Guantes Técnicos'],
+    ctaText: 'Explorar Catálogo EPP',
+    spanClass: 'nl-card-third',
+  },
+  {
+    id: 'personalizada',
+    filterName: 'Ropa Personalizada',
+    number: '05',
+    badge: 'LÍNEA 05 • BRANDING & LOGOS',
+    accentColor: '#0F172A',
+    accentBg: 'rgba(15, 23, 42, 0.25)',
+    accentBorder: '#94A3B8',
+    countBadge: 'Taller Propio',
+    title: 'Ropa Personalizada',
+    description: 'Bordado computarizado de alta definición, estampado DTF industrial y parches corporativos para plasmar tu identidad de marca.',
+    image: '/images/lineas/personalizada.jpg',
+    subcategories: ['Bordado Computarizado', 'Estampado DTF', 'Parches Corporativos', 'Diseño a Medida'],
+    ctaText: 'Cotizar Personalización',
+    spanClass: 'nl-card-third',
+  },
 ];
 ---
 
-<section class="reveal benefits-section">
-  <div class="wrap">
-    <div class="benefits-grid">
-      {BENEFITS.map((b, i) => (
-        <div class="benefit-card">
-          <div class="benefit-badge" set:html={ICONS[i]} />
-          <h3 class="benefit-title">{b.title}</h3>
-          <p class="benefit-desc">{b.description}</p>
-        </div>
+<section class="nl-showcase-section" id="lineas" aria-label="Nuestras Líneas de Equipamiento">
+  <div class="nl-container">
+    
+    <!-- Header Principal de la Sección -->
+    <div class="nl-header">
+      <div class="nl-pill-badge">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span>PORTAFOLIO DE VESTUARIO & EQUIPAMIENTO CORPORATIVO</span>
+      </div>
+
+      <h2 class="nl-main-title">
+        Nuestras 5 Líneas Especializadas
+      </h2>
+
+      <p class="nl-main-lead">
+        Equipamiento técnico integral diseñado para vestir, proteger y proyectar la máxima presencia institucional de tu empresa en faena, terreno y oficina.
+      </p>
+
+      <!-- Resumen de Garantías Rápidas -->
+      <div class="nl-badges-row">
+        <span class="nl-quick-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Venta Mayorista desde 10 u.
+        </span>
+        <span class="nl-quick-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Telas Certificadas de Alta Durabilidad
+        </span>
+        <span class="nl-quick-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Bordado & Estampado con tu Logo
+        </span>
+        <span class="nl-quick-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F172A" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Envíos a Todo Chile
+        </span>
+      </div>
+    </div>
+
+    <!-- Grilla Bento Ultra-Profesional de 5 Líneas -->
+    <div class="nl-bento-grid">
+      {LINES_DATA.map((line) => (
+        <a
+          href="#productos"
+          class={`nl-card ${line.spanClass}`}
+          data-category-trigger={line.filterName}
+          style={`--nl-accent: ${line.accentColor}; --nl-accent-border: ${line.accentBorder}; --nl-accent-bg: ${line.accentBg};`}
+          aria-label={`Ver catálogo y productos de ${line.title}`}
+        >
+          <!-- Imagen de Fondo en Alta Resolución -->
+          <div class="nl-card-img-wrap">
+            <img
+              src={line.image}
+              alt={line.title}
+              class="nl-card-img"
+              loading="lazy"
+              width="800"
+              height="500"
+            />
+          </div>
+
+          <!-- Capas de Degradado para Contraste Impecable -->
+          <div class="nl-card-overlay-top"></div>
+          <div class="nl-card-overlay-bottom"></div>
+
+          <!-- Borde Superior de Acento Cromático -->
+          <div class="nl-card-accent-bar"></div>
+
+          <!-- Contenido Interior de la Tarjeta -->
+          <div class="nl-card-body">
+            
+            <!-- Fila Superior de Badges y Metas -->
+            <div class="nl-card-top-row">
+              <span class="nl-tech-badge">
+                <span class="nl-badge-dot"></span>
+                <span>{line.badge}</span>
+              </span>
+              <span class="nl-count-pill">{line.countBadge}</span>
+            </div>
+
+            <!-- Fila Inferior: Título, Descripción, Chips y Botón -->
+            <div class="nl-card-bottom-content">
+              <h3 class="nl-card-title">{line.title}</h3>
+              <p class="nl-card-desc">{line.description}</p>
+
+              <!-- Chips de Subcategorías -->
+              <div class="nl-card-chips">
+                {line.subcategories.map((sub) => (
+                  <span class="nl-chip">{sub}</span>
+                ))}
+              </div>
+
+              <!-- Botón CTA con microanimación -->
+              <div class="nl-card-footer">
+                <span class="nl-card-btn">
+                  <span>{line.ctaText}</span>
+                  <svg class="nl-btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </a>
       ))}
     </div>
+
   </div>
 </section>
 
-<style>
-  .benefits-section {
-    padding: 60px 0;
-    background: #ffffff;
-  }
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 2rem;
-  }
-  .benefit-card {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1.5rem;
-  }
-  .benefit-badge {
-    width: 80px;
-    height: 80px;
-    background: var(--tint, #F3F6FC);
-    border: 2px solid var(--sky, #97B4DE);
-    border-radius: 50%; /* circular badge */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, background 0.4s ease;
-  }
-  .benefit-card:hover .benefit-badge {
-    transform: scale(1.15) translateY(-5px);
-    box-shadow: 0 10px 25px rgba(38, 58, 153, 0.25);
-    background: #ffffff;
-  }
-  .benefit-title {
-    color: var(--blue, #263A99);
-    margin-bottom: 0.75rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  .benefit-desc {
-    color: #4a5568;
-    line-height: 1.6;
-    font-size: 0.95rem;
-  }
-</style>
+
