@@ -40,15 +40,15 @@ const heroSlides = [
 
 <section class="hero-section" aria-label="Sección principal Zortex">
   <!-- Slideshow de fondo: 100% full-bleed edge-to-edge -->
-  <div class="hero-slideshow" id="hero-slideshow" aria-hidden="true">
+  <div class="hero-slideshow" id="hero-slideshow">
     {heroSlides.map((slide, index) => (
-      <div class={`hero-slide${index === 0 ? ' active' : ''}`} data-slide={index}>
+      <div class={`hero-slide${index === 0 ? ' active is-first' : ''}`} data-slide={index}>
         <picture>
           <source media="(max-width: 899px)" srcset={slide.mobileWebp} type="image/webp" />
           <source media="(max-width: 899px)" srcset={slide.mobileJpg} type="image/jpeg" />
           <source media="(min-width: 900px)" srcset={slide.desktopWebp} type="image/webp" />
           <img
-            src={slide.desktopJpg}
+            src={slide.desktopWebp}
             alt={slide.alt}
             class="hero-slide-img"
             loading={index === 0 ? "eager" : "lazy"}
@@ -73,10 +73,10 @@ const heroSlides = [
         <span id="hero-badge-text">{settings.heroBadge || 'Distribuidor Mayorista B2B en Chile'}</span>
       </div>
       
-      <h1 class="fade-up" id="hero-title-text">{settings.heroTitle || 'Los Mejores Proveedores en Ropa Corporativa, Industrial y EPP'}</h1>
-      <p class="hero-lead fade-up fade-up-delay" id="hero-lead-text">{settings.heroLead || 'Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.'}</p>
+      <h1 id="hero-title-text">{settings.heroTitle || 'Los Mejores Proveedores en Ropa Corporativa, Industrial y EPP'}</h1>
+      <p class="hero-lead" id="hero-lead-text">{settings.heroLead || 'Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.'}</p>
       
-      <div class="hero-actions fade-up fade-up-delay-2">
+      <div class="hero-actions">
         <a class="btn hero-btn-primary" href="#cotizar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:middle;margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Solicitar Cotización
@@ -173,6 +173,12 @@ const heroSlides = [
     opacity: 0;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: opacity;
+  }
+
+  /* El primer slide siempre conserva opacidad de fondo para estabilidad visual absoluta y LCP */
+  .hero-slide.is-first {
+    opacity: 1;
+    z-index: 1;
   }
 
   .hero-slide.active {
@@ -500,30 +506,36 @@ const heroSlides = [
 
 <script is:inline>
   let heroTimer = null;
+  let heroInitialTimeout = null;
 
   function setupHeroBgSlideshow() {
-    // Evita timers duplicados
     if (heroTimer) {
       clearInterval(heroTimer);
       heroTimer = null;
+    }
+    if (heroInitialTimeout) {
+      clearTimeout(heroInitialTimeout);
+      heroInitialTimeout = null;
     }
 
     const slides = document.querySelectorAll('.hero-slide');
     if (!slides || slides.length < 2) return;
 
-    // Respetar preferencia de accesibilidad (sin animación brusca)
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
 
     let currentIndex = 0;
-    const intervalMs = 5000; // 5 segundos por diapositiva
+    const intervalMs = 9000; // 9 segundos por diapositiva
 
-    heroTimer = setInterval(() => {
-      slides[currentIndex].classList.remove('active');
-      currentIndex = (currentIndex + 1) % slides.length;
-      slides[currentIndex].classList.add('active');
-    }, intervalMs);
+    // Retrasar el inicio de transición para garantizar estabilidad absoluta en métricas LCP
+    heroInitialTimeout = setTimeout(() => {
+      heroTimer = setInterval(() => {
+        slides[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % slides.length;
+        slides[currentIndex].classList.add('active');
+      }, intervalMs);
+    }, 7000);
   }
 
   // Integración limpia para Astro (soporta View Transitions y recargas estándar)
@@ -532,6 +544,10 @@ const heroSlides = [
     if (heroTimer) {
       clearInterval(heroTimer);
       heroTimer = null;
+    }
+    if (heroInitialTimeout) {
+      clearTimeout(heroInitialTimeout);
+      heroInitialTimeout = null;
     }
   });
 

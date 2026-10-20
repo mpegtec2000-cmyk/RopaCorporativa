@@ -1439,9 +1439,8 @@ body.pmodal-open .wa-float {
 
 /* Animations */
 .fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fade-up 0.6s ease forwards;
+  opacity: 1;
+  transform: none;
 }
 
 @keyframes fade-up {
