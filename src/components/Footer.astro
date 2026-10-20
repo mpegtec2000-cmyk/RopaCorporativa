@@ -1,5 +1,10 @@
 ---
 import { SITE, WHATSAPP_NUMBER } from '../config';
+import { getSettings } from '../lib/cms/store';
+
+const settings = await getSettings();
+const phone = settings.contactPhone || SITE.phone;
+const email = settings.contactEmail || SITE.email;
 ---
 
 <footer class="site-footer">
@@ -198,7 +203,7 @@ import { SITE, WHATSAPP_NUMBER } from '../config';
             </div>
             <div class="contact-meta">
               <span class="contact-label">Teléfono Ventas</span>
-              <a href={`tel:${SITE.phone.replace(/\s+/g, '')}`} class="contact-link">{SITE.phone}</a>
+              <a href={`tel:${phone.replace(/\s+/g, '')}`} class="contact-link">{phone}</a>
             </div>
           </div>
 
@@ -211,7 +216,7 @@ import { SITE, WHATSAPP_NUMBER } from '../config';
             </div>
             <div class="contact-meta">
               <span class="contact-label">Correo Corporativo</span>
-              <a href={`mailto:${SITE.email}`} class="contact-link">{SITE.email}</a>
+              <a href={`mailto:${email}`} class="contact-link">{email}</a>
             </div>
           </div>
 
@@ -636,13 +641,29 @@ import { SITE, WHATSAPP_NUMBER } from '../config';
   }
 
   @media (max-width: 640px) {
+    .footer-legal-bar {
+      padding: 24px 16px calc(140px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
     .footer-legal-inner {
       flex-direction: column;
       text-align: center;
       gap: 12px;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 0 10px;
     }
+
+    .legal-left p {
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #64748B;
+    }
+
     .legal-right {
       justify-content: center;
+      gap: 6px 12px;
+      font-size: 12px;
     }
   }
 </style>

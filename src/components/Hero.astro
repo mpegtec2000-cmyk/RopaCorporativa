@@ -1,5 +1,8 @@
 ---
 import { WHATSAPP_NUMBER } from '../config';
+import { getSettings } from '../lib/cms/store';
+
+const settings = await getSettings();
 const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero cotizar ropa corporativa / industrial.')}`;
 
 // 4 Fondos para escritorio (16:9) y 4 para móvil (9:16)
@@ -39,11 +42,11 @@ const heroSlides = [
     <div class="hero-copy">
       <div class="hero-badge">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>Distribuidor Mayorista B2B en Chile</span>
+        <span id="hero-badge-text">{settings.heroBadge || 'Distribuidor Mayorista B2B en Chile'}</span>
       </div>
       
-      <h1 class="fade-up">Los Mejores Proveedores en Ropa Corporativa, Industrial y EPP</h1>
-      <p class="hero-lead fade-up fade-up-delay">Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.</p>
+      <h1 class="fade-up" id="hero-title-text">{settings.heroTitle || 'Los Mejores Proveedores en Ropa Corporativa, Industrial y EPP'}</h1>
+      <p class="hero-lead fade-up fade-up-delay" id="hero-lead-text">{settings.heroLead || 'Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.'}</p>
       
       <div class="hero-actions fade-up fade-up-delay-2">
         <a class="btn hero-btn-primary" href="#cotizar">
@@ -57,37 +60,37 @@ const heroSlides = [
       </div>
     </div>
 
-    <!-- Proof Badges overlay -->
+    <!-- Proof Badges overlay / Propuesta Comercial B2B Mayorista -->
     <div class="proof-bar">
-      <div class="proof-card">
-        <div class="proof-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="proof-text">
-          <b>Respuesta 24h</b>
-          <span>Cotización formal garantizada</span>
-        </div>
-      </div>
-      
-      <div class="proof-card">
+      <a href="#cotizar" class="proof-card" title="Cotizar por Mayor y Volumen">
         <div class="proof-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         </div>
         <div class="proof-text">
-          <b>Precios por Volumen</b>
-          <span>Descuentos corporativos desde 50u</span>
+          <b>Precios Distribuidor Mayorista</b>
+          <span>Escalas y descuentos por compras al por mayor</span>
         </div>
-      </div>
-
-      <div class="proof-card">
+      </a>
+      
+      <a href="#cotizar" class="proof-card" title="Cotización para Compras al Por Mayor">
         <div class="proof-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
         <div class="proof-text">
-          <b>Bordado de Logo</b>
-          <span>Personalización textil industrial</span>
+          <b>Cotización para Compras al Por Mayor</b>
+          <span>Precios escalonados según volumen y pedidos de faena/dotación</span>
         </div>
-      </div>
+      </a>
+
+      <a href="#cotizar" class="proof-card" title="Despacho a Todo Chile y Licitaciones">
+        <div class="proof-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="proof-text">
+          <b>Despacho a Todo Chile</b>
+          <span>Atención a empresas, contratos y licitaciones</span>
+        </div>
+      </a>
     </div>
   </div>
 </section>
@@ -193,10 +196,10 @@ const heroSlides = [
     .hero-overlay {
       background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.96) 0%,
-        rgba(255, 255, 255, 0.88) 50%,
-        rgba(255, 255, 255, 0.42) 80%,
-        rgba(255, 255, 255, 0.18) 100%
+        rgba(255, 255, 255, 0.88) 0%,
+        rgba(255, 255, 255, 0.72) 45%,
+        rgba(255, 255, 255, 0.35) 75%,
+        rgba(255, 255, 255, 0.15) 100%
       );
     }
   }
@@ -260,24 +263,30 @@ const heroSlides = [
 
   @media (max-width: 640px) {
     .hero-container {
-      padding-left: 18px;
-      padding-right: 18px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
-    .hero-section h1 {
-      font-size: clamp(23px, 6.6vw, 30px);
-      line-height: 1.18;
-      letter-spacing: -0.02em;
+    .hero-badge {
+      font-size: 10.5px;
+      padding: 5px 12px;
       margin-bottom: 14px;
     }
+    .hero-section h1 {
+      font-size: clamp(21px, 5.8vw, 26px);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
     .hero-lead {
-      font-size: 14.5px;
-      line-height: 1.55;
-      margin-bottom: 22px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      margin-bottom: 18px;
     }
     .hero-btn-primary,
     .hero-btn-ghost {
-      padding: 12px 20px !important;
-      font-size: 14px !important;
+      padding: 10px 18px !important;
+      font-size: 13.5px !important;
+      border-radius: 7px !important;
     }
   }
 
@@ -366,8 +375,8 @@ const heroSlides = [
 
   @media (max-width: 899px) {
     .proof-bar {
-      padding-top: 20px;
-      gap: 10px;
+      padding-top: 16px;
+      gap: 8px;
     }
   }
 
@@ -379,22 +388,29 @@ const heroSlides = [
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(10px);
     border: 1px solid #E2E8F0;
-    border-left: 3px solid #0F172A;
+    border-left: 3px solid #2563EB;
     border-radius: 10px;
     box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.08);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .proof-card:hover {
     transform: translateY(-2px);
-    border-color: #CBD5E1;
-    border-left-color: #0F172A;
-    box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.14);
+    border-color: #2563EB;
+    border-left-color: #1D4ED8;
+    box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.2);
   }
 
   @media (max-width: 899px) {
     .proof-card {
-      padding: 12px 16px;
-      gap: 12px;
+      padding: 9px 12px;
+      gap: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
     }
   }
 
@@ -413,24 +429,44 @@ const heroSlides = [
 
   @media (max-width: 899px) {
     .proof-icon {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+    .proof-icon svg {
+      width: 17px;
+      height: 17px;
     }
   }
 
   .proof-text b {
     display: block;
-    font-size: 14.5px;
+    font-size: 13.5px;
     font-weight: 700;
     color: #0F172A;
     margin-bottom: 2px;
-    font-family: var(--display, system-ui);
-    letter-spacing: -0.01em;
+    font-family: var(--mono, 'JetBrains Mono', monospace);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
   .proof-text span {
     font-size: 12.5px;
     color: #475569;
     font-weight: 500;
+    font-family: var(--body, sans-serif);
+  }
+
+  @media (max-width: 899px) {
+    .proof-text b {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+    .proof-text span {
+      font-size: 11px;
+      line-height: 1.35;
+    }
   }
 </style>
 
@@ -470,6 +506,42 @@ const heroSlides = [
       heroTimer = null;
     }
   });
+
+  // Sincronización en vivo de textos Hero desde el SaaS CMS
+  async function syncHeroSettings() {
+    try {
+      const res = await fetch('/api/admin/settings');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success || !data.settings) return;
+      const s = data.settings;
+      const badge = document.getElementById('hero-badge-text');
+      const title = document.getElementById('hero-title-text');
+      const lead = document.getElementById('hero-lead-text');
+      if (badge && s.heroBadge) badge.textContent = s.heroBadge;
+      if (title && s.heroTitle) title.textContent = s.heroTitle;
+      if (lead && s.heroLead) lead.textContent = s.heroLead;
+    } catch (e) {
+      // Fallback silencioso
+    }
+  }
+
+  if (typeof BroadcastChannel !== 'undefined') {
+    const liveCmsChannel = new BroadcastChannel('zortex_cms');
+    liveCmsChannel.onmessage = (ev) => {
+      if (ev.data && ev.data.type === 'SETTINGS_UPDATED') {
+        syncHeroSettings();
+      }
+    };
+  }
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'zortex_cms_updated') {
+      syncHeroSettings();
+    }
+  });
+
+  syncHeroSettings();
 
   if (document.readyState !== 'loading') {
     setupHeroBgSlideshow();

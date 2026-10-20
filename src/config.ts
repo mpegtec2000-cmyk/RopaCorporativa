@@ -10,8 +10,8 @@ export const SITE = {
   /** Descripción SEO */
   description:
     'Zortex - Ropa corporativa, ropa industrial y elementos de protección personal (EPP) al por mayor con precios por volumen y bordado personalizado. Cotiza online.',
-  /** URL del sitio en producción (para OG/sitemap) */
-  url: 'https://zortex.cl',
+  /** URL del sitio en producción (para OG/sitemap/canonical) */
+  url: import.meta.env.PUBLIC_SITE_URL || 'https://www.zortex.cl',
   /** Ubicación física */
   location: 'Chile',
   /** Email de ventas */

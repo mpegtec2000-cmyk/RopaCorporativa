@@ -1,0 +1,64 @@
+[
+  {
+    "id": "q-b2b8921a",
+    "created_at": "2026-10-19T18:30:12.110Z",
+    "empresa": "Minera Cordillera Andina",
+    "rut": "77.940.320-K",
+    "nombre": "Francisca Valenzuela",
+    "telefono": "+56 9 9123 4567",
+    "correo": "fvalenzuela@cordilleraandina.cl",
+    "personalizacion": "Estampado reflectante espalda y logo bordado",
+    "plazo": "Inmediato (7 días)",
+    "mensaje": "Parque de vestuario para cuadrillas en turno 7x7. Requerimos ficha técnica para certificación interna.",
+    "estado": "en_proceso",
+    "notas": "Se envió ficha técnica preliminar vía WhatsApp. Esperando aprobación de gerencia de compras.",
+    "items": [
+      {
+        "producto": "Parka Térmica Alta Visibilidad 3 en 1",
+        "categoria": "Ropa de Seguridad",
+        "cantidad": 80,
+        "talla": "L"
+      },
+      {
+        "producto": "Pantalón Cargo Faena Reforzado",
+        "categoria": "Ropa Industrial",
+        "cantidad": 120,
+        "talla": "46"
+      },
+      {
+        "producto": "Zapato Dieléctrico Puntera Composite",
+        "categoria": "EPP",
+        "cantidad": 80,
+        "talla": "42"
+      }
+    ]
+  },
+  {
+    "id": "q-c3f9104b",
+    "created_at": "2026-10-18T14:15:00.000Z",
+    "empresa": "Transportes & Logística del Pacífico",
+    "rut": "76.882.119-3",
+    "nombre": "Rodrigo Silva",
+    "telefono": "+56 9 7451 9088",
+    "correo": "rsilva@pacificolog.cl",
+    "personalizacion": "Bordado corporativo en pecho izquierdo",
+    "plazo": "20 días",
+    "mensaje": "Dotación de invierno para 40 conductores y supervisores de patio.",
+    "estado": "cotizado",
+    "notas": "Cotización formal enviada por correo electrónico con descuento de 12% por volumen.",
+    "items": [
+      {
+        "producto": "Polar Corporativo Térmico Antipeeling",
+        "categoria": "Ropa Corporativa",
+        "cantidad": 40,
+        "talla": "M"
+      },
+      {
+        "producto": "Chaleco Geólogo Reflectante Alta Visibilidad",
+        "categoria": "Ropa de Seguridad",
+        "cantidad": 40,
+        "talla": "XL"
+      }
+    ]
+  }
+]

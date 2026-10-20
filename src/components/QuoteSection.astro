@@ -1,5 +1,8 @@
 ---
-import { WHATSAPP_NUMBER, PRODUCTS } from '../config';
+import { WHATSAPP_NUMBER } from '../config';
+import { getPublicProducts } from '../lib/cms/store';
+
+const PRODUCTS = await getPublicProducts();
 ---
 
 <section id="cotizar" class="quote-section" data-wa={WHATSAPP_NUMBER} data-products={JSON.stringify(PRODUCTS)}>
@@ -456,6 +459,14 @@ import { WHATSAPP_NUMBER, PRODUCTS } from '../config';
           showSuccessAnimation();
           return;
         }
+
+        // Notificar en vivo al panel SaaS
+        try {
+          localStorage.setItem('zortex_cms_updated', Date.now().toString());
+          if (typeof BroadcastChannel !== 'undefined') {
+            new BroadcastChannel('zortex_cms').postMessage({ type: 'QUOTES_UPDATED', id: result.id });
+          }
+        } catch (_) {}
 
         showSuccess();
       } catch (err) {

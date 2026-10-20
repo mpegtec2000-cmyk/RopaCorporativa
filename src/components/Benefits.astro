@@ -1,5 +1,7 @@
 ---
-import { PRODUCTS } from '../config';
+import { getPublicProducts } from '../lib/cms/store';
+
+const PRODUCTS = await getPublicProducts();
 
 const countByCat = (cat: string) => PRODUCTS.filter(p => p.category === cat).length;
 
@@ -180,17 +182,10 @@ const LINES_DATA = [
               <span class="nl-count-pill">{line.countBadge}</span>
             </div>
 
-            <!-- Fila Inferior: Título, Descripción, Chips y Botón -->
+            <!-- Fila Inferior: Título, Descripción y Botón -->
             <div class="nl-card-bottom-content">
               <h3 class="nl-card-title">{line.title}</h3>
               <p class="nl-card-desc">{line.description}</p>
-
-              <!-- Chips de Subcategorías -->
-              <div class="nl-card-chips">
-                {line.subcategories.map((sub) => (
-                  <span class="nl-chip">{sub}</span>
-                ))}
-              </div>
 
               <!-- Botón CTA con microanimación -->
               <div class="nl-card-footer">

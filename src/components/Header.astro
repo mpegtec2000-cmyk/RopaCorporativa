@@ -1,5 +1,8 @@
 ---
 import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
+import { getSettings } from '../lib/cms/store';
+
+const settings = await getSettings();
 ---
 
 <!-- Top bar -->
@@ -8,17 +11,17 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
     <div class="topbar-left">
       <span class="topbar-item">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        {SITE.email}
+        {settings.contactEmail || SITE.email}
       </span>
       <span class="topbar-sep">|</span>
       <span class="topbar-item">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:5px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        {SITE.phone}
+        {settings.contactPhone || SITE.phone}
       </span>
     </div>
     <a class="topbar-wa" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Atención Directa por WhatsApp
+      {settings.topbarWhatsappText || 'Atención Directa por WhatsApp'}
     </a>
   </div>
 </div>
@@ -70,6 +73,12 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
         <span>Solicitar Cotización</span>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
+      <a href="/sistema" class="header-system-btn" aria-label="Ingreso al Sistema" title="Acceso al Sistema ZORTEX">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </a>
       <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" id="menu-toggle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
@@ -116,6 +125,16 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
         <span>Cómo Funciona</span>
         <svg class="mobile-item-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
       </a>
+      <a href="/sistema" class="mobile-nav-item mobile-system-link">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Acceso al Sistema
+        </span>
+        <svg class="mobile-item-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
     </nav>
   </div>
 
@@ -151,6 +170,8 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
   const close = document.getElementById('mobile-close');
   const headerCartBtn = document.getElementById('header-cart-btn');
   const mobileCartBtn = document.getElementById('mobile-cart-btn');
+  const dropdownTrigger = document.querySelector('.nav-dropdown-trigger');
+  const navDropdown = document.querySelector('.nav-dropdown');
   
   function openMenu() {
     if (menu) menu.classList.add('open');
@@ -176,7 +197,46 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
   });
   if (menu) {
     menu.querySelectorAll('.mobile-nav-item, .mobile-cta-btn').forEach((a) => {
-      a.addEventListener('click', closeMenu);
+      a.addEventListener('click', (e) => {
+        const href = (a as HTMLAnchorElement).getAttribute('href');
+        closeMenu();
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href.substring(1);
+          const targetEl = targetId ? document.getElementById(targetId) : null;
+          if (targetEl) {
+            setTimeout(() => {
+              targetEl.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          } else if (href === '#') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  }
+
+  // Click en "Líneas y Categorías" en versión desktop o táctil
+  if (dropdownTrigger) {
+    dropdownTrigger.addEventListener('click', (e) => {
+      // Si el usuario hace click, navega suavemente a #lineas
+      e.preventDefault();
+      const targetEl = document.getElementById('lineas');
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  // Cerrar el mega-menu al hacer click en cualquier enlace dentro de él
+  if (navDropdown) {
+    navDropdown.querySelectorAll('.mega-menu a').forEach((link) => {
+      link.addEventListener('click', () => {
+        (navDropdown as HTMLElement).blur();
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+      });
     });
   }
 
@@ -462,6 +522,35 @@ import { SITE, CATEGORIES, WHATSAPP_NUMBER } from '../config';
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  .header-system-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    color: #0F172A;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .header-system-btn:hover {
+    background: #0F172A;
+    color: #FFFFFF;
+    border-color: #0F172A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+  }
+
+  .mobile-system-link {
+    background: rgba(37, 99, 235, 0.05);
+    border-left: 3px solid #2563EB;
+    color: #1E40AF !important;
+    font-weight: 700;
   }
   
   .header-cart-btn {

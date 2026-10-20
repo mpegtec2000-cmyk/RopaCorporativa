@@ -1381,6 +1381,19 @@ footer.site-footer, .site-footer {
   }
 }
 
+body.cart-drawer-open .floating-cart-btn,
+body.cart-drawer-open .wa-float,
+body.mobile-nav-open .floating-cart-btn,
+body.mobile-nav-open .wa-float,
+body.pmodal-open .floating-cart-btn,
+body.pmodal-open .wa-float {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: scale(0.85) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
 /* Brand Carousel */
 .carousel-wrapper {
   overflow: hidden;

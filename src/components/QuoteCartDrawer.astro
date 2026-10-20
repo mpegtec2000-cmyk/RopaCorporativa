@@ -885,6 +885,32 @@ import { WHATSAPP_NUMBER } from '../config';
     });
   }
 
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      const items = getCart();
+      if (items.length > 0) {
+        try {
+          fetch('/api/cotizar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              empresa: 'Solicitud vía WhatsApp Web',
+              nombre: 'Cliente Web',
+              personalizacion: 'Consulta WhatsApp',
+              mensaje: `Consulta iniciada por WhatsApp desde el carrito flotante (${items.length} productos)`,
+              items: items.map(it => ({
+                producto: it.name,
+                categoria: it.category || null,
+                cantidad: it.qty || 1,
+                talla: it.size || null,
+              }))
+            })
+          }).catch(() => {});
+        } catch (_) {}
+      }
+    });
+  }
+
   // Renderizar contenido del Drawer
   function renderCart() {
     const items = getCart();

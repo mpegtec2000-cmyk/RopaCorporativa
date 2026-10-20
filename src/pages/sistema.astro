@@ -1,0 +1,4061 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { PRODUCT_CATEGORIES } from '../lib/cms/types';
+
+export const prerender = false;
+---
+
+<Layout title="SaaS CMS ZORTEX | Panel de Administración B2B" noindex={true}>
+  <div class="saas-shell" id="saas-shell">
+    
+    <!-- =====================================================================
+         1. PANTALLA DE ACCESO (LOGIN)
+         ===================================================================== -->
+    <section id="auth-screen" class="auth-view">
+      <div class="auth-box">
+        <div class="auth-brand">
+          <img src="/images/zortex-logo-dark.png" alt="ZORTEX" class="auth-logo" />
+          <span class="auth-pill">PORTAL SAAS B2B</span>
+        </div>
+        
+        <div class="auth-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+
+        <h1 class="auth-title">Ingreso al Sistema</h1>
+        <p class="auth-desc">Administración de Catálogo, Carga de Imágenes, Cotizaciones y Contenido en Vivo</p>
+
+        <form id="login-form" class="auth-form" autocomplete="off">
+          <div class="field-block">
+            <label for="login-user">Usuario Administrador</label>
+            <div class="field-input-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <input type="text" id="login-user" name="username" placeholder="ZORTEX" value="ZORTEX" required autofocus />
+            </div>
+          </div>
+
+          <div class="field-block">
+            <label for="login-pass">Contraseña</label>
+            <div class="field-input-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input type="password" id="login-pass" name="password" placeholder="••••••••" required />
+            </div>
+            <div class="auth-hint">Clave oficial: <code>zortex</code></div>
+          </div>
+
+          <div id="login-err" class="alert-box error" style="display: none;">
+            Usuario o contraseña incorrectos.
+          </div>
+
+          <button type="submit" class="btn-main" id="btn-login">
+            <span>Iniciar Sesión en el SaaS</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </form>
+
+        <div class="auth-footer-link">
+          <a href="/">← Volver a la Tienda Pública</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         2. APLICACIÓN PRINCIPAL SAAS (SIDEBAR + WORKSPACE)
+         ===================================================================== -->
+    <div id="saas-app" class="app-layout" style="display: none;">
+      
+      <!-- Barra lateral (Sidebar) -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <a href="/" class="sidebar-brand" title="Ir a la web pública">
+            <img src="/images/zortex-logo-dark.png" alt="ZORTEX" class="sidebar-logo" />
+          </a>
+          <span class="saas-badge-pill">SaaS PRO</span>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button type="button" class="nav-item active" data-tab="tab-products">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Catálogo & Productos</span>
+            <span class="nav-count" id="count-products-nav">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="tab-quotes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>Cotizaciones B2B</span>
+            <span class="nav-count nav-count-alert" id="count-quotes-nav">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="tab-content">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Textos & Portada</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="backend-status-card">
+            <span class="status-indicator-dot"></span>
+            <div class="status-text-block">
+              <strong>Base de Datos:</strong>
+              <span id="backend-label">Conectando...</span>
+            </div>
+          </div>
+
+          <div class="user-strip">
+            <div class="user-avatar">ZX</div>
+            <div class="user-meta">
+              <strong>ZORTEX Admin</strong>
+              <span>Conectado en Vivo</span>
+            </div>
+          </div>
+
+          <div class="footer-btns">
+            <a href="/" target="_blank" class="btn-subtle" title="Abrir tienda en pestaña nueva">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              <span>Ver Web</span>
+            </a>
+            <button type="button" class="btn-logout" id="btn-logout" title="Cerrar sesión">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span>Salir</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Contenedor Principal (Workspace) -->
+      <main class="workspace">
+        
+        <!-- Header superior -->
+        <header class="topbar">
+          <div class="topbar-left">
+            <button type="button" class="btn-sidebar-toggle" id="btn-sidebar-toggle" aria-label="Alternar menú">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            <div class="breadcrumb">
+              <span>SaaS ZORTEX</span>
+              <span class="sep">/</span>
+              <strong id="topbar-section-title">Catálogo & Productos</strong>
+            </div>
+          </div>
+
+          <div class="topbar-right">
+            <button type="button" class="btn-action-refresh" id="btn-global-refresh" title="Sincronizar datos">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              <span>Sincronizar</span>
+            </button>
+            <span class="live-tag">
+              <span class="pulse-dot"></span> EN VIVO
+            </span>
+          </div>
+        </header>
+
+        <div class="workspace-body">
+          
+          <!-- ================= TAB 1: PRODUCTOS ================= -->
+          <section id="tab-products" class="tab-pane active">
+            
+            <!-- Tarjetas de métricas rápidas (KPIs) -->
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-icon blue">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Total en Catálogo</span>
+                  <strong class="kpi-val" id="kpi-total-prods">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Activos en Tienda</span>
+                  <strong class="kpi-val" id="kpi-active-prods">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon amber">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                  </svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Ocultos / Pausados</span>
+                  <strong class="kpi-val" id="kpi-inactive-prods">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon purple">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Cotizaciones B2B</span>
+                  <strong class="kpi-val" id="kpi-total-quotes">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cabecera de sección de catálogo -->
+            <div class="pane-header">
+              <div>
+                <h2>Catálogo Maestro de Productos</h2>
+                <p>Edita fotos, modelos, SKUs, categorías, curvas de tallas y visibilidad en tiempo real para la tienda online.</p>
+              </div>
+              <div class="pane-header-actions">
+                <button type="button" class="btn-primary-add" id="btn-open-create-prod">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  <span>Crear Nuevo Producto</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Barra de Filtros y Búsqueda -->
+            <div class="filter-toolbar">
+              <div class="filter-top-row">
+                <div class="search-field">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="text" id="prod-search-input" placeholder="Buscar por nombre, modelo, SKU o tela (ej: oxford, cargo, softshell)..." />
+                  <button type="button" id="btn-clear-search" class="btn-clear-search" style="display: none;" title="Limpiar búsqueda">✕</button>
+                </div>
+
+                <div class="status-select-wrap">
+                  <span class="filter-label">Estado:</span>
+                  <select id="prod-status-filter" class="saas-select-filter">
+                    <option value="all">Todos los estados</option>
+                    <option value="active">Solo Activos en Tienda</option>
+                    <option value="inactive">Solo Inactivos / Pausados</option>
+                  </select>
+                </div>
+
+                <div class="items-per-page-wrap">
+                  <span class="filter-label">Por página:</span>
+                  <select id="prod-page-size" class="saas-select-filter">
+                    <option value="25" selected>25 modelos</option>
+                    <option value="50">50 modelos</option>
+                    <option value="100">100 modelos</option>
+                    <option value="all">Todos (sin paginar)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Chips de Categoría -->
+              <div class="category-chips-bar" id="cat-filter-chips">
+                <button type="button" class="chip active" data-cat="all">Todas las Categorías (<span id="count-all-chip">0</span>)</button>
+                {PRODUCT_CATEGORIES.map(cat => (
+                  <button type="button" class="chip" data-cat={cat}>{cat}</button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Tabla de productos con dimensionamiento estricto y seguro -->
+            <div class="table-card">
+              <div class="table-responsive">
+                <table class="saas-table" id="prods-table">
+                  <thead>
+                    <tr>
+                      <th class="th-thumb" style="width: 76px;">Foto</th>
+                      <th class="th-prod" style="width: auto;">Producto & Modelo</th>
+                      <th class="th-sku" style="width: 120px;">Código / SKU</th>
+                      <th class="th-cat" style="width: 160px;">Categoría</th>
+                      <th class="th-sizes" style="width: 150px;">Curva Tallas</th>
+                      <th class="th-status" style="width: 120px; text-align: center;">Visibilidad</th>
+                      <th class="th-actions" style="width: 130px; text-align: right;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="prods-tbody">
+                    <tr>
+                      <td colspan="7" class="loading-td">Cargando catálogo en tiempo real...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Footer con resumen y paginación interactiva -->
+              <div class="table-footer-bar">
+                <div class="footer-summary-text" id="table-summary-lbl">
+                  Mostrando 0 productos
+                </div>
+
+                <div class="pagination-controls" id="pagination-controls">
+                  <button type="button" class="page-nav-btn" id="btn-prev-page" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <span>Anterior</span>
+                  </button>
+                  <span class="page-counter-lbl" id="page-counter-lbl">Página 1 de 1</span>
+                  <button type="button" class="page-nav-btn" id="btn-next-page">
+                    <span>Siguiente</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================= TAB 2: COTIZACIONES B2B ================= -->
+          <section id="tab-quotes" class="tab-pane" style="display: none;">
+            
+            <!-- KPIs de Cotizaciones -->
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-icon purple">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Total Cotizaciones</span>
+                  <strong class="kpi-val" id="q-stat-total">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon amber">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Nuevas por Gestionar</span>
+                  <strong class="kpi-val" id="q-stat-new">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon blue">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M16 12l-4-4-4 4M12 16V8"></path></svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">En Gestión / Cotizadas</span>
+                  <strong class="kpi-val" id="q-stat-prog">0</strong>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="kpi-info">
+                  <span class="kpi-label">Ganadas / Cerradas</span>
+                  <strong class="kpi-val" id="q-stat-won">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cabecera de la sección -->
+            <div class="pane-header">
+              <div>
+                <h2>Bandeja de Cotizaciones Mayoristas B2B</h2>
+                <p>Monitoreo y seguimiento en tiempo real de solicitudes de empresas y clientes recibidas desde la tienda.</p>
+              </div>
+              <div class="pane-header-actions">
+                <button type="button" class="btn-subtle-action" id="btn-create-test-quote" title="Crea un pedido de prueba para ver el flujo">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+                  <span>Generar Cotización de Prueba</span>
+                </button>
+                <button type="button" class="btn-subtle-action" id="btn-export-quotes-csv" title="Descargar todas las solicitudes en archivo compatible con Excel">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span>Exportar a Excel (CSV)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar de Filtros y Búsqueda de Cotizaciones -->
+            <div class="filter-toolbar">
+              <div class="filter-top-row">
+                <div class="search-field" style="max-width: 440px;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input type="text" id="quote-search-input" placeholder="Buscar por empresa, RUT, contacto, correo o producto..." />
+                  <button type="button" id="btn-clear-quote-search" class="btn-clear-search" style="display: none;">✕</button>
+                </div>
+
+                <div class="category-chips-bar" id="quote-status-filter-chips" style="border: none; padding: 0;">
+                  <button type="button" class="chip active" data-status="all">Todas (<span id="count-q-all">0</span>)</button>
+                  <button type="button" class="chip" data-status="nuevo">Nuevas (<span id="count-q-nuevo">0</span>)</button>
+                  <button type="button" class="chip" data-status="en_gestion">En Gestión (<span id="count-q-gestion">0</span>)</button>
+                  <button type="button" class="chip" data-status="cotizado">Cotizadas (<span id="count-q-cotizado">0</span>)</button>
+                  <button type="button" class="chip" data-status="ganado">Ganadas (<span id="count-q-ganado">0</span>)</button>
+                  <button type="button" class="chip" data-status="perdido">Perdidas (<span id="count-q-perdido">0</span>)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listado Dinámico de Cotizaciones -->
+            <div id="quotes-container" class="quotes-grid">
+              <div class="loading-state">Cargando cotizaciones...</div>
+            </div>
+          </section>
+
+          <!-- ================= TAB 3: CONTENIDO ================= -->
+          <section id="tab-content" class="tab-pane" style="display: none;">
+            <div class="pane-header">
+              <div>
+                <h2>Textos y Configuración de Portada (Hero)</h2>
+                <p>Edita los textos de la página principal y datos de contacto oficiales en tiempo real.</p>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <form id="settings-form" class="settings-form">
+                <div class="form-group-section">
+                  <h3>Portada Principal (Hero)</h3>
+                  
+                  <div class="form-row">
+                    <label for="set-hero-badge">Insignia / Badge Superior</label>
+                    <input type="text" id="set-hero-badge" name="heroBadge" />
+                  </div>
+
+                  <div class="form-row">
+                    <label for="set-hero-title">Titular Principal (H1)</label>
+                    <textarea id="set-hero-title" name="heroTitle" rows="2"></textarea>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="set-hero-lead">Bajada Comercial / Descripción</label>
+                    <textarea id="set-hero-lead" name="heroLead" rows="3"></textarea>
+                  </div>
+                </div>
+
+                <div class="form-group-section">
+                  <h3>Contacto Oficial y WhatsApp</h3>
+                  
+                  <div class="form-grid-2">
+                    <div class="form-row">
+                      <label for="set-contact-email">Correo de Ventas</label>
+                      <input type="email" id="set-contact-email" name="contactEmail" />
+                    </div>
+                    <div class="form-row">
+                      <label for="set-contact-phone">Teléfono / WhatsApp de Contacto</label>
+                      <input type="text" id="set-contact-phone" name="contactPhone" />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <label for="set-topbar-wa">Texto de WhatsApp en Barra Superior</label>
+                    <input type="text" id="set-topbar-wa" name="topbarWhatsappText" />
+                  </div>
+                </div>
+
+                <div class="form-actions-bar">
+                  <span id="settings-status-msg" class="status-msg"></span>
+                  <button type="submit" class="btn-main" id="btn-save-settings">
+                    <span>Guardar Cambios en Vivo</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- =====================================================================
+         3. MODAL FULL STACK: EDITOR / CREADOR DE PRODUCTO
+         ===================================================================== -->
+    <div id="prod-modal" class="modal-backdrop" style="display: none;">
+      <div class="modal-card modal-lg">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="modal-tag">CATÁLOGO ZORTEX</span>
+            <h3 id="modal-prod-title">Editar Producto</h3>
+          </div>
+          <button type="button" class="btn-close-modal" id="btn-close-prod-modal" aria-label="Cerrar">×</button>
+        </div>
+
+        <form id="prod-form" class="modal-form">
+          <input type="hidden" id="modal-prod-id" />
+
+          <div class="modal-two-columns">
+            
+            <!-- Columna Izquierda: Estudio de Imagen & Carga -->
+            <div class="modal-col-media">
+              <span class="sub-label">Imagen del Producto</span>
+              
+              <!-- Previsualización en Vivo de Imagen -->
+              <div class="prod-img-stage" id="modal-img-preview-box">
+                <img id="m-preview-img" src="/images/catalogo/polera-corporativa.webp" alt="Previsualización" />
+                <span class="preview-badge" id="m-preview-badge">Vista Previa</span>
+              </div>
+
+              <!-- Zona de subida de archivo desde el equipo -->
+              <div class="upload-dropzone" id="upload-dropzone">
+                <input type="file" id="file-uploader-input" accept="image/png,image/jpeg,image/webp,image/avif" style="display: none;" />
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div class="dropzone-text">
+                  <strong>Haz clic para subir desde tu equipo</strong>
+                  <span>o arrastra aquí tu foto (JPG, PNG, WEBP)</span>
+                </div>
+              </div>
+
+              <div id="upload-progress-box" class="upload-progress-box" style="display: none;">
+                <span class="spinner-inline"></span>
+                <span id="upload-progress-text">Subiendo imagen al servidor...</span>
+              </div>
+
+              <!-- Botón selector de Galería existente -->
+              <button type="button" class="btn-browse-gallery" id="btn-open-gallery-picker">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <span>Elegir foto existente de la Galería</span>
+              </button>
+
+              <!-- Campo de texto URL directo -->
+              <div class="form-row direct-url-row">
+                <label for="m-prod-image">Ruta o URL Directa</label>
+                <div class="input-with-action">
+                  <input type="text" id="m-prod-image" required placeholder="/images/catalogo/... o https://..." />
+                  <button type="button" id="btn-sync-url-preview" class="btn-input-test" title="Cargar vista previa">Ver</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Información del Producto -->
+            <div class="modal-col-data">
+              <div class="form-grid-2">
+                <div class="form-row">
+                  <label for="m-prod-name">Nombre Comercial del Modelo *</label>
+                  <input type="text" id="m-prod-name" required placeholder="Ej: Parka Térmica Industrial Alerce" />
+                </div>
+
+                <div class="form-row">
+                  <label for="m-prod-sku">Código / SKU *</label>
+                  <input type="text" id="m-prod-sku" placeholder="Ej: 08460" />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-row">
+                  <label for="m-prod-category">Categoría Principal *</label>
+                  <select id="m-prod-category" required>
+                    {PRODUCT_CATEGORIES.map(cat => (
+                      <option value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="m-prod-line">Línea Técnica / Colección</label>
+                  <input type="text" id="m-prod-line" placeholder="Ej: High-Tech / Outwork" />
+                </div>
+              </div>
+
+              <!-- Curva de tallas con chips rápidos -->
+              <div class="form-row">
+                <label for="m-prod-sizes">Curva de Tallas Disponibles</label>
+                <input type="text" id="m-prod-sizes" placeholder="S, M, L, XL, XXL, 3XL" />
+                <div class="quick-sizes-bar">
+                  <span class="quick-hint-label">Añadir talla rápida:</span>
+                  <button type="button" class="btn-quick-size" data-size="XS">+ XS</button>
+                  <button type="button" class="btn-quick-size" data-size="S">+ S</button>
+                  <button type="button" class="btn-quick-size" data-size="M">+ M</button>
+                  <button type="button" class="btn-quick-size" data-size="L">+ L</button>
+                  <button type="button" class="btn-quick-size" data-size="XL">+ XL</button>
+                  <button type="button" class="btn-quick-size" data-size="XXL">+ XXL</button>
+                  <button type="button" class="btn-quick-size" data-size="3XL">+ 3XL</button>
+                  <button type="button" class="btn-quick-size" data-size="Única">+ Única</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="m-prod-summary">Ficha Breve / Descripción Técnica</label>
+                <textarea id="m-prod-summary" rows="3" placeholder="Composición textil, certificaciones, gramaje y usos recomendados..."></textarea>
+              </div>
+
+              <div class="form-row checkbox-row">
+                <label class="toggle-control">
+                  <input type="checkbox" id="m-prod-active" checked />
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-label">Producto Activo y Visible en la Tienda Pública</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" id="btn-cancel-prod-modal">Cancelar</button>
+            <button type="submit" class="btn-main" id="btn-save-prod">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Guardar Producto en Vivo</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         4. MODAL SELECTOR DE GALERÍA DE IMÁGENES
+         ===================================================================== -->
+    <div id="gallery-modal" class="modal-backdrop" style="display: none; z-index: 1050;">
+      <div class="modal-card modal-md">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="modal-tag">GALERÍA DISPONIBLE</span>
+            <h3>Elegir Imagen del Catálogo</h3>
+          </div>
+          <button type="button" class="btn-close-modal" id="btn-close-gallery" aria-label="Cerrar">×</button>
+        </div>
+        <div class="gallery-modal-body">
+          <p class="gallery-lead">Haz clic en cualquier foto existente para asignarla al producto:</p>
+          <div class="gallery-grid" id="gallery-grid">
+            <div class="loading-state">Explorando fotos del catálogo...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Layout>
+
+<!-- =========================================================================
+     ESTILOS GLOBALES SAAS (Dimensionamiento Estricto & Diseño Profesional)
+     ========================================================================= -->
+<style is:global>
+  /* Variables y Resets SaaS */
+  :root {
+    --saas-bg: #F8FAFC;
+    --saas-card-bg: #FFFFFF;
+    --saas-border: #E2E8F0;
+    --saas-border-dark: #CBD5E1;
+    --saas-text-main: #0F172A;
+    --saas-text-muted: #64748B;
+    --saas-primary: #2563EB;
+    --saas-primary-hover: #1D4ED8;
+    --saas-success: #059669;
+    --saas-danger: #DC2626;
+  }
+
+  body {
+    background-color: var(--saas-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--saas-text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* Shell General */
+  .saas-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 1. Login View */
+  .auth-view {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #F1F5F9;
+  }
+
+  .auth-box {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .auth-logo {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .auth-pill {
+    background: #0F172A;
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+  }
+
+  .auth-icon-wrap {
+    width: 52px;
+    height: 52px;
+    background: #EFF6FF;
+    color: var(--saas-primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: var(--saas-text-main);
+  }
+
+  .auth-desc {
+    font-size: 13.5px;
+    color: var(--saas-text-muted);
+    margin: 0 0 28px;
+    line-height: 1.4;
+  }
+
+  .field-block {
+    text-align: left;
+    margin-bottom: 18px;
+  }
+
+  .field-block label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .field-input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .field-input-box svg {
+    position: absolute;
+    left: 12px;
+    color: #94A3B8;
+  }
+
+  .field-input-box input {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+    background: #F8FAFC;
+    border: 1.5px solid var(--saas-border-dark);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--saas-text-main);
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .field-input-box input:focus {
+    border-color: var(--saas-primary);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  .auth-hint {
+    font-size: 11.5px;
+    color: var(--saas-text-muted);
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  .auth-hint code {
+    background: #F1F5F9;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+
+  .alert-box.error {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .btn-main {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--saas-primary);
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s;
+  }
+
+  .btn-main:hover {
+    background: var(--saas-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  .auth-footer-link {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+
+  .auth-footer-link a {
+    color: var(--saas-text-muted);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .auth-footer-link a:hover {
+    color: var(--saas-text-main);
+  }
+
+  /* 2. App Layout */
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: #FFFFFF;
+    border-right: 1px solid var(--saas-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--saas-border);
+  }
+
+  .sidebar-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .saas-badge-pill {
+    background: #0F172A;
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-menu {
+    flex: 1;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: #475569;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nav-item:hover {
+    background: #F1F5F9;
+    color: var(--saas-text-main);
+  }
+
+  .nav-item.active {
+    background: #EFF6FF;
+    color: var(--saas-primary);
+    font-weight: 700;
+  }
+
+  .nav-count {
+    margin-left: auto;
+    background: #E2E8F0;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+
+  .nav-item.active .nav-count {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .nav-count-alert {
+    background: #FEF3C7;
+    color: #B45309;
+  }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--saas-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .backend-status-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+  }
+
+  .status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--saas-success);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    flex-shrink: 0;
+  }
+
+  .status-text-block strong {
+    display: block;
+    color: #64748B;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+
+  .status-text-block span {
+    color: var(--saas-text-main);
+    font-weight: 700;
+  }
+
+  .user-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #0F172A;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .user-meta strong {
+    display: block;
+    font-size: 12.5px;
+    color: var(--saas-text-main);
+  }
+
+  .user-meta span {
+    font-size: 11px;
+    color: var(--saas-success);
+    font-weight: 600;
+  }
+
+  .footer-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .btn-subtle, .btn-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--saas-border);
+    cursor: pointer;
+    background: #FFFFFF;
+    color: #475569;
+    transition: all 0.2s;
+  }
+
+  .btn-subtle:hover {
+    background: #F1F5F9;
+    color: var(--saas-text-main);
+  }
+
+  .btn-logout:hover {
+    background: #FEF2F2;
+    color: var(--saas-danger);
+    border-color: #FECACA;
+  }
+
+  /* Workspace */
+  .workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--saas-bg);
+  }
+
+  /* Topbar */
+  .topbar {
+    height: 64px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--saas-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .btn-sidebar-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--saas-text-main);
+    padding: 6px;
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+    color: var(--saas-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breadcrumb strong {
+    color: var(--saas-text-main);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-action-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border-dark);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-action-refresh:hover {
+    background: #F1F5F9;
+  }
+
+  .live-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    color: #065F46;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+  }
+
+  .workspace-body {
+    padding: 24px 28px;
+    flex: 1;
+  }
+
+  /* KPIs Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  }
+
+  .kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .kpi-icon.blue { background: #EFF6FF; color: #2563EB; }
+  .kpi-icon.green { background: #ECFDF5; color: #059669; }
+  .kpi-icon.amber { background: #FFFBEB; color: #D97706; }
+  .kpi-icon.purple { background: #FAF5FF; color: #9333EA; }
+
+  .kpi-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--saas-text-muted);
+    margin-bottom: 2px;
+  }
+
+  .kpi-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--saas-text-main);
+  }
+
+  /* Pane Header */
+  .pane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .pane-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 4px;
+    color: var(--saas-text-main);
+  }
+
+  .pane-header p {
+    font-size: 13.5px;
+    color: var(--saas-text-muted);
+    margin: 0;
+  }
+
+  .btn-primary-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--saas-primary);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s;
+  }
+
+  .btn-primary-add:hover {
+    background: var(--saas-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  /* Filter Toolbar */
+  .filter-toolbar {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+  }
+
+  .filter-top-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .search-field {
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-field svg {
+    position: absolute;
+    left: 14px;
+    color: #94A3B8;
+  }
+
+  .search-field input {
+    width: 100%;
+    padding: 10px 36px 10px 40px;
+    background: #F8FAFC;
+    border: 1.5px solid var(--saas-border-dark);
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--saas-text-main);
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .search-field input:focus {
+    border-color: var(--saas-primary);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .btn-clear-search {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;
+    margin-right: 6px;
+  }
+
+  .saas-select-filter {
+    background: #F8FAFC;
+    border: 1.5px solid var(--saas-border-dark);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--saas-text-main);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .category-chips-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 12px;
+  }
+
+  .chip {
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border);
+    color: #475569;
+    padding: 6px 13px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .chip:hover {
+    background: #F1F5F9;
+    color: var(--saas-text-main);
+  }
+
+  .chip.active {
+    background: #0F172A;
+    color: #FFFFFF;
+    border-color: #0F172A;
+  }
+
+  /* Table Card - DIMENSIONAMIENTO ESTRICTO */
+  .table-card {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .saas-table {
+    width: 100%;
+    table-layout: fixed; /* OBLIGATORIO PARA CONTROL DE TAMAÑOS */
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+  }
+
+  .saas-table th {
+    background: #F8FAFC;
+    padding: 13px 16px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748B;
+    border-bottom: 1px solid var(--saas-border);
+    white-space: nowrap;
+  }
+
+  .saas-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+  }
+
+  .saas-table tr:hover td {
+    background: #F8FAFC;
+  }
+
+  .row-inactive td {
+    opacity: 0.55;
+    background: #FCFCFD;
+  }
+
+  /* Thumbnail Estricto: EXACTAMENTE 56px x 56px */
+  .tbl-thumb-box {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    max-width: 56px;
+    min-height: 56px;
+    max-height: 56px;
+    border-radius: 8px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  .tbl-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important; /* Mantiene la prenda en proporción sin deformar */
+    display: block !important;
+  }
+
+  .tbl-thumb-cam-hint {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tbl-thumb-box:hover .tbl-thumb-cam-hint {
+    opacity: 1;
+  }
+
+  /* Datos del Producto en Fila */
+  .tbl-prod-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--saas-text-main);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .tbl-prod-line {
+    font-size: 11.5px;
+    color: var(--saas-text-muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .tbl-sku-code {
+    display: inline-block;
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    padding: 3px 7px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0F172A;
+  }
+
+  .tbl-cat-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .tbl-cat-badge.cat-corp { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
+  .tbl-cat-badge.cat-ind { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+  .tbl-cat-badge.cat-sec { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+  .tbl-cat-badge.cat-epp { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+  .tbl-cat-badge.cat-cust { background: #FAF5FF; color: #7E22CE; border: 1px solid #E9D5FF; }
+
+  .tbl-sizes-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tbl-size-tag {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  /* Botón Switch de Visibilidad */
+  .tbl-status-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tbl-status-toggle.active {
+    background: #ECFDF5;
+    color: #047857;
+    border-color: #A7F3D0;
+  }
+
+  .tbl-status-toggle.inactive {
+    background: #F1F5F9;
+    color: #64748B;
+    border-color: #CBD5E1;
+  }
+
+  .tbl-status-toggle:hover {
+    transform: scale(1.02);
+  }
+
+  /* Acciones de Fila */
+  .tbl-actions-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .btn-row-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-row-action.edit {
+    background: #EFF6FF;
+    color: var(--saas-primary);
+    border-color: #BFDBFE;
+  }
+
+  .btn-row-action.edit:hover {
+    background: var(--saas-primary);
+    color: #FFFFFF;
+  }
+
+  .btn-row-action.upload {
+    background: #F0FDF4;
+    color: #16A34A;
+    border-color: #BBF7D0;
+  }
+
+  .btn-row-action.upload:hover {
+    background: #16A34A;
+    color: #FFFFFF;
+  }
+
+  .btn-row-action.delete {
+    background: #FEF2F2;
+    color: var(--saas-danger);
+    border-color: #FECACA;
+  }
+
+  .btn-row-action.delete:hover {
+    background: var(--saas-danger);
+    color: #FFFFFF;
+  }
+
+  /* Footer de Tabla & Paginación */
+  .table-footer-bar {
+    padding: 14px 20px;
+    background: #F8FAFC;
+    border-top: 1px solid var(--saas-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--saas-text-muted);
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border-dark);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .page-nav-btn:hover:not(:disabled) {
+    background: #F1F5F9;
+    color: var(--saas-text-main);
+  }
+
+  .page-nav-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .page-counter-lbl {
+    font-weight: 700;
+    color: var(--saas-text-main);
+  }
+
+  .pane-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-subtle-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1.5px solid var(--saas-border-dark);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-subtle-action:hover {
+    background: #F8FAFC;
+    color: var(--saas-primary);
+    border-color: #93C5FD;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1);
+  }
+
+  /* Cotizaciones B2B */
+  .quotes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .quote-card {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .quote-card:hover {
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    border-color: #CBD5E1;
+  }
+
+  .quote-card.is-new {
+    border-left: 4px solid #F59E0B;
+  }
+
+  .q-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 14px;
+  }
+
+  .q-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .q-empresa {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--saas-text-main);
+  }
+
+  .q-rut {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 12px;
+    background: #F1F5F9;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #475569;
+    border: 1px solid var(--saas-border);
+    font-weight: 600;
+  }
+
+  .q-id-pill {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 11px;
+    color: #94A3B8;
+  }
+
+  .q-select-status {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .q-select-status.status-nuevo {
+    background: #FFFBEB;
+    color: #B45309;
+    border-color: #FDE68A;
+  }
+
+  .q-select-status.status-en_gestion {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border-color: #BFDBFE;
+  }
+
+  .q-select-status.status-cotizado {
+    background: #FAF5FF;
+    color: #7E22CE;
+    border-color: #E9D5FF;
+  }
+
+  .q-select-status.status-ganado {
+    background: #ECFDF5;
+    color: #047857;
+    border-color: #A7F3D0;
+  }
+
+  .q-select-status.status-perdido {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border-color: #FECACA;
+  }
+
+  .btn-del-quote {
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border-dark);
+    color: #64748B;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+  }
+
+  .btn-del-quote:hover {
+    background: #FEF2F2;
+    color: var(--saas-danger);
+    border-color: #FECACA;
+  }
+
+  .q-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px 18px;
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    margin-bottom: 14px;
+  }
+
+  .q-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .q-meta-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748B;
+    letter-spacing: 0.04em;
+  }
+
+  .q-meta-val {
+    color: var(--saas-text-main);
+    font-weight: 600;
+  }
+
+  .q-meta-val a {
+    color: var(--saas-primary);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .q-meta-val a:hover {
+    text-decoration: underline;
+  }
+
+  .q-client-msg {
+    font-size: 13.5px;
+    background: #EFF6FF;
+    border-left: 3.5px solid var(--saas-primary);
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    color: #1E293B;
+  }
+
+  .q-client-msg strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #1E40AF;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .q-items-block {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .q-items-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .q-items-title {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--saas-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .q-items-total-pill {
+    background: #EFF6FF;
+    color: #1E40AF;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+    border: 1px solid #BFDBFE;
+  }
+
+  .q-items-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .q-item-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border-dark);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1E293B;
+  }
+
+  .q-item-qty {
+    background: #2563EB;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 11.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .q-item-name {
+    font-weight: 700;
+  }
+
+  .q-item-size {
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .q-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #F1F5F9;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .q-card-footer-btns {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-q-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #16A34A;
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-q-wa:hover {
+    background: #15803D;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+  }
+
+  .btn-q-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border-dark);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-q-action:hover {
+    background: #F1F5F9;
+    color: var(--saas-text-main);
+  }
+
+  /* Empty State Cotizaciones */
+  .quotes-empty-card {
+    background: #FFFFFF;
+    border: 2px dashed #CBD5E1;
+    border-radius: 16px;
+    padding: 56px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .quotes-empty-icon {
+    width: 64px;
+    height: 64px;
+    background: #EFF6FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--saas-primary);
+    margin-bottom: 8px;
+  }
+
+  .quotes-empty-card h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--saas-text-main);
+  }
+
+  .quotes-empty-card p {
+    margin: 0;
+    max-width: 480px;
+    color: var(--saas-text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .btn-empty-seed {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--saas-primary);
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s;
+  }
+
+  .btn-empty-seed:hover {
+    background: var(--saas-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  .q-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .q-empresa {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 4px;
+    color: var(--saas-text-main);
+  }
+
+  .q-rut {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 12px;
+    background: #F1F5F9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #475569;
+    border: 1px solid var(--saas-border);
+  }
+
+  .q-select-status {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    background: #F8FAFC;
+    border: 1.5px solid var(--saas-border-dark);
+    color: var(--saas-text-main);
+    cursor: pointer;
+  }
+
+  .btn-del-quote {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: var(--saas-danger);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .q-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px 18px;
+    background: #F8FAFC;
+    border: 1px solid var(--saas-border);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .q-meta-grid a {
+    color: var(--saas-primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .q-client-msg {
+    font-size: 13.5px;
+    background: #EFF6FF;
+    border-left: 3px solid var(--saas-primary);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .q-items-block {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .q-items-title {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--saas-text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .q-items-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .q-item-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #F1F5F9;
+    border: 1px solid var(--saas-border-dark);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12.5px;
+  }
+
+  .q-item-pill strong {
+    color: var(--saas-primary);
+  }
+
+  /* Formulario Settings */
+  .settings-card {
+    background: #FFFFFF;
+    border: 1px solid var(--saas-border);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 800px;
+  }
+
+  .form-group-section {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--saas-border);
+  }
+
+  .form-group-section:last-child {
+    border-bottom: none;
+  }
+
+  .form-group-section h3 {
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0 0 16px;
+    color: var(--saas-text-main);
+  }
+
+  .form-row {
+    margin-bottom: 16px;
+  }
+
+  .form-row label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+  }
+
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%;
+    padding: 10px 14px;
+    background: #F8FAFC;
+    border: 1.5px solid var(--saas-border-dark);
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--saas-text-main);
+    box-sizing: border-box;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+    border-color: var(--saas-primary);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+  }
+
+  .status-msg.success { color: var(--saas-success); font-weight: 700; }
+  .status-msg.error { color: var(--saas-danger); font-weight: 700; }
+
+  /* =========================================================================
+     MODAL EDIT & IMAGE STUDIO
+     ========================================================================= */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .modal-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--saas-border);
+  }
+
+  .modal-lg { max-width: 900px; }
+  .modal-md { max-width: 640px; }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--saas-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-tag {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--saas-primary);
+    letter-spacing: 0.06em;
+  }
+
+  .modal-header h3 {
+    margin: 2px 0 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--saas-text-main);
+  }
+
+  .btn-close-modal {
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: var(--saas-text-muted);
+  }
+
+  .modal-form {
+    padding: 24px;
+  }
+
+  .modal-two-columns {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+  }
+
+  .modal-col-media {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .sub-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.04em;
+  }
+
+  /* Preview Box */
+  .prod-img-stage {
+    width: 100%;
+    height: 220px;
+    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1.5px dashed var(--saas-border-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prod-img-stage img {
+    max-width: 92%;
+    max-height: 92%;
+    object-fit: contain;
+  }
+
+  .preview-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.75);
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* Dropzone */
+  .upload-dropzone {
+    border: 2px dashed #93C5FD;
+    background: #EFF6FF;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--saas-primary);
+  }
+
+  .upload-dropzone:hover {
+    background: #DBEAFE;
+    border-color: var(--saas-primary);
+  }
+
+  .dropzone-text strong {
+    display: block;
+    font-size: 12.5px;
+    color: var(--saas-primary);
+  }
+
+  .dropzone-text span {
+    font-size: 11px;
+    color: #64748B;
+  }
+
+  .upload-progress-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #1E40AF;
+    font-weight: 600;
+  }
+
+  .spinner-inline {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #93C5FD;
+    border-top-color: #1D4ED8;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .btn-browse-gallery {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #F1F5F9;
+    border: 1px solid var(--saas-border-dark);
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-browse-gallery:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+
+  .input-with-action {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-input-test {
+    background: #F1F5F9;
+    border: 1.5px solid var(--saas-border-dark);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Quick sizes chips */
+  .quick-sizes-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .quick-hint-label {
+    font-size: 11px;
+    color: #64748B;
+  }
+
+  .btn-quick-size {
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    cursor: pointer;
+  }
+
+  .btn-quick-size:hover {
+    background: #2563EB;
+    color: #FFFFFF;
+    border-color: #2563EB;
+  }
+
+  .checkbox-row {
+    margin: 18px 0;
+  }
+
+  .toggle-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1E293B;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid var(--saas-border);
+  }
+
+  .btn-cancel {
+    padding: 10px 18px;
+    background: #F1F5F9;
+    border: 1px solid var(--saas-border-dark);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Galería Modal */
+  .gallery-modal-body {
+    padding: 20px 24px;
+  }
+
+  .gallery-lead {
+    font-size: 13px;
+    color: var(--saas-text-muted);
+    margin: 0 0 16px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 4px;
+  }
+
+  .gallery-item-card {
+    height: 90px;
+    border: 1.5px solid var(--saas-border);
+    border-radius: 8px;
+    background: #F8FAFC;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+  }
+
+  .gallery-item-card:hover {
+    border-color: var(--saas-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+  }
+
+  .gallery-item-card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 1024px) {
+    .kpi-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .modal-two-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      box-shadow: 0 0 25px rgba(0,0,0,0.25);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .btn-sidebar-toggle {
+      display: inline-flex;
+    }
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    .workspace-body {
+      padding: 16px;
+    }
+  }
+</style>
+
+<!-- =========================================================================
+     SCRIPT CLIENT ENGINE (UNIFICADO, ROBUSTO Y FULL STACK)
+     ========================================================================= -->
+<script is:inline>
+  (function() {
+    const STORAGE_TOKEN_KEY = 'zortex_cms_token';
+    const liveChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('zortex_cms') : null;
+
+    // Estado Reactivo del SaaS
+    const state = {
+      token: localStorage.getItem(STORAGE_TOKEN_KEY) || '',
+      allProducts: [],
+      filteredProducts: [],
+      quotes: [],
+      activeCategory: 'all',
+      statusFilter: 'all',
+      searchQuery: '',
+      pageSize: 25,
+      currentPage: 1,
+      editingOriginalColors: [],
+      galleryLoaded: false,
+      galleryImages: [],
+    };
+
+    // Referencias DOM Principales
+    const authScreen = document.getElementById('auth-screen');
+    const saasApp = document.getElementById('saas-app');
+    const loginForm = document.getElementById('login-form');
+    const loginErr = document.getElementById('login-err');
+    const btnLogout = document.getElementById('btn-logout');
+    const btnSidebarToggle = document.getElementById('btn-sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const topbarTitle = document.getElementById('topbar-section-title');
+    const btnGlobalRefresh = document.getElementById('btn-global-refresh');
+    const backendLabel = document.getElementById('backend-label');
+
+    // KPIs & Contadores
+    const kpiTotalProds = document.getElementById('kpi-total-prods');
+    const kpiActiveProds = document.getElementById('kpi-active-prods');
+    const kpiInactiveProds = document.getElementById('kpi-inactive-prods');
+    const kpiTotalQuotes = document.getElementById('kpi-total-quotes');
+    const countProductsNav = document.getElementById('count-products-nav');
+    const countQuotesNav = document.getElementById('count-quotes-nav');
+    const countAllChip = document.getElementById('count-all-chip');
+
+    // Navegación de Pestañas
+    const navItems = document.querySelectorAll('.sidebar-menu .nav-item');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    // Filtros de Productos
+    const prodSearchInput = document.getElementById('prod-search-input');
+    const btnClearSearch = document.getElementById('btn-clear-search');
+    const prodStatusFilter = document.getElementById('prod-status-filter');
+    const prodPageSize = document.getElementById('prod-page-size');
+    const catFilterChips = document.getElementById('cat-filter-chips');
+    const prodsTbody = document.getElementById('prods-tbody');
+    const tableSummaryLbl = document.getElementById('table-summary-lbl');
+    const btnPrevPage = document.getElementById('btn-prev-page');
+    const btnNextPage = document.getElementById('btn-next-page');
+    const pageCounterLbl = document.getElementById('page-counter-lbl');
+
+    // Modal de Edición de Producto
+    const btnOpenCreateProd = document.getElementById('btn-open-create-prod');
+    const prodModal = document.getElementById('prod-modal');
+    const modalProdTitle = document.getElementById('modal-prod-title');
+    const btnCloseProdModal = document.getElementById('btn-close-prod-modal');
+    const btnCancelProdModal = document.getElementById('btn-cancel-prod-modal');
+    const prodForm = document.getElementById('prod-form');
+    const modalProdId = document.getElementById('modal-prod-id');
+    const mProdName = document.getElementById('m-prod-name');
+    const mProdSku = document.getElementById('m-prod-sku');
+    const mProdCategory = document.getElementById('m-prod-category');
+    const mProdLine = document.getElementById('m-prod-line');
+    const mProdImage = document.getElementById('m-prod-image');
+    const mPreviewImg = document.getElementById('m-preview-img');
+    const mProdSummary = document.getElementById('m-prod-summary');
+    const mProdSizes = document.getElementById('m-prod-sizes');
+    const mProdActive = document.getElementById('m-prod-active');
+    const uploadDropzone = document.getElementById('upload-dropzone');
+    const fileUploaderInput = document.getElementById('file-uploader-input');
+    const uploadProgressBox = document.getElementById('upload-progress-box');
+    const btnSyncUrlPreview = document.getElementById('btn-sync-url-preview');
+
+    // Galería
+    const btnOpenGalleryPicker = document.getElementById('btn-open-gallery-picker');
+    const galleryModal = document.getElementById('gallery-modal');
+    const btnCloseGallery = document.getElementById('btn-close-gallery');
+    const galleryGrid = document.getElementById('gallery-grid');
+
+    // Cotizaciones
+    const quoteStatusChips = document.getElementById('quote-status-filter-chips');
+    const quotesContainer = document.getElementById('quotes-container');
+
+    // Configuración
+    const settingsForm = document.getElementById('settings-form');
+    const setHeroBadge = document.getElementById('set-hero-badge');
+    const setHeroTitle = document.getElementById('set-hero-title');
+    const setHeroLead = document.getElementById('set-hero-lead');
+    const setContactEmail = document.getElementById('set-contact-email');
+    const setContactPhone = document.getElementById('set-contact-phone');
+    const setTopbarWa = document.getElementById('set-topbar-wa');
+    const settingsStatusMsg = document.getElementById('settings-status-msg');
+
+    // Helper API Fetch con Bearer Token
+    async function apiFetch(url, options = {}) {
+      const headers = new Headers(options.headers || {});
+      if (state.token) {
+        headers.set('Authorization', `Bearer ${state.token}`);
+      }
+      headers.set('Origin', window.location.origin);
+      const res = await fetch(url, { ...options, credentials: 'include', headers });
+      if (res.status === 401) {
+        handleAuthRequired();
+        throw new Error('No autorizado');
+      }
+      return res;
+    }
+
+    function handleAuthRequired() {
+      state.token = '';
+      localStorage.removeItem(STORAGE_TOKEN_KEY);
+      if (authScreen) authScreen.style.display = 'flex';
+      if (saasApp) saasApp.style.display = 'none';
+    }
+
+    function broadcastLiveChange(type) {
+      try {
+        localStorage.setItem('zortex_cms_updated', String(Date.now()));
+        if (liveChannel) {
+          liveChannel.postMessage({ type, at: Date.now() });
+        }
+      } catch (e) {
+        console.warn('Broadcast error:', e);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. INICIALIZACIÓN Y LOGIN
+    // -------------------------------------------------------------------------
+    async function initAuth() {
+      if (!state.token) {
+        handleAuthRequired();
+        return;
+      }
+      try {
+        const res = await apiFetch('/api/admin/products');
+        if (res.ok) {
+          const data = await res.json();
+          showDashboard(data);
+        } else {
+          handleAuthRequired();
+        }
+      } catch {
+        handleAuthRequired();
+      }
+    }
+
+    function showDashboard(initialData) {
+      if (authScreen) authScreen.style.display = 'none';
+      if (saasApp) saasApp.style.display = 'flex';
+
+      if (initialData && initialData.products) {
+        processProducts(initialData.products, initialData.backend);
+      } else {
+        loadProducts();
+      }
+      loadQuotes();
+      loadSettings();
+    }
+
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (loginErr) loginErr.style.display = 'none';
+
+        const username = document.getElementById('login-user').value.trim();
+        const password = document.getElementById('login-pass').value.trim();
+
+        try {
+          const res = await fetch('/api/admin/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+
+          if (data.success && data.token) {
+            state.token = data.token;
+            localStorage.setItem(STORAGE_TOKEN_KEY, data.token);
+            showDashboard();
+          } else {
+            if (loginErr) {
+              loginErr.textContent = data.error || 'Usuario o contraseña incorrectos.';
+              loginErr.style.display = 'block';
+            }
+          }
+        } catch {
+          if (loginErr) {
+            loginErr.textContent = 'Error de conexión con el servidor.';
+            loginErr.style.display = 'block';
+          }
+        }
+      });
+    }
+
+    if (btnLogout) {
+      btnLogout.addEventListener('click', async () => {
+        try {
+          await fetch('/api/admin/auth/logout', { method: 'POST' });
+        } catch {}
+        handleAuthRequired();
+      });
+    }
+
+    if (btnSidebarToggle && sidebar) {
+      btnSidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+      });
+    }
+
+    if (btnGlobalRefresh) {
+      btnGlobalRefresh.addEventListener('click', async () => {
+        btnGlobalRefresh.style.opacity = '0.5';
+        await Promise.all([loadProducts(), loadQuotes(), loadSettings()]);
+        btnGlobalRefresh.style.opacity = '1';
+      });
+    }
+
+    // Pestañas
+    navItems.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        navItems.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const targetTab = btn.getAttribute('data-tab');
+        tabPanes.forEach((pane) => {
+          pane.style.display = pane.id === targetTab ? 'block' : 'none';
+        });
+
+        if (topbarTitle) {
+          if (targetTab === 'tab-products') topbarTitle.textContent = 'Catálogo & Productos';
+          if (targetTab === 'tab-quotes') topbarTitle.textContent = 'Cotizaciones B2B';
+          if (targetTab === 'tab-content') topbarTitle.textContent = 'Textos & Portada';
+        }
+
+        if (sidebar && sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+        }
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // 2. GESTIÓN Y RENDERIZADO DEL CATÁLOGO (PAGINACIÓN & DIMENSIONES)
+    // -------------------------------------------------------------------------
+    async function loadProducts() {
+      try {
+        const res = await apiFetch('/api/admin/products');
+        if (!res.ok) return;
+        const data = await res.json();
+        processProducts(data.products || [], data.backend);
+      } catch (err) {
+        console.error('Error al cargar productos:', err);
+      }
+    }
+
+    function processProducts(products, backend) {
+      state.allProducts = products;
+
+      if (backendLabel && backend) {
+        backendLabel.textContent = backend === 'supabase' ? 'Supabase PostgreSQL' : 'Local JSON Storage';
+      }
+
+      // Actualizar KPIs
+      const activeCount = state.allProducts.filter((p) => p.isActive !== false).length;
+      const inactiveCount = state.allProducts.length - activeCount;
+
+      if (kpiTotalProds) kpiTotalProds.textContent = String(state.allProducts.length);
+      if (kpiActiveProds) kpiActiveProds.textContent = String(activeCount);
+      if (kpiInactiveProds) kpiInactiveProds.textContent = String(inactiveCount);
+      if (countProductsNav) countProductsNav.textContent = String(state.allProducts.length);
+      if (countAllChip) countAllChip.textContent = String(state.allProducts.length);
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = state.searchQuery.toLowerCase().trim();
+      const cat = state.activeCategory;
+      const status = state.statusFilter;
+
+      state.filteredProducts = state.allProducts.filter((p) => {
+        // Filtro Categoría
+        if (cat !== 'all' && p.category !== cat) return false;
+
+        // Filtro Estado
+        const isActive = p.isActive !== false;
+        if (status === 'active' && !isActive) return false;
+        if (status === 'inactive' && isActive) return false;
+
+        // Filtro Búsqueda
+        if (q) {
+          const matchName = (p.name || '').toLowerCase().includes(q);
+          const matchSku = (p.sku || '').toLowerCase().includes(q);
+          const matchCat = (p.category || '').toLowerCase().includes(q);
+          const matchLine = (p.line || '').toLowerCase().includes(q);
+          if (!matchName && !matchSku && !matchCat && !matchLine) return false;
+        }
+
+        return true;
+      });
+
+      // Reiniciar a página 1 al filtrar
+      state.currentPage = 1;
+      renderTablePage();
+    }
+
+    function renderTablePage() {
+      if (!prodsTbody) return;
+
+      const totalItems = state.filteredProducts.length;
+
+      if (totalItems === 0) {
+        prodsTbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 48px; color: #64748B;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" style="margin-bottom: 8px;">
+                <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <div>No se encontraron productos que coincidan con la búsqueda o filtro.</div>
+            </td>
+          </tr>
+        `;
+        if (tableSummaryLbl) tableSummaryLbl.textContent = '0 productos encontrados';
+        if (pageCounterLbl) pageCounterLbl.textContent = 'Página 1 de 1';
+        if (btnPrevPage) btnPrevPage.disabled = true;
+        if (btnNextPage) btnNextPage.disabled = true;
+        return;
+      }
+
+      // Cálculo de paginación
+      const pageSize = state.pageSize === 'all' ? totalItems : parseInt(state.pageSize, 10);
+      const totalPages = Math.ceil(totalItems / pageSize);
+      if (state.currentPage > totalPages) state.currentPage = totalPages;
+      if (state.currentPage < 1) state.currentPage = 1;
+
+      const startIndex = (state.currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalItems);
+      const pageItems = state.filteredProducts.slice(startIndex, endIndex);
+
+      if (tableSummaryLbl) {
+        tableSummaryLbl.textContent = `Mostrando ${startIndex + 1} - ${endIndex} de ${totalItems} productos (Total catálogo: ${state.allProducts.length})`;
+      }
+
+      if (pageCounterLbl) {
+        pageCounterLbl.textContent = `Página ${state.currentPage} de ${totalPages}`;
+      }
+
+      if (btnPrevPage) btnPrevPage.disabled = state.currentPage <= 1;
+      if (btnNextPage) btnNextPage.disabled = state.currentPage >= totalPages;
+
+      // Renderizado seguro con miniaturas estrictamente contenidas (56px)
+      prodsTbody.innerHTML = pageItems
+        .map((p) => {
+          const isActive = p.isActive !== false;
+          const sizes = Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes.slice(0, 4) : ['Estándar'];
+          const catClass = getCatBadgeClass(p.category);
+
+          return `
+            <tr class="${isActive ? '' : 'row-inactive'}" data-id="${p.id}">
+              <td>
+                <div class="tbl-thumb-box" data-action="quick-photo" data-id="${p.id}" title="Clic para cambiar la foto de este producto">
+                  <img src="${p.image || '/images/catalogo/polera-corporativa.webp'}" alt="${escapeHtml(p.name)}" class="tbl-thumb" onerror="this.src='/images/catalogo/polera-corporativa.webp'" />
+                  <div class="tbl-thumb-cam-hint">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <strong class="tbl-prod-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</strong>
+                <span class="tbl-prod-line">${escapeHtml(p.line || 'Línea Estándar')}</span>
+              </td>
+              <td>
+                <span class="tbl-sku-code">${escapeHtml(p.sku || '--')}</span>
+              </td>
+              <td>
+                <span class="tbl-cat-badge ${catClass}">${escapeHtml(p.category)}</span>
+              </td>
+              <td>
+                <div class="tbl-sizes-list">
+                  ${sizes.map((s) => `<span class="tbl-size-tag">${escapeHtml(s)}</span>`).join('')}
+                  ${Array.isArray(p.sizes) && p.sizes.length > 4 ? `<span class="tbl-size-tag">+${p.sizes.length - 4}</span>` : ''}
+                </div>
+              </td>
+              <td style="text-align: center;">
+                <button type="button" class="tbl-status-toggle ${isActive ? 'active' : 'inactive'}" data-action="toggle-status" data-id="${p.id}" title="Alternar visibilidad">
+                  ${isActive ? '● Activo' : '○ Inactivo'}
+                </button>
+              </td>
+              <td style="text-align: right;">
+                <div class="tbl-actions-group">
+                  <button type="button" class="btn-row-action upload" data-action="quick-photo" data-id="${p.id}" title="Cambiar Foto">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  </button>
+                  <button type="button" class="btn-row-action edit" data-action="edit" data-id="${p.id}" title="Editar Producto">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button type="button" class="btn-row-action delete" data-action="delete" data-id="${p.id}" title="Eliminar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join('');
+    }
+
+    function getCatBadgeClass(category) {
+      if (category === 'Ropa Corporativa') return 'cat-corp';
+      if (category === 'Ropa Industrial') return 'cat-ind';
+      if (category === 'Ropa de Seguridad') return 'cat-sec';
+      if (category === 'EPP') return 'cat-epp';
+      return 'cat-cust';
+    }
+
+    // Eventos de Búsqueda y Filtros
+    if (prodSearchInput) {
+      prodSearchInput.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        if (btnClearSearch) btnClearSearch.style.display = state.searchQuery ? 'block' : 'none';
+        applyFilters();
+      });
+    }
+
+    if (btnClearSearch) {
+      btnClearSearch.addEventListener('click', () => {
+        if (prodSearchInput) prodSearchInput.value = '';
+        state.searchQuery = '';
+        btnClearSearch.style.display = 'none';
+        applyFilters();
+      });
+    }
+
+    if (prodStatusFilter) {
+      prodStatusFilter.addEventListener('change', (e) => {
+        state.statusFilter = e.target.value;
+        applyFilters();
+      });
+    }
+
+    if (prodPageSize) {
+      prodPageSize.addEventListener('change', (e) => {
+        state.pageSize = e.target.value;
+        applyFilters();
+      });
+    }
+
+    if (catFilterChips) {
+      catFilterChips.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        catFilterChips.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.activeCategory = chip.getAttribute('data-cat') || 'all';
+        applyFilters();
+      });
+    }
+
+    if (btnPrevPage) {
+      btnPrevPage.addEventListener('click', () => {
+        if (state.currentPage > 1) {
+          state.currentPage--;
+          renderTablePage();
+        }
+      });
+    }
+
+    if (btnNextPage) {
+      btnNextPage.addEventListener('click', () => {
+        state.currentPage++;
+        renderTablePage();
+      });
+    }
+
+    // Acciones de Tabla (Toggle Status, Quick Photo, Edit, Delete)
+    if (prodsTbody) {
+      prodsTbody.addEventListener('click', async (e) => {
+        const targetBtn = e.target.closest('[data-action]');
+        if (!targetBtn) return;
+
+        const action = targetBtn.getAttribute('data-action');
+        const id = targetBtn.getAttribute('data-id');
+        if (!id) return;
+
+        const prod = state.allProducts.find((p) => p.id === id);
+        if (!prod) return;
+
+        if (action === 'toggle-status') {
+          const nextStatus = prod.isActive === false;
+          targetBtn.textContent = '...';
+          try {
+            const res = await apiFetch('/api/admin/products', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...prod, isActive: nextStatus }),
+            });
+            if (res.ok) {
+              prod.isActive = nextStatus;
+              processProducts(state.allProducts);
+              broadcastLiveChange('PRODUCTS_UPDATED');
+            }
+          } catch {
+            alert('Error al cambiar el estado del producto.');
+          }
+        } else if (action === 'quick-photo') {
+          openProductModal(prod);
+          // Hacer foco en la sección de imagen
+          if (uploadDropzone) uploadDropzone.scrollIntoView({ behavior: 'smooth' });
+        } else if (action === 'edit') {
+          openProductModal(prod);
+        } else if (action === 'delete') {
+          if (!confirm(`¿Eliminar definitivamente "${prod.name}" del catálogo?`)) return;
+          try {
+            const res = await apiFetch(`/api/admin/products?id=${encodeURIComponent(id)}`, {
+              method: 'DELETE',
+            });
+            if (res.ok) {
+              state.allProducts = state.allProducts.filter((p) => p.id !== id);
+              processProducts(state.allProducts);
+              broadcastLiveChange('PRODUCTS_UPDATED');
+            }
+          } catch {
+            alert('Error al eliminar producto.');
+          }
+        }
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. MODAL DE PRODUCTO: SUBIDA DE IMÁGENES & EDICIÓN FULL STACK
+    // -------------------------------------------------------------------------
+    function openProductModal(prod = null) {
+      if (!prodModal) return;
+
+      if (prod) {
+        if (modalProdTitle) modalProdTitle.textContent = 'Editar Producto';
+        if (modalProdId) modalProdId.value = prod.id || '';
+        if (mProdName) mProdName.value = prod.name || '';
+        if (mProdSku) mProdSku.value = prod.sku || '';
+        if (mProdCategory) mProdCategory.value = prod.category || 'Ropa Corporativa';
+        if (mProdLine) mProdLine.value = prod.line || '';
+        if (mProdImage) mProdImage.value = prod.image || '';
+        if (mPreviewImg) mPreviewImg.src = prod.image || '/images/catalogo/polera-corporativa.webp';
+        if (mProdSummary) mProdSummary.value = prod.summary || '';
+        if (mProdSizes) mProdSizes.value = Array.isArray(prod.sizes) ? prod.sizes.join(', ') : 'S, M, L, XL';
+        if (mProdActive) mProdActive.checked = prod.isActive !== false;
+        state.editingOriginalColors = prod.colors || [];
+      } else {
+        if (modalProdTitle) modalProdTitle.textContent = 'Crear Nuevo Producto';
+        if (prodForm) prodForm.reset();
+        if (modalProdId) modalProdId.value = '';
+        if (mProdActive) mProdActive.checked = true;
+        if (mPreviewImg) mPreviewImg.src = '/images/catalogo/polera-corporativa.webp';
+        if (mProdSizes) mProdSizes.value = 'S, M, L, XL, XXL';
+        state.editingOriginalColors = [];
+      }
+
+      prodModal.style.display = 'flex';
+    }
+
+    function closeProductModal() {
+      if (prodModal) prodModal.style.display = 'none';
+      if (uploadProgressBox) uploadProgressBox.style.display = 'none';
+    }
+
+    if (btnOpenCreateProd) btnOpenCreateProd.addEventListener('click', () => openProductModal());
+    if (btnCloseProdModal) btnCloseProdModal.addEventListener('click', closeProductModal);
+    if (btnCancelProdModal) btnCancelProdModal.addEventListener('click', closeProductModal);
+
+    // Cargar previsualización de imagen al escribir URL
+    if (mProdImage && mPreviewImg) {
+      mProdImage.addEventListener('input', () => {
+        mPreviewImg.src = mProdImage.value.trim() || '/images/catalogo/polera-corporativa.webp';
+      });
+    }
+
+    if (btnSyncUrlPreview && mProdImage && mPreviewImg) {
+      btnSyncUrlPreview.addEventListener('click', () => {
+        mPreviewImg.src = mProdImage.value.trim() || '/images/catalogo/polera-corporativa.webp';
+      });
+    }
+
+    // Botones rápidos de agregar talla
+    document.querySelectorAll('.btn-quick-size').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sz = btn.getAttribute('data-size');
+        if (!sz || !mProdSizes) return;
+        const current = mProdSizes.value
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        if (!current.includes(sz)) {
+          current.push(sz);
+          mProdSizes.value = current.join(', ');
+        }
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    // SUBIDA DE ARCHIVOS DE IMAGEN (FULL STACK FILE UPLOAD)
+    // -------------------------------------------------------------------------
+    if (uploadDropzone && fileUploaderInput) {
+      uploadDropzone.addEventListener('click', () => {
+        fileUploaderInput.click();
+      });
+
+      // Drag and Drop
+      uploadDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadDropzone.style.background = '#DBEAFE';
+      });
+
+      uploadDropzone.addEventListener('dragleave', () => {
+        uploadDropzone.style.background = '#EFF6FF';
+      });
+
+      uploadDropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadDropzone.style.background = '#EFF6FF';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleImageUpload(e.dataTransfer.files[0]);
+        }
+      });
+
+      fileUploaderInput.addEventListener('change', () => {
+        if (fileUploaderInput.files && fileUploaderInput.files[0]) {
+          handleImageUpload(fileUploaderInput.files[0]);
+        }
+      });
+    }
+
+    async function handleImageUpload(file) {
+      if (!file) return;
+
+      const prodName = mProdName?.value.trim() || 'producto';
+
+      if (uploadProgressBox) uploadProgressBox.style.display = 'flex';
+      const progressText = document.getElementById('upload-progress-text');
+      if (progressText) progressText.textContent = `Subiendo "${file.name}"...`;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('name', prodName);
+
+        const res = await apiFetch('/api/admin/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (data.success && data.url) {
+          if (mProdImage) mProdImage.value = data.url;
+          if (mPreviewImg) mPreviewImg.src = data.url;
+
+          if (progressText) {
+            progressText.textContent = '✓ Imagen subida con éxito.';
+            setTimeout(() => {
+              if (uploadProgressBox) uploadProgressBox.style.display = 'none';
+            }, 2000);
+          }
+        } else {
+          alert('Error al subir imagen: ' + (data.error || 'Formato no permitido.'));
+          if (uploadProgressBox) uploadProgressBox.style.display = 'none';
+        }
+      } catch (err) {
+        alert('Error al conectar con el servidor de subida: ' + err.message);
+        if (uploadProgressBox) uploadProgressBox.style.display = 'none';
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // SELECTOR DE GALERÍA DE IMÁGENES
+    // -------------------------------------------------------------------------
+    if (btnOpenGalleryPicker && galleryModal) {
+      btnOpenGalleryPicker.addEventListener('click', async () => {
+        galleryModal.style.display = 'flex';
+        if (!state.galleryLoaded) {
+          loadGallery();
+        }
+      });
+    }
+
+    if (btnCloseGallery && galleryModal) {
+      btnCloseGallery.addEventListener('click', () => {
+        galleryModal.style.display = 'none';
+      });
+    }
+
+    async function loadGallery() {
+      if (!galleryGrid) return;
+      try {
+        const res = await apiFetch('/api/admin/gallery');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.images)) {
+          state.galleryImages = data.images;
+          state.galleryLoaded = true;
+          renderGalleryGrid();
+        }
+      } catch {
+        galleryGrid.innerHTML = '<div class="loading-state">No se pudieron cargar imágenes.</div>';
+      }
+    }
+
+    function renderGalleryGrid() {
+      if (!galleryGrid) return;
+      if (state.galleryImages.length === 0) {
+        galleryGrid.innerHTML = '<div class="loading-state">No hay imágenes disponibles.</div>';
+        return;
+      }
+
+      galleryGrid.innerHTML = state.galleryImages
+        .map(
+          (imgUrl) => `
+        <div class="gallery-item-card" data-url="${imgUrl}" title="Seleccionar esta imagen">
+          <img src="${imgUrl}" alt="Foto catálogo" loading="lazy" />
+        </div>
+      `
+        )
+        .join('');
+
+      galleryGrid.querySelectorAll('.gallery-item-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          const url = card.getAttribute('data-url');
+          if (url) {
+            if (mProdImage) mProdImage.value = url;
+            if (mPreviewImg) mPreviewImg.src = url;
+            if (galleryModal) galleryModal.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // Guardar Producto (Crear o Actualizar)
+    if (prodForm) {
+      prodForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('btn-save-prod');
+        if (saveBtn) saveBtn.setAttribute('disabled', 'true');
+
+        const id = modalProdId?.value.trim() || undefined;
+        const name = mProdName?.value.trim() || '';
+        const sku = mProdSku?.value.trim() || '';
+        const category = mProdCategory?.value || 'Ropa Corporativa';
+        const line = mProdLine?.value.trim() || '';
+        const image = mProdImage?.value.trim() || '';
+        const summary = mProdSummary?.value.trim() || '';
+        const rawSizes = mProdSizes?.value || '';
+        const sizes = rawSizes
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const isActive = mProdActive ? mProdActive.checked : true;
+
+        const payload = {
+          name,
+          sku,
+          category,
+          line,
+          image,
+          summary,
+          sizes: sizes.length > 0 ? sizes : ['S', 'M', 'L', 'XL'],
+          isActive,
+        };
+
+        if (id) payload.id = id;
+        if (state.editingOriginalColors.length > 0) payload.colors = state.editingOriginalColors;
+
+        try {
+          const res = await apiFetch('/api/admin/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+          if (data.success && data.product) {
+            closeProductModal();
+            await loadProducts();
+            broadcastLiveChange('PRODUCTS_UPDATED');
+          } else {
+            alert('Error: ' + (data.error || 'No se pudo guardar el producto.'));
+          }
+        } catch (err) {
+          alert('Error al guardar producto: ' + err.message);
+        } finally {
+          if (saveBtn) saveBtn.removeAttribute('disabled');
+        }
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. COTIZACIONES B2B (GESTIÓN, EXPORTACIÓN, SEEDING & TIEMPO REAL)
+    // -------------------------------------------------------------------------
+    const btnCreateTestQuote = document.getElementById('btn-create-test-quote');
+    const btnExportQuotesCsv = document.getElementById('btn-export-quotes-csv');
+    const quoteSearchInput = document.getElementById('quote-search-input');
+    const btnClearQuoteSearch = document.getElementById('btn-clear-quote-search');
+
+    const qStatTotal = document.getElementById('q-stat-total');
+    const qStatNew = document.getElementById('q-stat-new');
+    const qStatProg = document.getElementById('q-stat-prog');
+    const qStatWon = document.getElementById('q-stat-won');
+
+    const countQAll = document.getElementById('count-q-all');
+    const countQNuevo = document.getElementById('count-q-nuevo');
+    const countQGestion = document.getElementById('count-q-gestion');
+    const countQCotizado = document.getElementById('count-q-cotizado');
+    const countQGanado = document.getElementById('count-q-ganado');
+    const countQPerdido = document.getElementById('count-q-perdido');
+
+    state.selectedQuoteStatus = 'all';
+    state.quoteSearchQuery = '';
+
+    async function loadQuotes() {
+      try {
+        const res = await apiFetch('/api/admin/quotes');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        // Normalización segura de cotizaciones
+        state.quotes = (data.quotes || []).map((q) => ({
+          ...q,
+          estado: q.estado || q.status || 'nuevo',
+          created_at: q.created_at || q.createdAt || new Date().toISOString(),
+          items: Array.isArray(q.items) ? q.items : [],
+        }));
+
+        // Actualizar métricas B2B
+        const total = state.quotes.length;
+        const nuevos = state.quotes.filter((q) => q.estado === 'nuevo').length;
+        const enGestion = state.quotes.filter((q) => q.estado === 'en_gestion').length;
+        const cotizados = state.quotes.filter((q) => q.estado === 'cotizado').length;
+        const ganados = state.quotes.filter((q) => q.estado === 'ganado').length;
+        const perdidos = state.quotes.filter((q) => q.estado === 'perdido').length;
+
+        if (qStatTotal) qStatTotal.textContent = String(total);
+        if (qStatNew) qStatNew.textContent = String(nuevos);
+        if (qStatProg) qStatProg.textContent = String(enGestion + cotizados);
+        if (qStatWon) qStatWon.textContent = String(ganados);
+
+        if (kpiTotalQuotes) kpiTotalQuotes.textContent = String(total);
+        if (countQuotesNav) countQuotesNav.textContent = String(nuevos > 0 ? `${total} (${nuevos} nuevas)` : total);
+
+        if (countQAll) countQAll.textContent = String(total);
+        if (countQNuevo) countQNuevo.textContent = String(nuevos);
+        if (countQGestion) countQGestion.textContent = String(enGestion);
+        if (countQCotizado) countQCotizado.textContent = String(cotizados);
+        if (countQGanado) countQGanado.textContent = String(ganados);
+        if (countQPerdido) countQPerdido.textContent = String(perdidos);
+
+        renderQuotes();
+      } catch (err) {
+        console.error('Error al cargar cotizaciones:', err);
+      }
+    }
+
+    if (quoteStatusChips) {
+      quoteStatusChips.addEventListener('click', (e) => {
+        const target = e.target.closest('.chip');
+        if (!target) return;
+        quoteStatusChips.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+        target.classList.add('active');
+        state.selectedQuoteStatus = target.getAttribute('data-status') || 'all';
+        renderQuotes();
+      });
+    }
+
+    if (quoteSearchInput) {
+      quoteSearchInput.addEventListener('input', (e) => {
+        state.quoteSearchQuery = e.target.value.toLowerCase().trim();
+        if (btnClearQuoteSearch) btnClearQuoteSearch.style.display = state.quoteSearchQuery ? 'block' : 'none';
+        renderQuotes();
+      });
+    }
+
+    if (btnClearQuoteSearch) {
+      btnClearQuoteSearch.addEventListener('click', () => {
+        if (quoteSearchInput) quoteSearchInput.value = '';
+        state.quoteSearchQuery = '';
+        btnClearQuoteSearch.style.display = 'none';
+        renderQuotes();
+      });
+    }
+
+    function renderQuotes() {
+      if (!quotesContainer) return;
+
+      const qSearch = state.quoteSearchQuery;
+      const statusFilter = state.selectedQuoteStatus;
+
+      const filtered = state.quotes.filter((q) => {
+        // Filtro por Estado
+        if (statusFilter !== 'all' && q.estado !== statusFilter) return false;
+
+        // Filtro por Búsqueda
+        if (qSearch) {
+          const matchEmpresa = (q.empresa || '').toLowerCase().includes(qSearch);
+          const matchRut = (q.rut || '').toLowerCase().includes(qSearch);
+          const matchNombre = (q.nombre || '').toLowerCase().includes(qSearch);
+          const matchCorreo = (q.correo || '').toLowerCase().includes(qSearch);
+          const matchFono = (q.telefono || '').toLowerCase().includes(qSearch);
+          const matchItem = q.items.some((it) => (it.producto || '').toLowerCase().includes(qSearch));
+          if (!matchEmpresa && !matchRut && !matchNombre && !matchCorreo && !matchFono && !matchItem) return false;
+        }
+
+        return true;
+      });
+
+      // Estado Vacío Informativo y Elegante
+      if (filtered.length === 0) {
+        quotesContainer.innerHTML = `
+          <div class="quotes-empty-card">
+            <div class="quotes-empty-icon">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <h3>Bandeja Lista para Recibir Solicitudes</h3>
+            <p>
+              ${
+                state.quotes.length === 0
+                  ? 'Cada vez que una empresa solicite cotización en tu web o carrito, aparecerá aquí al instante con todos sus datos, teléfono, prendas y cantidades.'
+                  : 'No hay cotizaciones que coincidan con el filtro seleccionado.'
+              }
+            </p>
+            ${
+              state.quotes.length === 0
+                ? `
+              <button type="button" class="btn-empty-seed" id="btn-empty-seed-quote">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+                <span>Generar Cotización de Prueba para Ver el Sistema</span>
+              </button>
+            `
+                : ''
+            }
+          </div>
+        `;
+
+        const seedBtn = document.getElementById('btn-empty-seed-quote');
+        if (seedBtn) seedBtn.addEventListener('click', generateTestQuote);
+        return;
+      }
+
+      // Renderizado de Tarjetas de Cotización
+      quotesContainer.innerHTML = filtered
+        .map((q) => {
+          const items = Array.isArray(q.items) ? q.items : [];
+          const totalPrendas = items.reduce((acc, it) => acc + (parseInt(it.cantidad, 10) || 1), 0);
+          
+          let dateStr = '--';
+          try {
+            dateStr = new Date(q.created_at).toLocaleString('es-CL', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+          } catch {}
+
+          const cleanPhone = (q.telefono || '').replace(/\D/g, '');
+          const waMessage = encodeURIComponent(
+            `Hola ${q.nombre || ''}, te contactamos desde ZORTEX en respuesta a la cotización solicitada para ${q.empresa || 'tu empresa'} (Ref: #${q.id}). ¿Podemos afinar detalles del despacho y personalización?`
+          );
+          const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${waMessage}` : '#';
+
+          return `
+            <div class="quote-card ${q.estado === 'nuevo' ? 'is-new' : ''}" data-quote-id="${q.id}">
+              <div class="q-card-head">
+                <div>
+                  <div class="q-title-row">
+                    <h3 class="q-empresa">${escapeHtml(q.empresa || 'Empresa Sin Nombre')}</h3>
+                    ${q.rut ? `<span class="q-rut">RUT: ${escapeHtml(q.rut)}</span>` : ''}
+                    <span class="q-id-pill">ID: #${escapeHtml(q.id)}</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <select class="q-select-status status-${q.estado}" data-quote-id="${q.id}">
+                    <option value="nuevo" ${q.estado === 'nuevo' ? 'selected' : ''}>● Nueva Solicitud</option>
+                    <option value="en_gestion" ${q.estado === 'en_gestion' ? 'selected' : ''}>⏳ En Gestión Comercial</option>
+                    <option value="cotizado" ${q.estado === 'cotizado' ? 'selected' : ''}>📄 Presupuesto Enviado</option>
+                    <option value="ganado" ${q.estado === 'ganado' ? 'selected' : ''}>✓ Venta Ganada / Cerrada</option>
+                    <option value="perdido" ${q.estado === 'perdido' ? 'selected' : ''}>✕ Oportunidad Perdida</option>
+                  </select>
+                  <button type="button" class="btn-del-quote" data-quote-id="${q.id}" title="Eliminar cotización">×</button>
+                </div>
+              </div>
+
+              <!-- Matriz de Datos del Cliente -->
+              <div class="q-meta-grid">
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Persona de Contacto</span>
+                  <span class="q-meta-val">${escapeHtml(q.nombre || '--')}</span>
+                </div>
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Correo Electrónico</span>
+                  <span class="q-meta-val">
+                    ${q.correo ? `<a href="mailto:${escapeHtml(q.correo)}?subject=Cotización%20ZORTEX%20-%20${encodeURIComponent(q.empresa || '')}">${escapeHtml(q.correo)}</a>` : '--'}
+                  </span>
+                </div>
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Teléfono / WhatsApp</span>
+                  <span class="q-meta-val">
+                    ${q.telefono ? `<a href="${waLink}" target="_blank" title="Abrir WhatsApp">${escapeHtml(q.telefono)}</a>` : '--'}
+                  </span>
+                </div>
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Fecha y Hora de Ingreso</span>
+                  <span class="q-meta-val">${dateStr}</span>
+                </div>
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Personalización de Logo</span>
+                  <span class="q-meta-val">${escapeHtml(q.personalizacion || 'Sin logo')}</span>
+                </div>
+                <div class="q-meta-item">
+                  <span class="q-meta-label">Plazo Estimado Requerido</span>
+                  <span class="q-meta-val">${escapeHtml(q.plazo || 'Normal (según stock)')}</span>
+                </div>
+              </div>
+
+              ${
+                q.mensaje
+                  ? `
+                <div class="q-client-msg">
+                  <strong>Requerimientos Especiales / Mensaje del Cliente:</strong>
+                  ${escapeHtml(q.mensaje)}
+                </div>
+              `
+                  : ''
+              }
+
+              <!-- Bloque de Prendas y Modelos -->
+              <div class="q-items-block">
+                <div class="q-items-header-row">
+                  <span class="q-items-title">Prendas y Modelos Solicitados (${items.length} líneas)</span>
+                  <span class="q-items-total-pill">Total: ${totalPrendas} unidades</span>
+                </div>
+                <div class="q-items-flex">
+                  ${items
+                    .map(
+                      (it) => `
+                    <span class="q-item-pill">
+                      <span class="q-item-qty">${it.cantidad || 1} u.</span>
+                      <span class="q-item-name">${escapeHtml(it.producto || 'Producto')}</span>
+                      ${it.talla ? `<span class="q-item-size">Talla: ${escapeHtml(it.talla)}</span>` : ''}
+                      ${it.categoria ? `<span class="tbl-size-tag" style="color:#64748B;">${escapeHtml(it.categoria)}</span>` : ''}
+                    </span>
+                  `
+                    )
+                    .join('')}
+                </div>
+              </div>
+
+              <!-- Footer de la Tarjeta con Acciones Rápidas -->
+              <div class="q-card-footer">
+                <div class="q-card-footer-btns">
+                  ${
+                    cleanPhone
+                      ? `
+                    <a href="${waLink}" target="_blank" class="btn-q-wa" title="Escribir mensaje formal al cliente por WhatsApp">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                      <span>Contactar por WhatsApp</span>
+                    </a>
+                  `
+                      : ''
+                  }
+
+                  <button type="button" class="btn-q-action" data-action="print" data-quote-id="${q.id}" title="Imprimir o guardar como PDF formal">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    <span>Imprimir Ficha</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    // Cambio de estado en vivo
+    if (quotesContainer) {
+      quotesContainer.addEventListener('change', async (e) => {
+        const target = e.target;
+        if (target && target.classList.contains('q-select-status')) {
+          const id = target.getAttribute('data-quote-id');
+          const newStatus = target.value;
+          if (!id) return;
+
+          // Feedback visual inmediato
+          target.className = `q-select-status status-${newStatus}`;
+
+          try {
+            const res = await apiFetch('/api/admin/quotes', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id, estado: newStatus, status: newStatus }),
+            });
+
+            if (res.ok) {
+              const match = state.quotes.find((q) => q.id === id);
+              if (match) match.estado = newStatus;
+              loadQuotes();
+            } else {
+              alert('No se pudo actualizar el estado.');
+            }
+          } catch {
+            alert('Error al comunicar con el servidor.');
+          }
+        }
+      });
+
+      // Acciones de Imprimir y Eliminar
+      quotesContainer.addEventListener('click', async (e) => {
+        const delBtn = e.target.closest('.btn-del-quote');
+        if (delBtn) {
+          const id = delBtn.getAttribute('data-quote-id');
+          if (!id) return;
+          if (!confirm('¿Estás seguro de que deseas eliminar esta cotización?')) return;
+          try {
+            const res = await apiFetch(`/api/admin/quotes?id=${encodeURIComponent(id)}`, {
+              method: 'DELETE',
+            });
+            if (res.ok) {
+              state.quotes = state.quotes.filter((q) => q.id !== id);
+              loadQuotes();
+            }
+          } catch {
+            alert('Error al eliminar la cotización.');
+          }
+          return;
+        }
+
+        const printBtn = e.target.closest('button[data-action="print"]');
+        if (printBtn) {
+          const id = printBtn.getAttribute('data-quote-id');
+          const q = state.quotes.find((item) => item.id === id);
+          if (q) printQuoteDoc(q);
+        }
+      });
+    }
+
+    // Generar Cotización de Prueba (Test B2B Seed)
+    async function generateTestQuote() {
+      try {
+        const res = await apiFetch('/api/admin/quotes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            empresa: 'Constructora & Minería del Norte SpA',
+            rut: '76.852.147-9',
+            nombre: 'Mauricio Morales - Subgerente de Compras',
+            telefono: '+56 9 9482 1102',
+            correo: 'compras@nortemineria.cl',
+            personalizacion: 'Bordado Computarizado',
+            plazo: '15 días hábiles',
+            mensaje: 'Solicitud de cotización urgente para cuadrilla en faena alta cordillera.',
+            items: [
+              { producto: 'Parka Alta Visibilidad Fluor 3 en 1', categoria: 'Ropa de Seguridad', cantidad: 50, talla: 'L' },
+              { producto: 'Pantalón Cargo Faena Ignífugo', categoria: 'Ropa Industrial', cantidad: 50, talla: '46' },
+              { producto: 'Botín Dieléctrico Seguridad Pu/Goma', categoria: 'EPP', cantidad: 50, talla: '43' },
+            ],
+          }),
+        });
+
+        if (res.ok) {
+          await loadQuotes();
+          broadcastLiveChange('QUOTES_UPDATED');
+        }
+      } catch (err) {
+        alert('Error al crear cotización de prueba: ' + err.message);
+      }
+    }
+
+    if (btnCreateTestQuote) {
+      btnCreateTestQuote.addEventListener('click', generateTestQuote);
+    }
+
+    // Exportar a CSV compatible con Excel
+    if (btnExportQuotesCsv) {
+      btnExportQuotesCsv.addEventListener('click', () => {
+        if (state.quotes.length === 0) {
+          alert('No hay cotizaciones para exportar.');
+          return;
+        }
+
+        const headers = ['ID', 'Fecha', 'Empresa', 'RUT', 'Contacto', 'Telefono', 'Correo', 'Estado', 'Personalizacion', 'Plazo', 'Prendas_Totales', 'Detalle_Items'];
+        
+        const rows = state.quotes.map((q) => {
+          const totalPrendas = q.items.reduce((acc, it) => acc + (parseInt(it.cantidad, 10) || 1), 0);
+          const itemsStr = q.items.map((it) => `${it.cantidad}x ${it.producto} (${it.talla || 'Std'})`).join('; ');
+          const dateStr = q.created_at ? new Date(q.created_at).toLocaleDateString('es-CL') : '';
+
+          return [
+            `"${q.id}"`,
+            `"${dateStr}"`,
+            `"${(q.empresa || '').replace(/"/g, '""')}"`,
+            `"${q.rut || ''}"`,
+            `"${(q.nombre || '').replace(/"/g, '""')}"`,
+            `"${q.telefono || ''}"`,
+            `"${q.correo || ''}"`,
+            `"${q.estado || ''}"`,
+            `"${q.personalizacion || ''}"`,
+            `"${q.plazo || ''}"`,
+            totalPrendas,
+            `"${itemsStr.replace(/"/g, '""')}"`,
+          ].join(',');
+        });
+
+        const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cotizaciones-zortex-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // Ventana de Impresión de Ficha Formal
+    function printQuoteDoc(q) {
+      const printWin = window.open('', '_blank', 'width=800,height=900');
+      if (!printWin) return;
+
+      const totalPrendas = q.items.reduce((acc, it) => acc + (parseInt(it.cantidad, 10) || 1), 0);
+      const dateStr = q.created_at ? new Date(q.created_at).toLocaleString('es-CL') : '--';
+
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Cotización #${q.id} - ${q.empresa}</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #0F172A; }
+            .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0F172A; padding-bottom: 20px; margin-bottom: 24px; }
+            .logo { height: 40px; }
+            .company-info { font-size: 12px; color: #64748B; text-align: right; }
+            .title { font-size: 24px; font-weight: 800; margin: 0 0 4px; }
+            .meta-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13.5px; }
+            th { background: #F1F5F9; text-align: left; padding: 10px 12px; border-bottom: 1px solid #CBD5E1; font-size: 12px; text-transform: uppercase; }
+            td { padding: 12px; border-bottom: 1px solid #E2E8F0; }
+            .total-row td { font-weight: 800; font-size: 15px; background: #F8FAFC; }
+            .footer-notes { font-size: 12px; color: #64748B; border-top: 1px solid #E2E8F0; padding-top: 16px; margin-top: 30px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <h1 class="title">SOLICITUD DE COTIZACIÓN</h1>
+              <div><strong>Nº Solicitud:</strong> #${q.id}</div>
+              <div><strong>Fecha:</strong> ${dateStr}</div>
+            </div>
+            <div class="company-info">
+              <strong>ZORTEX VESTUARIO & EPP</strong><br/>
+              Distribución Mayorista B2B Chile<br/>
+              contacto@zortex.cl • +56 9 5863 9727
+            </div>
+          </div>
+
+          <div class="meta-box">
+            <div><strong>Empresa / Razón Social:</strong> ${q.empresa || '--'}</div>
+            <div><strong>RUT Empresa:</strong> ${q.rut || '--'}</div>
+            <div><strong>Contacto Comercial:</strong> ${q.nombre || '--'}</div>
+            <div><strong>Correo Electrónico:</strong> ${q.correo || '--'}</div>
+            <div><strong>Teléfono:</strong> ${q.telefono || '--'}</div>
+            <div><strong>Personalización:</strong> ${q.personalizacion || 'Sin logo'}</div>
+            <div><strong>Plazo Requerido:</strong> ${q.plazo || 'Normal'}</div>
+            <div><strong>Estado Actual:</strong> ${q.estado || 'Nuevo'}</div>
+          </div>
+
+          ${q.mensaje ? `<p><strong>Observaciones del Cliente:</strong> ${q.mensaje}</p>` : ''}
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 60px;">Cant.</th>
+                <th>Prenda / Modelo Requerido</th>
+                <th>Categoría</th>
+                <th>Talla</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${q.items
+                .map(
+                  (it) => `
+                <tr>
+                  <td><strong>${it.cantidad || 1}</strong></td>
+                  <td>${it.producto || 'Producto'}</td>
+                  <td>${it.categoria || '--'}</td>
+                  <td>${it.talla || 'Estándar'}</td>
+                </tr>
+              `
+                )
+                .join('')}
+              <tr class="total-row">
+                <td colspan="3" style="text-align: right;">Total Prendas Solicitadas:</td>
+                <td>${totalPrendas} unidades</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="footer-notes">
+            Documento emitido para evaluación y confección de propuesta comercial formal por ZORTEX. Precios mayoristas escalonados y condiciones de despacho válidas por 15 días hábiles.
+          </div>
+          <script>
+            window.onload = function() { window.print(); };
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    }
+
+    // Auto-actualización de cotizaciones en tiempo real cada 10 segundos o al enfocar ventana
+    setInterval(() => {
+      if (saasApp && saasApp.style.display !== 'none') {
+        loadQuotes();
+      }
+    }, 10000);
+
+    window.addEventListener('focus', () => {
+      if (saasApp && saasApp.style.display !== 'none') {
+        loadQuotes();
+      }
+    });
+
+    // Escuchar eventos en vivo desde la tienda pública
+    if (liveChannel) {
+      liveChannel.addEventListener('message', (ev) => {
+        if (ev.data && ev.data.type === 'QUOTES_UPDATED') {
+          loadQuotes();
+        }
+      });
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'zortex_cms_updated') {
+        loadQuotes();
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // 5. AJUSTES DE CONTENIDO (HERO & CONTACTO)
+    // -------------------------------------------------------------------------
+    async function loadSettings() {
+      try {
+        const res = await apiFetch('/api/admin/settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        const s = data.settings || {};
+        if (setHeroBadge) setHeroBadge.value = s.heroBadge || '';
+        if (setHeroTitle) setHeroTitle.value = s.heroTitle || '';
+        if (setHeroLead) setHeroLead.value = s.heroLead || '';
+        if (setContactEmail) setContactEmail.value = s.contactEmail || '';
+        if (setContactPhone) setContactPhone.value = s.contactPhone || '';
+        if (setTopbarWa) setTopbarWa.value = s.topbarWhatsappText || '';
+      } catch (err) {
+        console.error('Error al cargar ajustes:', err);
+      }
+    }
+
+    if (settingsForm) {
+      settingsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (settingsStatusMsg) {
+          settingsStatusMsg.textContent = 'Guardando cambios en vivo...';
+          settingsStatusMsg.className = 'status-msg';
+        }
+
+        const payload = {
+          heroBadge: setHeroBadge?.value.trim() || '',
+          heroTitle: setHeroTitle?.value.trim() || '',
+          heroLead: setHeroLead?.value.trim() || '',
+          contactEmail: setContactEmail?.value.trim() || '',
+          contactPhone: setContactPhone?.value.trim() || '',
+          topbarWhatsappText: setTopbarWa?.value.trim() || '',
+        };
+
+        try {
+          const res = await apiFetch('/api/admin/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok) {
+            if (settingsStatusMsg) {
+              settingsStatusMsg.textContent = '✓ Guardado correctamente en vivo.';
+              settingsStatusMsg.className = 'status-msg success';
+              setTimeout(() => {
+                if (settingsStatusMsg) settingsStatusMsg.textContent = '';
+              }, 3000);
+            }
+            broadcastLiveChange('SETTINGS_UPDATED');
+          }
+        } catch (err) {
+          if (settingsStatusMsg) {
+            settingsStatusMsg.textContent = '✕ Error: ' + err.message;
+            settingsStatusMsg.className = 'status-msg error';
+          }
+        }
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Arrancar autenticación inicial
+    initAuth();
+  })();
+</script>

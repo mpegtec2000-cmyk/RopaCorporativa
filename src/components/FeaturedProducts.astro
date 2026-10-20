@@ -1,5 +1,8 @@
 ---
-import { PRODUCTS, WHATSAPP_NUMBER } from '../config';
+import { WHATSAPP_NUMBER } from '../config';
+import { getPublicProducts } from '../lib/cms/store';
+
+const PRODUCTS = await getPublicProducts();
 
 const categories = [
   { name: 'Todos', filter: 'all', count: PRODUCTS.length, icon: 'grid' },
@@ -91,8 +94,46 @@ const modalCatalog = PRODUCTS.map(p => ({
 
     <!-- Barra de control y navegación de filtros de categoría -->
     <div class="catalog-control-panel">
-      <div class="product-tabs-scroll-wrapper">
-        <div class="product-tabs" id="product-tabs" role="tablist" aria-label="Filtrar por categoría">
+      <!-- Navegación táctil móvil: Botones Anterior / Siguiente con categoría activa -->
+      <div class="mobile-cat-stepper" id="mobile-cat-stepper">
+        <button type="button" class="mobile-step-arrow-btn" id="mobile-prev-cat" aria-label="Categoría anterior">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Anterior</span>
+        </button>
+        
+        <div class="mobile-step-pill" id="mobile-current-cat-pill">
+          <span class="mobile-pill-prefix">Categoría actual:</span>
+          <span class="mobile-pill-text" id="mobile-current-cat-name">
+            <strong>Todos</strong> <span class="mobile-curr-count">{PRODUCTS.length}</span>
+          </span>
+        </div>
+
+        <button type="button" class="mobile-step-arrow-btn" id="mobile-next-cat" aria-label="Siguiente categoría">
+          <span>Siguiente</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenedor con flechas de desplazamiento para barra de pestañas -->
+      <div class="product-tabs-nav-container">
+        <button 
+          type="button" 
+          class="tabs-nav-arrow tabs-nav-arrow-prev" 
+          id="tabs-scroll-prev" 
+          aria-label="Desplazar menú a la izquierda"
+          title="Ver categorías anteriores"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <div class="product-tabs-scroll-wrapper" id="product-tabs-wrapper">
+          <div class="product-tabs" id="product-tabs" role="tablist" aria-label="Filtrar por categoría">
           {categories.map((cat, i) => (
             <button
               class={`product-tab${i === 0 ? ' active' : ''}`}
@@ -148,6 +189,19 @@ const modalCatalog = PRODUCTS.map(p => ({
           ))}
         </div>
       </div>
+
+      <button 
+        type="button" 
+        class="tabs-nav-arrow tabs-nav-arrow-next" 
+        id="tabs-scroll-next" 
+        aria-label="Desplazar menú a la derecha"
+        title="Ver más categorías"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
 
       <!-- Barra de estado y retroalimentación activa -->
       <div class="catalog-status-bar" id="catalog-status-bar">
@@ -687,13 +741,136 @@ const modalCatalog = PRODUCTS.map(p => ({
     overflow: hidden;
   }
 
+  /* Stepper de categorías para móviles */
+  .mobile-cat-stepper {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 7px 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+
+  .mobile-step-arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0F2744;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+    touch-action: manipulation;
+  }
+
+  .mobile-step-arrow-btn:active {
+    background: #0F2744;
+    color: #FFFFFF;
+    border-color: #0F2744;
+    transform: scale(0.96);
+  }
+
+  .mobile-step-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    padding: 0 4px;
+  }
+
+  .mobile-pill-prefix {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748B;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .mobile-pill-text {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0F2744;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .mobile-curr-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1D4ED8;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    padding: 1px 6px;
+    border-radius: 999px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  /* Contenedor con flechas de navegación táctil para las pestañas */
+  .product-tabs-nav-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .tabs-nav-arrow {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #0F2744;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+    cursor: pointer;
+    flex-shrink: 0;
+    z-index: 5;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+  }
+
+  .tabs-nav-arrow:hover {
+    background: #0F2744;
+    color: #FFFFFF;
+    border-color: #0F2744;
+  }
+
+  .tabs-nav-arrow:active {
+    transform: scale(0.92);
+  }
+
   .product-tabs-scroll-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    margin: 0 -4px;
-    padding: 4px 4px 10px;
+    margin: 0;
+    padding: 4px 2px 8px;
     max-width: 100%;
+    flex: 1;
+    scroll-behavior: smooth;
   }
 
   .product-tabs-scroll-wrapper::-webkit-scrollbar {
@@ -709,12 +886,20 @@ const modalCatalog = PRODUCTS.map(p => ({
   }
 
   @media (max-width: 900px) {
+    .mobile-cat-stepper {
+      display: flex;
+    }
+
+    .tabs-nav-arrow {
+      display: flex;
+    }
+
     .product-tabs-scroll-wrapper {
-      margin: 0 -16px;
-      padding: 4px 16px 12px;
+      margin: 0 !important;
+      padding: 4px 4px 8px !important;
       scroll-snap-type: x proximity;
-      -webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
-      mask-image: linear-gradient(to right, black calc(100% - 36px), transparent 100%);
+      mask-image: none !important;
+      -webkit-mask-image: none !important;
     }
 
     .product-tabs {
@@ -2096,41 +2281,75 @@ const modalCatalog = PRODUCTS.map(p => ({
       .trim();
   }
 
-  // Diccionario de sinónimos para el rubro corporativo, industrial y EPP en Chile
+  // Diccionario de sinónimos y mapeo semántico para el menú de navegación y catálogo
   const SYNONYMS: Record<string, string[]> = {
     calzado: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico', 'puntera'],
     botin: ['botin', 'zapato', 'calzado', 'bota'],
     botines: ['botin', 'zapato', 'calzado', 'bota'],
-    zapato: ['zapato', 'botin', 'calzado', 'bota'],
+    zapato: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico'],
     zapatos: ['zapato', 'botin', 'calzado', 'bota'],
+    dielectrico: ['dielectrico', 'zapato', 'botin', 'calzado'],
     casco: ['casco', 'barbiquejo'],
     cascos: ['casco', 'barbiquejo'],
-    lente: ['lente', 'antiparra', 'uv'],
-    lentes: ['lente', 'antiparra', 'uv'],
+    lente: ['lente', 'antiparra', 'uv', 'proteccion visual'],
+    lentes: ['lente', 'antiparra', 'uv', 'proteccion visual'],
     antiparra: ['antiparra', 'lente'],
     antiparras: ['antiparra', 'lente'],
     guante: ['guante', 'cabritilla', 'nitrilo'],
     guantes: ['guante', 'cabritilla', 'nitrilo'],
+    auditivo: ['auditivo', 'fono', 'oido', 'copa'],
+    auditiva: ['auditivo', 'fono', 'oido', 'copa'],
+    fono: ['fono', 'auditivo', 'oido'],
+    fonos: ['fono', 'auditivo', 'oido'],
     pantalon: ['pantalon', 'cargo', 'bermuda', 'jean'],
-    pantalones: ['pantalon', 'cargo', 'bermuda'],
+    pantalones: ['pantalon', 'cargo', 'bermuda', 'jean'],
+    cargo: ['cargo', 'pantalon', 'bolsillo'],
     polar: ['polar', 'fleece', 'micropolar'],
-    fleece: ['polar', 'fleece'],
-    termico: ['termico', 'softshell', 'parka', 'polar', 'abrigo'],
-    termica: ['termica', 'termico', 'softshell', 'parka', 'polar'],
+    polares: ['polar', 'fleece', 'micropolar'],
+    fleece: ['polar', 'fleece', 'micropolar'],
+    micropolar: ['micropolar', 'polar', 'fleece'],
+    termico: ['termico', 'softshell', 'parka', 'polar', 'abrigo', 'chaqueta'],
+    termica: ['termica', 'termico', 'softshell', 'parka', 'polar', 'chaqueta'],
+    termicas: ['termica', 'termico', 'softshell', 'parka', 'polar', 'chaqueta'],
     geologo: ['geologo', 'chaleco'],
     chaleco: ['chaleco', 'geologo'],
-    ignifugo: ['ignifugo', 'retardante', 'arco'],
-    ignifuga: ['ignifuga', 'ignifugo', 'retardante', 'arco'],
-    overol: ['overol', 'buzo'],
-    buzo: ['buzo', 'overol'],
+    chalecos: ['chaleco', 'geologo'],
+    ignifugo: ['ignifugo', 'retardante', 'arco', 'antillama'],
+    ignifuga: ['ignifuga', 'ignifugo', 'retardante', 'arco', 'antillama'],
+    overol: ['overol', 'buzo', 'jardinera'],
+    overoles: ['overol', 'buzo', 'jardinera'],
+    buzo: ['buzo', 'overol', 'jardinera', 'trabajo'],
+    buzos: ['buzo', 'overol', 'jardinera', 'trabajo'],
+    jardinera: ['jardinera', 'overol', 'buzo'],
     polera: ['polera', 'polo', 'pique'],
     poleras: ['polera', 'polo', 'pique'],
-    polo: ['polo', 'polera'],
-    camisa: ['camisa', 'oxford', 'poplin'],
-    camisas: ['camisa', 'oxford', 'poplin'],
-    blusa: ['blusa', 'oxford'],
-    blusas: ['blusa', 'oxford'],
-    epp: ['epp', 'casco', 'lente', 'guante', 'zapato', 'botin', 'auditivo', 'fono', 'rodillera'],
+    polo: ['polo', 'polera', 'pique'],
+    pique: ['pique', 'polo', 'polera'],
+    poleron: ['poleron', 'polerones', 'hoodie'],
+    polerones: ['poleron', 'polerones', 'hoodie'],
+    camisa: ['camisa', 'oxford', 'poplin', 'blusa', 'trevira'],
+    camisas: ['camisa', 'oxford', 'poplin', 'blusa', 'trevira'],
+    blusa: ['blusa', 'oxford', 'camisa', 'trevira'],
+    blusas: ['blusa', 'oxford', 'camisa', 'trevira'],
+    gorro: ['gorro', 'jockey', 'legionario', 'bandana'],
+    gorros: ['gorro', 'jockey', 'legionario', 'bandana'],
+    jockey: ['jockey', 'gorro', 'legionario'],
+    chaqueta: ['chaqueta', 'softshell', 'casaca', 'fleece'],
+    chaquetas: ['chaqueta', 'softshell', 'casaca', 'fleece'],
+    softshell: ['softshell', 'chaqueta'],
+    parka: ['parka', 'chaqueta', 'termico', 'termica'],
+    parkas: ['parka', 'chaqueta', 'termico', 'termica'],
+    reflectante: ['reflectante', 'cintas', 'reflex', 'fluor', 'seguridad', 'visibilidad'],
+    reflectantes: ['reflectante', 'cintas', 'reflex', 'fluor', 'seguridad', 'visibilidad'],
+    cintas: ['cintas', 'reflectante', 'reflex', 'fluor'],
+    visibilidad: ['visibilidad', 'alta visibilidad', 'fluor', 'reflex', 'reflectante'],
+    bordado: ['bordado', 'computarizado', 'personalizada', 'logo'],
+    estampado: ['estampado', 'serigrafia', 'dtf', 'personalizada', 'transfer'],
+    parche: ['parche', 'corporativo', 'insignia', 'velcro', 'personalizada'],
+    parches: ['parche', 'corporativo', 'insignia', 'velcro', 'personalizada'],
+    confeccion: ['confeccion', 'medida', 'personalizada'],
+    medida: ['medida', 'confeccion', 'personalizada'],
+    epp: ['epp', 'casco', 'lente', 'guante', 'zapato', 'botin', 'auditivo', 'fono', 'rodillera', 'respirador', 'arnes'],
     marino: ['azul marino', 'marino', 'navy'],
     azul: ['azul', 'marino', 'celeste', 'azulino'],
     negro: ['negro', 'black'],
@@ -2144,15 +2363,100 @@ const modalCatalog = PRODUCTS.map(p => ({
     naranjo: ['naranjo', 'orange', 'naranjo fluor'],
   };
 
-  function matchesQuery(query: string, text: string) {
+  // Reglas estrictas por tipo de prenda (para evitar falsos positivos como mostrar gorros al buscar parkas o camisas al buscar cargo)
+  const STRICT_CATEGORY_RULES: Record<string, (name: string, cat: string, line: string, sku: string) => boolean> = {
+    'parka': (name) => name.includes('parka'),
+    'parkas': (name) => name.includes('parka'),
+    'parkas termicas': (name) => name.includes('parka'),
+    'parka termica': (name) => name.includes('parka'),
+    'parkas alta visibilidad': (name) => name.includes('parka') && (name.includes('visibilidad') || name.includes('clase') || name.includes('fluor')),
+    'cargo': (name) => name.includes('cargo'),
+    'pantalones cargo': (name) => name.includes('cargo'),
+    'pantalon cargo': (name) => name.includes('cargo'),
+    'pantalon': (name) => name.includes('pantalon') || name.includes('cargo') || name.includes('jean'),
+    'pantalones': (name) => name.includes('pantalon') || name.includes('cargo') || name.includes('jean'),
+    'camisa': (name) => name.includes('camisa') || name.includes('blusa'),
+    'camisas': (name) => name.includes('camisa') || name.includes('blusa'),
+    'blusa': (name) => name.includes('blusa'),
+    'blusas': (name) => name.includes('blusa'),
+    'softshell': (name) => name.includes('softshell'),
+    'chaquetas softshell': (name) => name.includes('softshell'),
+    'chaqueta softshell': (name) => name.includes('softshell'),
+    'chaqueta termica': (name) => name.includes('chaqueta') && (name.includes('termic') || name.includes('resist')),
+    'chaquetas termicas': (name) => name.includes('chaqueta') && (name.includes('termic') || name.includes('resist')),
+    'polar': (name) => name.includes('polar') || name.includes('fleece') || name.includes('micropolar'),
+    'polares': (name) => name.includes('polar') || name.includes('fleece') || name.includes('micropolar'),
+    'poleron': (name) => name.includes('poleron'),
+    'polerones': (name) => name.includes('poleron'),
+    'polera': (name) => name.includes('polera') || name.includes('polo'),
+    'poleras': (name) => name.includes('polera') || name.includes('polo'),
+    'poleras pique': (name) => name.includes('pique') || name.includes('polo'),
+    'polera pique': (name) => name.includes('pique') || name.includes('polo'),
+    'overol': (name) => name.includes('overol') || name.includes('jardinera'),
+    'overoles': (name) => name.includes('overol') || name.includes('jardinera'),
+    'buzos de trabajo': (name) => name.includes('overol') || name.includes('jardinera') || name.includes('buzo'),
+    'buzo de trabajo': (name) => name.includes('overol') || name.includes('jardinera') || name.includes('buzo'),
+    'chaleco geologo': (name) => name.includes('geologo'),
+    'chalecos geologo': (name) => name.includes('geologo'),
+    'gorro': (name) => name.includes('gorro') || name.includes('jockey') || name.includes('bandana'),
+    'gorros': (name) => name.includes('gorro') || name.includes('jockey') || name.includes('bandana'),
+    'jockey': (name) => name.includes('jockey') || name.includes('gorro'),
+    'ropa ignifuga': (name) => name.includes('ignifug') || name.includes('antiestatic'),
+    'cintas reflectantes': (name) => name.includes('cinta') || name.includes('reflectiv') || name.includes('reflex'),
+    'calzado dielectrico': (name) => name.includes('zapato') || name.includes('botin') || name.includes('calzado'),
+    'cascos de seguridad': (name) => name.includes('casco'),
+    'guantes tecnicos': (name) => name.includes('guante'),
+    'lentes anti-impacto': (name) => name.includes('lente') || name.includes('antiparra'),
+    'proteccion auditiva': (name) => name.includes('auditivo') || name.includes('fono'),
+    'bordado computarizado': (name, cat) => cat.includes('Personalizada') || name.includes('bordado'),
+    'estampado serigrafia/dtf': (name, cat) => cat.includes('Personalizada') || name.includes('estampado'),
+    'parches corporativos': (name, cat) => cat.includes('Personalizada') || name.includes('parche'),
+    'confeccion a medida': (name, cat) => cat.includes('Personalizada') || name.includes('medida'),
+  };
+
+  function matchesQuery(query: string, text: string, cardName: string, cardCategory: string, cardLine: string, cardSku: string) {
     if (!query) return true;
-    if (text.includes(query)) return true;
-    const syns = SYNONYMS[query];
+
+    // 1. Coincidencia directa por SKU exacto
+    if (cardSku && (cardSku.toLowerCase() === query.toLowerCase() || cardSku.toLowerCase().includes(query.toLowerCase()))) {
+      return true;
+    }
+
+    const normQuery = normalizeText(query);
+    const normName = normalizeText(cardName);
+    const normCat = normalizeText(cardCategory);
+    const normLine = normalizeText(cardLine);
+    const normSku = normalizeText(cardSku);
+
+    // 2. Si la consulta corresponde a una categoría o subcategoría conocida, aplicar la regla estricta sobre el nombre
+    if (STRICT_CATEGORY_RULES[normQuery]) {
+      return STRICT_CATEGORY_RULES[normQuery](normName, normCat, normLine, normSku);
+    }
+
+    // 3. Coincidencia literal en el nombre o sku del producto (prioridad alta)
+    if (normName.includes(normQuery) || normSku.includes(normQuery)) {
+      return true;
+    }
+
+    // 4. Búsqueda por palabras: cada palabra debe estar presente en el texto del producto
+    const words = normQuery.split(/\s+/).filter(w => w.length > 2);
+    if (words.length > 0) {
+      const allWordsMatch = words.every(word => {
+        if (text.includes(word)) return true;
+        const syns = SYNONYMS[word];
+        return syns ? syns.some(s => text.includes(s)) : false;
+      });
+      if (allWordsMatch) return true;
+    }
+
+    // 5. Sinónimos exactos de la consulta completa
+    const syns = SYNONYMS[normQuery];
     if (syns) {
       for (const syn of syns) {
         if (text.includes(syn)) return true;
       }
     }
+
     return false;
   }
 
@@ -2170,7 +2474,7 @@ const modalCatalog = PRODUCTS.map(p => ({
       const targetText = normalizeText(`${cardName} ${cardColor} ${cardSku} ${cardCategory} ${cardSummary} ${cardColors}`);
 
       const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
-      const matchesSearch = matchesQuery(searchTerm, targetText);
+      const matchesSearch = matchesQuery(searchTerm, targetText, cardName, cardCategory, card.getAttribute('data-line') || '', cardSku);
 
       if (matchesCategory && matchesSearch) {
         matchedCards.push(card);
@@ -2227,8 +2531,82 @@ const modalCatalog = PRODUCTS.map(p => ({
       activeCategory = tab.getAttribute('data-filter') || 'all';
       visibleLimit = BATCH_SIZE;
       updateVisibility();
+      updateMobileCategoryDisplay();
+      tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     });
   });
+
+  // Control de scroll con flechas táctiles para las pestañas de categorías
+  const tabsWrapper = document.getElementById('product-tabs-wrapper');
+  const scrollPrevBtn = document.getElementById('tabs-scroll-prev');
+  const scrollNextBtn = document.getElementById('tabs-scroll-next');
+
+  if (tabsWrapper && scrollPrevBtn && scrollNextBtn) {
+    scrollPrevBtn.addEventListener('click', () => {
+      tabsWrapper.scrollBy({ left: -160, behavior: 'smooth' });
+    });
+    scrollNextBtn.addEventListener('click', () => {
+      tabsWrapper.scrollBy({ left: 160, behavior: 'smooth' });
+    });
+
+    const updateScrollButtons = () => {
+      const maxScroll = tabsWrapper.scrollWidth - tabsWrapper.clientWidth;
+      if (maxScroll <= 5) {
+        scrollPrevBtn.style.opacity = '0.3';
+        scrollPrevBtn.style.pointerEvents = 'none';
+        scrollNextBtn.style.opacity = '0.3';
+        scrollNextBtn.style.pointerEvents = 'none';
+      } else {
+        scrollPrevBtn.style.opacity = tabsWrapper.scrollLeft > 10 ? '1' : '0.3';
+        scrollPrevBtn.style.pointerEvents = tabsWrapper.scrollLeft > 10 ? 'auto' : 'none';
+        scrollNextBtn.style.opacity = tabsWrapper.scrollLeft < maxScroll - 10 ? '1' : '0.3';
+        scrollNextBtn.style.pointerEvents = tabsWrapper.scrollLeft < maxScroll - 10 ? 'auto' : 'none';
+      }
+    };
+
+    tabsWrapper.addEventListener('scroll', updateScrollButtons, { passive: true });
+    window.addEventListener('resize', updateScrollButtons, { passive: true });
+    setTimeout(updateScrollButtons, 300);
+  }
+
+  // Stepper móvil: Cambiar categoría con botones Anterior / Siguiente
+  const mobilePrevCatBtn = document.getElementById('mobile-prev-cat');
+  const mobileNextCatBtn = document.getElementById('mobile-next-cat');
+  const mobileCurrentCatName = document.getElementById('mobile-current-cat-name');
+
+  function updateMobileCategoryDisplay() {
+    if (!mobileCurrentCatName) return;
+    const activeTab = document.querySelector('.product-tab.active') as HTMLElement | null;
+    if (activeTab) {
+      const label = activeTab.querySelector('.tab-label')?.textContent || 'Todos';
+      const count = activeTab.querySelector('.tab-count')?.textContent || '';
+      mobileCurrentCatName.innerHTML = `<strong>${label}</strong> ${count ? `<span class="mobile-curr-count">${count}</span>` : ''}`;
+    }
+  }
+
+  function switchTabByIndex(index: number) {
+    const tabList = Array.from(tabs) as HTMLElement[];
+    if (index >= 0 && index < tabList.length) {
+      tabList[index].click();
+      tabList[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }
+
+  if (mobilePrevCatBtn && mobileNextCatBtn) {
+    mobilePrevCatBtn.addEventListener('click', () => {
+      const tabList = Array.from(tabs) as HTMLElement[];
+      const currentIndex = tabList.findIndex(t => t.classList.contains('active'));
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : tabList.length - 1;
+      switchTabByIndex(prevIndex);
+    });
+
+    mobileNextCatBtn.addEventListener('click', () => {
+      const tabList = Array.from(tabs) as HTMLElement[];
+      const currentIndex = tabList.findIndex(t => t.classList.contains('active'));
+      const nextIndex = currentIndex < tabList.length - 1 ? currentIndex + 1 : 0;
+      switchTabByIndex(nextIndex);
+    });
+  }
 
   if (searchInput) {
     searchInput.addEventListener('input', function () {
@@ -2559,6 +2937,7 @@ const modalCatalog = PRODUCTS.map(p => ({
     modalEl.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('pmodal-open');
 
     // Reiniciar posición de scroll interno del modal
     modalEl.scrollTop = 0;
@@ -2571,6 +2950,7 @@ const modalCatalog = PRODUCTS.map(p => ({
     modalEl.setAttribute('aria-hidden', 'true');
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
+    document.body.classList.remove('pmodal-open');
     setTimeout(() => {
       if (!modalEl.classList.contains('is-open')) {
         modalEl.style.display = 'none';
@@ -2704,21 +3084,6 @@ const modalCatalog = PRODUCTS.map(p => ({
 
   // Triggers globales (desde Menú Header y sección Categorías)
   document.addEventListener('click', (e) => {
-    const catTrigger = (e.target as HTMLElement).closest('[data-category-trigger]');
-    if (catTrigger) {
-      const cat = catTrigger.getAttribute('data-category-trigger');
-      if (cat) {
-        tabs.forEach((t) => {
-          if (t.getAttribute('data-filter') === cat) {
-            (t as HTMLElement).click();
-          }
-        });
-        const sec = document.getElementById('productos');
-        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-      }
-      return;
-    }
-
     const searchTrigger = (e.target as HTMLElement).closest('[data-search-trigger]');
     if (searchTrigger) {
       e.preventDefault();
@@ -2736,12 +3101,177 @@ const modalCatalog = PRODUCTS.map(p => ({
         if (searchClearBtn) searchClearBtn.style.display = 'inline-flex';
         visibleLimit = BATCH_SIZE;
         updateVisibility();
+        updateMobileCategoryDisplay();
         const sec = document.getElementById('productos');
         if (sec) sec.scrollIntoView({ behavior: 'smooth' });
       }
+      return;
+    }
+
+    const catTrigger = (e.target as HTMLElement).closest('[data-category-trigger]');
+    if (catTrigger) {
+      e.preventDefault();
+      const cat = catTrigger.getAttribute('data-category-trigger');
+      if (cat) {
+        if (searchInput) {
+          searchInput.value = '';
+          searchTerm = '';
+          if (searchClearBtn) searchClearBtn.style.display = 'none';
+        }
+        tabs.forEach((t) => {
+          if (t.getAttribute('data-filter') === cat) {
+            (t as HTMLElement).click();
+          }
+        });
+        const sec = document.getElementById('productos');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
     }
   });
 
+  // ───────────────────────── Sincronización en Vivo (SaaS CMS Sync) ─────────────────────────
+  async function syncLiveCatalog() {
+    try {
+      const res = await fetch('/api/products');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success || !Array.isArray(data.products)) return;
+
+      const liveProducts = data.products;
+      liveProducts.forEach((p: any) => {
+        catalogMap.set(p.id, p);
+      });
+
+      const gridEl = document.getElementById('product-grid');
+      if (!gridEl) return;
+
+      const allDomCards = gridEl.querySelectorAll('.product-card') as NodeListOf<HTMLElement>;
+      const existingCardIds = new Set<string>();
+
+      allDomCards.forEach((c) => {
+        const id = c.getAttribute('data-id');
+        if (!id) return;
+        existingCardIds.add(id);
+        const liveItem = catalogMap.get(id);
+        if (!liveItem || liveItem.isActive === false) {
+          c.style.display = 'none';
+          c.setAttribute('data-cms-inactive', 'true');
+        } else {
+          c.removeAttribute('data-cms-inactive');
+          c.setAttribute('data-name', (liveItem.name || '').toLowerCase());
+          c.setAttribute('data-sku', (liveItem.sku || '').toLowerCase());
+          c.setAttribute('data-category', liveItem.category);
+          const nameEl = c.querySelector('.product-name');
+          if (nameEl && liveItem.name) nameEl.textContent = liveItem.name;
+          const imgEl = c.querySelector('.product-img') as HTMLImageElement;
+          if (imgEl && liveItem.image && !imgEl.src.endsWith(liveItem.image)) {
+            imgEl.src = liveItem.image;
+          }
+        }
+      });
+
+      // Crear tarjetas para productos creados recientemente en el SaaS
+      liveProducts.forEach((np: any, idx: number) => {
+        if (!existingCardIds.has(np.id) && np.isActive !== false) {
+          const newCard = document.createElement('div');
+          newCard.className = 'product-card';
+          newCard.setAttribute('data-id', np.id);
+          newCard.setAttribute('data-base-id', np.baseId || np.id);
+          newCard.setAttribute('data-category', np.category);
+          newCard.setAttribute('data-name', (np.name || '').toLowerCase());
+          newCard.setAttribute('data-color', (np.color || '').toLowerCase());
+          newCard.setAttribute('data-sku', (np.sku || '').toLowerCase());
+          newCard.setAttribute('data-summary', (np.summary || '').toLowerCase());
+          newCard.setAttribute('data-default-img', np.image);
+          newCard.setAttribute('data-index', String(allDomCards.length + idx));
+          newCard.setAttribute('tabindex', '0');
+          newCard.setAttribute('role', 'button');
+          newCard.setAttribute('aria-label', `Ver ficha técnica de ${np.name}`);
+
+          newCard.innerHTML = `
+            <div class="product-img-wrapper">
+              <img class="product-img" src="${np.image || '/images/catalogo/polera-corporativa.webp'}" alt="${np.name}" loading="lazy" decoding="async" width="300" height="300" />
+              <span class="product-quick-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                Ficha técnica
+              </span>
+            </div>
+            <div class="product-info">
+              <div class="product-cat-row">
+                <span class="product-cat">${np.category}</span>
+              </div>
+              <h3 class="product-name" title="${np.name}">${np.name}</h3>
+              ${np.sku ? `<span class="product-sku">SKU: ${np.sku}</span>` : ''}
+              <button class="product-btn" data-product-id="${np.id}" type="button" title="Agregar ${np.name} al cotizador">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                <span>Cotizar</span>
+              </button>
+            </div>
+          `;
+
+          newCard.addEventListener('click', (e) => {
+            if ((e.target as HTMLElement).closest('.product-btn')) return;
+            openModal(np.id);
+          });
+
+          const quoteBtn = newCard.querySelector('.product-btn');
+          if (quoteBtn) {
+            quoteBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const itemPayload = {
+                id: np.id,
+                name: np.name,
+                category: np.category,
+                sku: np.sku,
+                image: np.image,
+                qty: 10,
+                size: 'M',
+                color: np.color || 'Estándar',
+              };
+              if ((window as any).QuoteCart) {
+                (window as any).QuoteCart.addItem(itemPayload);
+              } else {
+                window.dispatchEvent(new CustomEvent('add-product-to-quote', { detail: itemPayload }));
+              }
+            });
+          }
+
+          gridEl.appendChild(newCard);
+          existingCardIds.add(np.id);
+        }
+      });
+
+      updateVisibility();
+    } catch (e) {
+      console.warn('Error in syncLiveCatalog:', e);
+    }
+  }
+
+  // Canales de sincronización en tiempo real
+  if (typeof BroadcastChannel !== 'undefined') {
+    const liveCmsChannel = new BroadcastChannel('zortex_cms');
+    liveCmsChannel.onmessage = (ev) => {
+      if (ev.data && ev.data.type === 'PRODUCTS_UPDATED') {
+        syncLiveCatalog();
+      }
+    };
+  }
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'zortex_cms_updated') {
+      syncLiveCatalog();
+    }
+  });
+
+  // Sincronizar catálogo al inicio
+  syncLiveCatalog();
+
   // Inicializar estado al cargar
   updateVisibility();
+  updateMobileCategoryDisplay();
 </script>

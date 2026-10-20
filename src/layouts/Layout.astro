@@ -5,46 +5,137 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
 }
 
-const { title = `${SITE.name} — ${SITE.tagline}`, description = SITE.description } = Astro.props;
+const {
+  title = `${SITE.name} — ${SITE.tagline}`,
+  description = SITE.description,
+  canonical,
+  image = `${SITE.url}/images/hero-epp.png`,
+  noindex = false,
+} = Astro.props;
+
+// Construir URL canónica absoluta siempre con el dominio oficial www.zortex.cl
+const canonicalUrl = canonical || new URL(Astro.url.pathname, SITE.url).href;
+const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es-CL">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
 
-  <!-- Open Graph -->
+  <!-- Control de Indexación Robots -->
+  {noindex ? (
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  )}
+
+  <!-- Identidad de Marca y Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+  <link rel="alternate icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
+  <meta name="theme-color" content="#0B132B" />
+
+  <!-- Open Graph / Redes Sociales (WhatsApp, LinkedIn, Facebook) -->
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_CL" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content={SITE.url} />
-  <meta property="og:locale" content="es_CL" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:secure_url" content={ogImageUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Zortex - Vestuario Corporativo, Industrial y Equipamiento EPP al por mayor en Chile" />
 
-  <!-- Google Fonts -->
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:domain" content="zortex.cl" />
+  <meta name="twitter:url" content={canonicalUrl} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
+  <!-- Geo SEO para Posicionamiento Local en Chile -->
+  <meta name="geo.region" content="CL-RM" />
+  <meta name="geo.placename" content="Santiago, Chile" />
+  <meta name="geo.position" content="-33.4489;-70.6693" />
+  <meta name="ICBM" content="-33.4489, -70.6693" />
+
+  <!-- Preconexión de Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Schema.org Organization -->
+  <!-- Schema.org Rich Snippets estructurados -->
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": SITE.name,
-    "description": SITE.description,
-    "url": SITE.url,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Santiago / Chile",
-      "addressCountry": "CL"
-    },
-    "email": SITE.email,
-    "telephone": SITE.phone
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE.url}/#organization`,
+        "name": SITE.name,
+        "legalName": "Zortex Chile",
+        "url": SITE.url,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${SITE.url}/images/zortex_logo_transparente.png`,
+          "caption": "Logo Zortex"
+        },
+        "description": SITE.description,
+        "email": SITE.email,
+        "telephone": SITE.phone,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Santiago",
+          "addressRegion": "Región Metropolitana",
+          "addressCountry": "CL"
+        },
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": SITE.phone,
+            "contactType": "sales",
+            "areaServed": "CL",
+            "availableLanguage": ["Spanish"]
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE.url}/#website`,
+        "url": SITE.url,
+        "name": "Zortex — Vestuario Corporativo y EPP Mayorista",
+        "description": SITE.description,
+        "publisher": { "@id": `${SITE.url}/#organization` },
+        "inLanguage": "es-CL"
+      },
+      {
+        "@type": "WholesaleStore",
+        "@id": `${SITE.url}/#store`,
+        "name": "Zortex Venta Mayorista y Distribución",
+        "url": SITE.url,
+        "image": ogImageUrl,
+        "telephone": SITE.phone,
+        "priceRange": "$$",
+        "currenciesAccepted": "CLP",
+        "paymentAccepted": "Transferencia bancaria, Factura B2B 30 días, WebPay",
+        "areaServed": {
+          "@type": "Country",
+          "name": "Chile"
+        }
+      }
+    ]
   })} />
 </head>
 <body>

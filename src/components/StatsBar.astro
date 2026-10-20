@@ -16,7 +16,7 @@ const STATS_DATA = [
   {
     value: 15,
     suffix: '+',
-    tag: 'TRAYECTORIA COMPROBADA',
+    tag: 'TRAYECTORIA',
     tagColor: 'navy',
     title: 'Años de Especialización B2B',
     description: 'Asesoría técnica integral en especificación de uniformes, curvatura de tallas y normativas laborales vigentes.',
@@ -26,7 +26,7 @@ const STATS_DATA = [
   {
     value: 50,
     suffix: '+',
-    tag: 'CATÁLOGO HOMOLOGADO',
+    tag: 'CATÁLOGO',
     tagColor: 'amber',
     title: 'Marcas Técnicas y EPP Normado',
     description: 'Vestuario técnico y elementos de protección certificados bajo normas chilenas NCh, ISP, ANSI y EN ISO.',
@@ -36,7 +36,7 @@ const STATS_DATA = [
   {
     value: 24,
     suffix: 'h',
-    tag: 'SLA DE RESPUESTA',
+    tag: 'TIEMPO DE RESPUESTA',
     tagColor: 'emerald',
     title: 'Cotización Formal Garantizada',
     description: 'Propuesta técnica y comercial escalonada por volumen emitida en menos de 24 horas por ejecutivos asignados.',
@@ -80,7 +80,7 @@ const STATS_DATA = [
   </div>
 </section>
 
-<style>
+<style is:global>
   .stats-bar {
     padding: 44px 0 52px;
     background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
@@ -195,12 +195,12 @@ const STATS_DATA = [
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 9px;
+    padding: 4px 10px;
     border-radius: 6px;
-    font-family: var(--mono, monospace);
-    font-size: 10px;
+    font-family: var(--body, 'Plus Jakarta Sans', system-ui, sans-serif);
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     border: 1px solid transparent;
   }

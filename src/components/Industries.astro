@@ -558,22 +558,22 @@ const sectorDetails = [
 
   /* National Pills Strip */
   .rubros-pills {
-    background: #0F172A;
-    border: 1px solid rgba(30, 64, 175, 0.4);
+    background: #FFFFFF;
+    border: 1.5px solid #2563EB;
     border-radius: 14px;
     padding: 24px 28px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: 0 10px 30px -6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px -6px rgba(0, 0, 0, 0.25), 0 0 15px rgba(37, 99, 235, 0.15);
   }
 
   .pills-title {
-    font-size: 12px;
-    color: #93C5FD;
-    font-weight: 700;
+    font-size: 13px;
+    color: #0F172A;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     font-family: var(--mono, monospace);
     display: flex;
     align-items: center;
@@ -583,9 +583,9 @@ const sectorDetails = [
   .pills-title::before {
     content: '';
     display: inline-block;
-    width: 3px;
-    height: 13px;
-    background: #1E40AF;
+    width: 4px;
+    height: 14px;
+    background: #2563EB;
     border-radius: 2px;
   }
 
@@ -599,31 +599,36 @@ const sectorDetails = [
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #1E293B;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #E2E8F0;
+    background: #F8FAFC;
+    border: 1.5px solid #2563EB;
+    color: #0F172A;
     padding: 8px 16px;
     border-radius: 8px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     font-family: var(--body, 'Plus Jakarta Sans', sans-serif);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .rubro-pill:hover {
-    background: #1E40AF;
-    border-color: #1E40AF;
+    background: #2563EB;
+    border-color: #2563EB;
     color: #FFFFFF;
     transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.35);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   }
 
   .pill-bullet {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #1E40AF;
-    box-shadow: 0 0 6px rgba(30, 64, 175, 0.8);
+    background: #2563EB;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.5);
+  }
+
+  .rubro-pill:hover .pill-bullet {
+    background: #FFFFFF;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
   }
 
   @media (max-width: 640px) {

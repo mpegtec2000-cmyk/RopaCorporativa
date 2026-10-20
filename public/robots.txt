@@ -1,0 +1,12 @@
+# robots.txt para https://www.zortex.cl
+User-agent: *
+Allow: /
+Allow: /images/
+Allow: /fonts/
+
+# Excluir panel de administración y APIs privadas
+Disallow: /sistema
+Disallow: /api/
+
+# Mapa del sitio oficial
+Sitemap: https://www.zortex.cl/sitemap.xml
