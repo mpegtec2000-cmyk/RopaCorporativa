@@ -32,6 +32,23 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalUrl} />
 
+  <!-- Forzar actualización automática e instantánea a HTTPS seguro -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+  <script is:inline>
+    (function () {
+      if (typeof window !== 'undefined' && window.location) {
+        var h = window.location.hostname;
+        var p = window.location.protocol;
+        var isLocal = h === 'localhost' || h === '127.0.0.1';
+        if (!isLocal) {
+          if (p === 'http:' || h === 'zortex.cl') {
+            window.location.replace('https://www.zortex.cl' + window.location.pathname + window.location.search + window.location.hash);
+          }
+        }
+      }
+    })();
+  </script>
+
   <!-- Control de Indexación Robots -->
   {noindex ? (
     <meta name="robots" content="noindex, nofollow, noarchive" />
