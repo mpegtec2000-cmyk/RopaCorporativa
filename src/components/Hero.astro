@@ -5,12 +5,36 @@ import { getSettings } from '../lib/cms/store';
 const settings = await getSettings();
 const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero cotizar ropa corporativa / industrial.')}`;
 
-// 4 Fondos para escritorio (16:9) y 4 para móvil (9:16)
+// 4 Fondos optimizados en WebP y JPG para escritorio (16:9) y móvil (9:16)
 const heroSlides = [
-  { desktop: "/images/hero/desktop/1.jpg", mobile: "/images/hero/mobile/1.jpg", alt: "Equipo industrial y corporativo Zortex" },
-  { desktop: "/images/hero/desktop/2.jpg", mobile: "/images/hero/mobile/2.jpg", alt: "Vestuario de faena y seguridad industrial" },
-  { desktop: "/images/hero/desktop/3.jpg", mobile: "/images/hero/mobile/3.jpg", alt: "Personalización y bordado textil corporativo" },
-  { desktop: "/images/hero/desktop/4.jpg", mobile: "/images/hero/mobile/4.jpg", alt: "Elementos de protección personal EPP Zortex" },
+  {
+    desktopWebp: "/images/hero/desktop/1.webp",
+    desktopJpg: "/images/hero/desktop/1.jpg",
+    mobileWebp: "/images/hero/mobile/1.webp",
+    mobileJpg: "/images/hero/mobile/1.jpg",
+    alt: "Equipo industrial y corporativo Zortex"
+  },
+  {
+    desktopWebp: "/images/hero/desktop/2.webp",
+    desktopJpg: "/images/hero/desktop/2.jpg",
+    mobileWebp: "/images/hero/mobile/2.webp",
+    mobileJpg: "/images/hero/mobile/2.jpg",
+    alt: "Vestuario de faena y seguridad industrial"
+  },
+  {
+    desktopWebp: "/images/hero/desktop/3.webp",
+    desktopJpg: "/images/hero/desktop/3.jpg",
+    mobileWebp: "/images/hero/mobile/3.webp",
+    mobileJpg: "/images/hero/mobile/3.jpg",
+    alt: "Personalización y bordado textil corporativo"
+  },
+  {
+    desktopWebp: "/images/hero/desktop/4.webp",
+    desktopJpg: "/images/hero/desktop/4.jpg",
+    mobileWebp: "/images/hero/mobile/4.webp",
+    mobileJpg: "/images/hero/mobile/4.jpg",
+    alt: "Elementos de protección personal EPP Zortex"
+  },
 ];
 ---
 
@@ -20,14 +44,18 @@ const heroSlides = [
     {heroSlides.map((slide, index) => (
       <div class={`hero-slide${index === 0 ? ' active' : ''}`} data-slide={index}>
         <picture>
-          <source media="(max-width: 899px)" srcset={slide.mobile} />
+          <source media="(max-width: 899px)" srcset={slide.mobileWebp} type="image/webp" />
+          <source media="(max-width: 899px)" srcset={slide.mobileJpg} type="image/jpeg" />
+          <source media="(min-width: 900px)" srcset={slide.desktopWebp} type="image/webp" />
           <img
-            src={slide.desktop}
+            src={slide.desktopJpg}
             alt={slide.alt}
             class="hero-slide-img"
-            loading="eager"
-            decoding="async"
-            fetchpriority={index === 0 ? "high" : "auto"}
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding={index === 0 ? "sync" : "async"}
+            fetchpriority={index === 0 ? "high" : "low"}
+            width="1920"
+            height="1080"
           />
         </picture>
       </div>

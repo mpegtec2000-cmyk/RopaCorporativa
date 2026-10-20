@@ -93,6 +93,10 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
   <meta name="geo.position" content="-33.4489;-70.6693" />
   <meta name="ICBM" content="-33.4489, -70.6693" />
 
+  <!-- Preload LCP Hero Image for Core Web Vitals (Instant LCP) -->
+  <link rel="preload" as="image" href="/images/hero/desktop/1.webp" media="(min-width: 900px)" type="image/webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="/images/hero/mobile/1.webp" media="(max-width: 899px)" type="image/webp" fetchpriority="high" />
+
   <!-- Preconexión de Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
