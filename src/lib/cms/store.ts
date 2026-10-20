@@ -39,6 +39,15 @@ export const DEFAULT_SETTINGS: SiteSettings = {
 /* Detección de backend                                                */
 /* ------------------------------------------------------------------ */
 
+export function isReadOnlyEnvironment(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.NETLIFY ||
+    (process.env.NODE_ENV === 'production' && !process.env.LOCAL_DEV)
+  );
+}
+
 let backendCache: { value: Backend; at: number } | null = null;
 
 export async function getBackend(): Promise<Backend> {
@@ -49,7 +58,15 @@ export async function getBackend(): Promise<Backend> {
   if (isSupabaseConfigured) {
     try {
       const { error } = await getSupabase().from(T_PRODUCTS).select('id').limit(1);
-      if (!error) value = 'supabase';
+      if (!error) {
+        value = 'supabase';
+      } else {
+        // Si cms_products aún no existe, probar con quotes
+        const { error: qErr } = await getSupabase().from('quotes').select('id').limit(1);
+        if (!qErr) {
+          value = 'supabase';
+        }
+      }
     } catch {
       value = 'local';
     }
@@ -71,13 +88,18 @@ async function readJson<T>(file: string): Promise<T | null> {
 }
 
 async function writeJson(file: string, data: unknown): Promise<void> {
+  if (isReadOnlyEnvironment()) {
+    throw new Error(
+      'Entorno de solo lectura detectado (Vercel/Serverless). No se puede escribir en archivos locales. ' +
+        'Ejecuta "supabase/cms-schema.sql" en el SQL Editor de tu proyecto Supabase para trabajar con base de datos en producción.'
+    );
+  }
   try {
     await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, JSON.stringify(data, null, 2), 'utf8');
   } catch (err: any) {
     throw new Error(
-      'No se pudo guardar en el almacenamiento local (entorno de solo lectura). ' +
-        'Ejecuta supabase/cms-schema.sql en tu proyecto Supabase para trabajar en vivo en producción. ' +
+      'No se pudo guardar en el almacenamiento local. ' +
         `Detalle: ${err?.message || err}`
     );
   }
@@ -362,40 +384,76 @@ export interface NewQuoteInput {
 }
 
 export async function createQuote(input: NewQuoteInput): Promise<string> {
-  const backend = await getBackend();
-  if (backend === 'supabase') {
-    const sb = getSupabase();
-    const { data: quote, error } = await sb
-      .from('quotes')
-      .insert({
-        empresa: input.empresa,
-        rut: input.rut || null,
-        nombre: input.nombre,
-        telefono: input.telefono || null,
-        correo: input.correo || null,
-        personalizacion: input.personalizacion || null,
-        plazo: input.plazo || null,
-        mensaje: input.mensaje || null,
-        estado: 'nuevo',
-      })
-      .select('id')
-      .single();
-    if (error || !quote) throw new Error(error?.message || 'No se pudo crear la cotización');
-    if (input.items.length) {
-      const { error: itemsError } = await sb.from('quote_items').insert(
-        input.items.map((it) => ({
-          quote_id: quote.id,
-          producto: it.producto,
-          categoria: it.categoria || null,
-          cantidad: it.cantidad,
-          talla: it.talla || null,
-        }))
-      );
-      if (itemsError) console.error('[CMS] Error insertando ítems:', itemsError);
+  // 1. Si Supabase está configurado, intentar guardar siempre en la base de datos
+  if (isSupabaseConfigured) {
+    try {
+      const sb = getSupabase();
+      const { data: quote, error } = await sb
+        .from('quotes')
+        .insert({
+          empresa: input.empresa,
+          rut: input.rut || null,
+          nombre: input.nombre,
+          telefono: input.telefono || null,
+          correo: input.correo || null,
+          personalizacion: input.personalizacion || null,
+          plazo: input.plazo || null,
+          mensaje: input.mensaje || null,
+          estado: 'nuevo',
+        })
+        .select('id')
+        .single();
+
+      if (error) {
+        if (
+          error.code === 'PGRST205' ||
+          error.message?.includes('schema cache') ||
+          error.message?.includes('does not exist')
+        ) {
+          throw new Error(
+            'La tabla "quotes" no existe en Supabase. Debes ejecutar el script "supabase/cms-schema.sql" en el SQL Editor de tu proyecto Supabase para habilitar el guardado en producción.'
+          );
+        }
+        throw new Error(`Error en base de datos Supabase: ${error.message}`);
+      }
+
+      if (!quote) {
+        throw new Error('No se pudo crear la cotización en Supabase.');
+      }
+
+      if (input.items.length) {
+        const { error: itemsError } = await sb.from('quote_items').insert(
+          input.items.map((it) => ({
+            quote_id: quote.id,
+            producto: it.producto,
+            categoria: it.categoria || null,
+            cantidad: it.cantidad,
+            talla: it.talla || null,
+          }))
+        );
+        if (itemsError) {
+          console.error('[CMS] Error insertando ítems:', itemsError);
+        }
+      }
+      return quote.id as string;
+    } catch (err: any) {
+      // En entornos de solo lectura (como Vercel) no es posible escribir archivos locales
+      if (isReadOnlyEnvironment()) {
+        throw err;
+      }
+      console.warn('[CMS] Supabase no disponible en entorno local, usando almacenamiento JSON local:', err.message);
     }
-    return quote.id as string;
   }
 
+  // 2. Si estamos en producción/Vercel y Supabase no está configurado
+  if (isReadOnlyEnvironment()) {
+    throw new Error(
+      'No se pudo almacenar la cotización: Supabase no está configurado en producción. ' +
+      'Configura SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Vercel y ejecuta "supabase/cms-schema.sql" en Supabase.'
+    );
+  }
+
+  // 3. Fallback solo para desarrollo local (con disco modificable)
   const quotes = (await readJson<Quote[]>(QUOTES_FILE)) || [];
   const id = `q-${Date.now().toString(36)}`;
   quotes.unshift({
@@ -419,14 +477,15 @@ export async function createQuote(input: NewQuoteInput): Promise<string> {
 
 export async function getQuotes(): Promise<Quote[]> {
   try {
-    if ((await getBackend()) === 'supabase') {
+    if (isSupabaseConfigured) {
       const { data, error } = await getSupabase()
         .from('quotes')
         .select('*, items:quote_items(producto, categoria, cantidad, talla)')
         .order('created_at', { ascending: false })
         .limit(500);
-      if (error) throw new Error(error.message);
-      return (data || []).map((q: any) => ({ ...q, estado: q.estado || 'nuevo', items: q.items || [] }));
+      if (!error && data) {
+        return data.map((q: any) => ({ ...q, estado: q.estado || 'nuevo', items: q.items || [] }));
+      }
     }
     return (await readJson<Quote[]>(QUOTES_FILE)) || [];
   } catch (err) {
@@ -440,10 +499,10 @@ export async function updateQuote(id: string, updates: { estado?: QuoteStatus; n
   if (updates.estado) patch.estado = updates.estado;
   if (typeof updates.notas === 'string') patch.notas = updates.notas;
 
-  if ((await getBackend()) === 'supabase') {
+  if (isSupabaseConfigured) {
     const { error } = await getSupabase().from('quotes').update(patch).eq('id', id);
-    if (error) throw new Error(error.message);
-    return;
+    if (!error) return;
+    if (isReadOnlyEnvironment()) throw new Error(error.message);
   }
   const quotes = (await readJson<Quote[]>(QUOTES_FILE)) || [];
   await writeJson(
@@ -453,10 +512,10 @@ export async function updateQuote(id: string, updates: { estado?: QuoteStatus; n
 }
 
 export async function deleteQuote(id: string): Promise<void> {
-  if ((await getBackend()) === 'supabase') {
+  if (isSupabaseConfigured) {
     const { error } = await getSupabase().from('quotes').delete().eq('id', id);
-    if (error) throw new Error(error.message);
-    return;
+    if (!error) return;
+    if (isReadOnlyEnvironment()) throw new Error(error.message);
   }
   const quotes = (await readJson<Quote[]>(QUOTES_FILE)) || [];
   await writeJson(

@@ -1,7 +1,17 @@
 -- ============================================================
 -- ZORTEX SaaS & CMS Schema (Tablas para gestión en vivo)
--- Ejecutar en Supabase SQL Editor si se desea almacenamiento en la nube.
 -- ============================================================
+-- INSTRUCCIONES:
+-- 1. Ve a tu panel de Supabase:
+--    https://supabase.com/dashboard/project/hjuawsyqgrascremrwwc/sql/new
+-- 2. Pega todo este contenido en el SQL Editor y presiona "RUN" (o Ctrl+Enter).
+-- 3. Una vez ejecutado con éxito, las cotizaciones y productos se guardarán
+--    directamente en Supabase en tiempo real.
+-- ============================================================
+
+-- Extensiones necesarias para UUID
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. Tabla de Cotizaciones Públicas
 CREATE TABLE IF NOT EXISTS public.quotes (
@@ -56,11 +66,19 @@ CREATE TABLE IF NOT EXISTS public.cms_settings (
   updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
--- RLS
+-- RLS (Row Level Security)
 ALTER TABLE public.quotes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quote_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.cms_products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.cms_settings ENABLE ROW LEVEL SECURITY;
+
+-- Permisos sobre el esquema public
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO service_role;
+GRANT SELECT, INSERT ON public.quotes TO anon, authenticated;
+GRANT SELECT, INSERT ON public.quote_items TO anon, authenticated;
+GRANT SELECT ON public.cms_products TO anon, authenticated;
+GRANT SELECT ON public.cms_settings TO anon, authenticated;
 
 -- Políticas de Seguridad RLS
 -- cms_products: Lectura pública de productos activos, acceso total para service_role
