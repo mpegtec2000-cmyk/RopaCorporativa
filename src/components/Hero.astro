@@ -569,7 +569,12 @@ const heroSlides = [
     }
   });
 
-  syncHeroSettings();
+  // Sincronización en segundo plano diferida para no competir con el render inicial de LCP
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => syncHeroSettings(), { timeout: 3500 });
+  } else {
+    setTimeout(syncHeroSettings, 2500);
+  }
 
   if (document.readyState !== 'loading') {
     setupHeroBgSlideshow();

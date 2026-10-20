@@ -33,7 +33,7 @@ const settings = await getSettings();
 <header>
   <div class="nav">
     <a href="/" class="logo" aria-label="Inicio">
-      <img src="/images/zortex_logo_transparente.png" alt={SITE.name} class="logo-img" width="160" height="42" />
+      <img src="/images/zortex_logo_transparente.png" alt={SITE.name} class="logo-img" width="147" height="42" />
     </a>
     <nav class="nav-links" aria-label="Navegación principal">
       <a href="#">Inicio</a>
@@ -93,7 +93,7 @@ const settings = await getSettings();
 <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú de navegación principal">
   <div class="mobile-menu-header">
     <a href="/" class="mobile-menu-logo" aria-label="Inicio Zortex">
-      <img src="/images/zortex_logo_transparente.png" alt={SITE.name} class="mobile-logo-img" width="130" height="34" />
+      <img src="/images/zortex_logo_transparente.png" alt={SITE.name} class="mobile-logo-img" width="112" height="32" />
     </a>
     <button class="mobile-close" id="mobile-close" aria-label="Cerrar menú">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -368,6 +368,7 @@ const settings = await getSettings();
   .logo-img {
     height: 42px;
     width: auto;
+    aspect-ratio: 480 / 137;
     max-width: 175px;
     object-fit: contain;
     display: block;
@@ -734,6 +735,7 @@ const settings = await getSettings();
     .mobile-logo-img {
       height: 32px;
       width: auto;
+      aspect-ratio: 480 / 137;
       object-fit: contain;
       display: block;
     }

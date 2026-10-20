@@ -560,16 +560,17 @@ const modalCatalog = PRODUCTS.map(p => ({
     background-color: #10B981;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     animation: livePulse 2s infinite ease-in-out;
+    will-change: transform, opacity;
   }
 
   @keyframes livePulse {
     0%, 100% {
       transform: scale(1);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      opacity: 1;
     }
     50% {
-      transform: scale(1.15);
-      box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.35);
+      transform: scale(1.2);
+      opacity: 0.7;
     }
   }
 
@@ -2566,7 +2567,11 @@ const modalCatalog = PRODUCTS.map(p => ({
 
     tabsWrapper.addEventListener('scroll', updateScrollButtons, { passive: true });
     window.addEventListener('resize', updateScrollButtons, { passive: true });
-    setTimeout(updateScrollButtons, 300);
+    if ('requestAnimationFrame' in window) {
+      requestAnimationFrame(() => updateScrollButtons());
+    } else {
+      setTimeout(updateScrollButtons, 300);
+    }
   }
 
   // Stepper móvil: Cambiar categoría con botones Anterior / Siguiente
@@ -3268,8 +3273,12 @@ const modalCatalog = PRODUCTS.map(p => ({
     }
   });
 
-  // Sincronizar catálogo al inicio
-  syncLiveCatalog();
+  // Sincronizar catálogo al inicio en segundo plano diferido (no compite con render inicial)
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => syncLiveCatalog(), { timeout: 4000 });
+  } else {
+    setTimeout(syncLiveCatalog, 3000);
+  }
 
   // Inicializar estado al cargar
   updateVisibility();

@@ -97,10 +97,14 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
   <link rel="preload" as="image" href="/images/hero/desktop/1.webp" media="(min-width: 900px)" type="image/webp" fetchpriority="high" />
   <link rel="preload" as="image" href="/images/hero/mobile/1.webp" media="(max-width: 899px)" type="image/webp" fetchpriority="high" />
 
-  <!-- Preconexión de Fuentes -->
+  <!-- Preconexión y Carga Asíncrona de Fuentes (Non-render-blocking) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </noscript>
 
   <!-- Schema.org Rich Snippets estructurados -->
   <script type="application/ld+json" set:html={JSON.stringify({

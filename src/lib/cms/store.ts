@@ -8,6 +8,7 @@
  *  3. Si aún no hay datos guardados, se sirve el catálogo base del repositorio (config.ts).
  */
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 import { PRODUCTS as BASE_PRODUCTS, SITE } from '../../config';
 import { getSupabase, isSupabaseConfigured } from '../supabase';
@@ -124,16 +125,35 @@ function baseCatalog(): CmsProduct[] {
   }));
 }
 
+function toWebp(url: string): string {
+  if (!url || typeof url !== 'string') return url;
+  if (url.endsWith('.webp') || url.endsWith('.svg')) return url;
+  const webpUrl = url.replace(/\.(png|jpe?g)$/i, '.webp');
+  try {
+    const diskPath = path.join(process.cwd(), 'public', webpUrl.replace(/^\//, ''));
+    if (fsSync.existsSync(diskPath)) {
+      return webpUrl;
+    }
+  } catch {}
+  return url;
+}
+
 function normalizeProduct(p: CmsProduct): CmsProduct {
-  const images = (p.images || []).filter(Boolean);
-  const image = p.image || images[0] || '';
+  const rawImages = (p.images || []).filter(Boolean);
+  const rawImage = p.image || rawImages[0] || '';
+  const image = toWebp(rawImage);
+  const images = (rawImages.length ? rawImages : rawImage ? [rawImage] : []).map(toWebp);
+  const colors = (p.colors || []).filter((c) => c && c.name).map((c) => ({
+    ...c,
+    image: c.image ? toWebp(c.image) : image,
+  }));
   return {
     ...p,
     id: String(p.id).trim(),
     name: String(p.name || '').trim(),
     image,
-    images: images.length ? images : image ? [image] : [],
-    colors: (p.colors || []).filter((c) => c && c.name),
+    images,
+    colors,
     sizes: (p.sizes || []).map((s) => String(s).trim()).filter(Boolean),
     features: (p.features || []).filter((f) => f && f.name && f.value),
     isActive: p.isActive !== false,
