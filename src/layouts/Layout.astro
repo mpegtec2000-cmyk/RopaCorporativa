@@ -60,14 +60,14 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
   )}
 
   <!-- Identidad de Marca y Favicon Oficial ZORTEX (Google Search, Apple, Android, Navegadores) -->
-  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=4" />
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=4" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=4" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=4" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
-  <link rel="shortcut icon" href="/favicon.ico?v=4" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4" />
-  <link rel="manifest" href="/site.webmanifest?v=4" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#0F172A" />
 
   <!-- Open Graph / Redes Sociales (WhatsApp, LinkedIn, Facebook) -->
@@ -145,7 +145,8 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
         },
         "address": {
           "@type": "PostalAddress",
-          "addressLocality": "Santiago",
+          "streetAddress": "Manzano 254",
+          "addressLocality": "Recoleta",
           "addressRegion": "Región Metropolitana",
           "addressCountry": "CL"
         },
@@ -175,7 +176,30 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
         "name": "Zortex Venta Mayorista y Distribución",
         "url": SITE.url,
         "image": ogImageUrl,
+        "logo": `${SITE.url}/images/zortex_logo_transparente.png`,
         "telephone": SITE.phone,
+        "email": SITE.email,
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Manzano 254",
+          "addressLocality": "Recoleta",
+          "addressRegion": "Región Metropolitana",
+          "addressCountry": "CL"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -33.4315,
+          "longitude": -70.6439
+        },
+        "hasMap": "https://maps.google.com/?q=Manzano+254,+Recoleta,+Santiago",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:30",
+            "closes": "18:00"
+          }
+        ],
         "priceRange": "$$",
         "currenciesAccepted": "CLP",
         "paymentAccepted": "Transferencia bancaria, Factura B2B 30 días, WebPay",
@@ -183,6 +207,41 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
           "@type": "Country",
           "name": "Chile"
         }
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE.url}/#sitenavigation`,
+        "name": "Navegación Principal ZORTEX",
+        "itemListElement": [
+          {
+            "@type": "SiteNavigationElement",
+            "position": 1,
+            "name": "Catálogo de Productos",
+            "description": "Catálogo mayorista de vestuario corporativo, industrial y equipamiento de protección personal.",
+            "url": `${SITE.url}/#productos`
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 2,
+            "name": "Ropa Corporativa",
+            "description": "Poleras piqué, camisas Oxford, casacas y polar con bordado y estampado corporativo.",
+            "url": `${SITE.url}/#productos`
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 3,
+            "name": "Protección Personal (EPP)",
+            "description": "Calzado dieléctrico, botines certificados, cascos y protección industrial.",
+            "url": `${SITE.url}/#productos`
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "position": 4,
+            "name": "Cotización Formal en Línea",
+            "description": "Arma tu solicitud de cotización mayorista en línea con respuesta en menos de 24 horas.",
+            "url": `${SITE.url}/#cotizar`
+          }
+        ]
       }
     ]
   })} />

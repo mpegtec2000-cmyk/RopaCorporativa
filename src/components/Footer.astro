@@ -5,6 +5,7 @@ import { getSettings } from '../lib/cms/store';
 const settings = await getSettings();
 const phone = settings.contactPhone || SITE.phone;
 const email = settings.contactEmail || SITE.email;
+const address = settings.contactAddress || SITE.address;
 ---
 
 <footer class="site-footer">
@@ -190,8 +191,16 @@ const email = settings.contactEmail || SITE.email;
               </svg>
             </div>
             <div class="contact-meta">
-              <span class="contact-label">Ubicación y Despacho</span>
-              <span class="contact-val">{SITE.location} — Todo Chile</span>
+              <span class="contact-label">Dirección Local</span>
+              <a 
+                href="https://maps.google.com/?q=Manzano+254,+Recoleta,+Santiago" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="contact-link"
+                title="Ver ubicación en Google Maps"
+              >
+                {address}
+              </a>
             </div>
           </div>
 

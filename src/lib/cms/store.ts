@@ -33,6 +33,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     'Venta al por mayor para empresas de todos los rubros. Precios escalonados por volumen, bordado y estampado de logo corporativo con despacho a todo Chile.',
   contactEmail: SITE.email,
   contactPhone: SITE.phone,
+  contactAddress: SITE.address,
   topbarWhatsappText: 'Atención Directa por WhatsApp',
 };
 

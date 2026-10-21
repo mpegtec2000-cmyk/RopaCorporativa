@@ -487,6 +487,11 @@ export const prerender = true;
                   </div>
 
                   <div class="form-row">
+                    <label for="set-contact-address">Dirección del Local Comercial</label>
+                    <input type="text" id="set-contact-address" name="contactAddress" placeholder="Ej: Manzano 254, Recoleta" />
+                  </div>
+
+                  <div class="form-row">
                     <label for="set-topbar-wa">Texto de WhatsApp en Barra Superior</label>
                     <input type="text" id="set-topbar-wa" name="topbarWhatsappText" />
                   </div>
@@ -2721,6 +2726,7 @@ export const prerender = true;
     const setHeroLead = document.getElementById('set-hero-lead');
     const setContactEmail = document.getElementById('set-contact-email');
     const setContactPhone = document.getElementById('set-contact-phone');
+    const setContactAddress = document.getElementById('set-contact-address');
     const setTopbarWa = document.getElementById('set-topbar-wa');
     const settingsStatusMsg = document.getElementById('settings-status-msg');
 
@@ -3996,6 +4002,7 @@ export const prerender = true;
         if (setHeroLead) setHeroLead.value = s.heroLead || '';
         if (setContactEmail) setContactEmail.value = s.contactEmail || '';
         if (setContactPhone) setContactPhone.value = s.contactPhone || '';
+        if (setContactAddress) setContactAddress.value = s.contactAddress || '';
         if (setTopbarWa) setTopbarWa.value = s.topbarWhatsappText || '';
       } catch (err) {
         console.error('Error al cargar ajustes:', err);
@@ -4016,6 +4023,7 @@ export const prerender = true;
           heroLead: setHeroLead?.value.trim() || '',
           contactEmail: setContactEmail?.value.trim() || '',
           contactPhone: setContactPhone?.value.trim() || '',
+          contactAddress: setContactAddress?.value.trim() || '',
           topbarWhatsappText: setTopbarWa?.value.trim() || '',
         };
 

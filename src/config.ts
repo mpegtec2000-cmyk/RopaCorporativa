@@ -12,8 +12,16 @@ export const SITE = {
     'Zortex - Ropa corporativa, ropa industrial y elementos de protección personal (EPP) al por mayor con precios por volumen y bordado personalizado. Cotiza online.',
   /** URL del sitio en producción (para OG/sitemap/canonical) */
   url: import.meta.env.PUBLIC_SITE_URL || 'https://www.zortex.cl',
-  /** Ubicación física */
-  location: 'Chile',
+  /** Ubicación física / Local */
+  location: 'Manzano 254, Recoleta, Santiago',
+  /** Dirección del local */
+  address: 'Manzano 254, Recoleta',
+  /** Comuna */
+  commune: 'Recoleta',
+  /** Ciudad */
+  city: 'Santiago',
+  /** Región */
+  region: 'Región Metropolitana',
   /** Email de ventas */
   email: 'contacto@zortex.cl',
   /** Teléfono de contacto (display) */

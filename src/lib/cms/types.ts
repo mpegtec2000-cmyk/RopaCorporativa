@@ -30,6 +30,7 @@ export interface SiteSettings {
   heroLead: string;
   contactEmail: string;
   contactPhone: string;
+  contactAddress?: string;
   topbarWhatsappText: string;
 }
 
