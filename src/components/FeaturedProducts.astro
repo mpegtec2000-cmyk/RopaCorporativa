@@ -3275,7 +3275,7 @@ const modalCatalog = PRODUCTS.map(p => ({
 
   // Sincronizar catálogo al inicio en segundo plano diferido (no compite con render inicial)
   if ('requestIdleCallback' in window) {
-    (window as any).requestIdleCallback(() => syncLiveCatalog(), { timeout: 4000 });
+    (window as any).requestIdleCallback ? (window as any).requestIdleCallback(() => syncLiveCatalog(), { timeout: 4000 }) : setTimeout(syncLiveCatalog, 4000);
   } else {
     setTimeout(syncLiveCatalog, 3000);
   }
