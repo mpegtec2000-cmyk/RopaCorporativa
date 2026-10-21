@@ -30,6 +30,7 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <meta name="keywords" content="Zortex, Zortex Chile, zortex.cl, ropa corporativa, ropa industrial, vestuario laboral, EPP, elementos de proteccion personal, venta mayorista ropa de trabajo chile, bordados corporativos" />
   <link rel="canonical" href={canonicalUrl} />
   <!-- Verificación Google Search Console -->
   <meta name="google-site-verification" content="google11fdd4e712c03d13" />
@@ -127,6 +128,21 @@ const ogImageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
         "description": SITE.description,
         "email": SITE.email,
         "telephone": SITE.phone,
+        "slogan": "Distribuidor Mayorista en Ropa Corporativa, Industrial y EPP en Chile",
+        "knowsAbout": [
+          "Ropa Corporativa",
+          "Ropa Industrial",
+          "Vestuario Laboral y de Faena",
+          "Elementos de Protección Personal (EPP)",
+          "Bordados y Estampados Textil Mayorista",
+          "Calzado y Botines de Seguridad"
+        ],
+        "brand": {
+          "@type": "Brand",
+          "name": "Zortex",
+          "alternateName": "Zortex Chile",
+          "logo": `${SITE.url}/images/zortex_logo_transparente.png`
+        },
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Santiago",
