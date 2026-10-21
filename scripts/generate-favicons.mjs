@@ -13,8 +13,8 @@ async function generateFavicons() {
 
   const svgBuffer = fs.readFileSync(svgPath);
 
-  // 1. Generate PNGs of various sizes
-  const sizes = [16, 32, 48, 180, 192, 512];
+  // 1. Generate PNGs of various sizes (including Google Search required 48x48 multiples)
+  const sizes = [16, 32, 48, 96, 144, 180, 192, 512];
   const pngBuffers = {};
 
   for (const size of sizes) {
@@ -25,9 +25,11 @@ async function generateFavicons() {
     console.log(`Generated ${size}x${size} PNG: ${pngBuffers[size].length} bytes`);
   }
 
-  // Save specific files
+  // Save specific files for Google Search, Apple, Android and Browsers
   fs.writeFileSync(path.join(publicDir, 'favicon-16x16.png'), pngBuffers[16]);
   fs.writeFileSync(path.join(publicDir, 'favicon-32x32.png'), pngBuffers[32]);
+  fs.writeFileSync(path.join(publicDir, 'favicon-48x48.png'), pngBuffers[48]); // Google Search standard
+  fs.writeFileSync(path.join(publicDir, 'favicon-96x96.png'), pngBuffers[96]); // Google Search high-res
   fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), pngBuffers[180]);
   fs.writeFileSync(path.join(publicDir, 'android-chrome-192x192.png'), pngBuffers[192]);
   fs.writeFileSync(path.join(publicDir, 'android-chrome-512x512.png'), pngBuffers[512]);
