@@ -28,9 +28,18 @@ async function generateFavicons() {
     if (s === 32) fs.writeFileSync(path.join(publicDir, 'favicon-32x32.png'), out);
     if (s === 48) fs.writeFileSync(path.join(publicDir, 'favicon-48x48.png'), out);
     if (s === 96) fs.writeFileSync(path.join(publicDir, 'favicon-96x96.png'), out);
-    if (s === 180) fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), out);
-    if (s === 192) fs.writeFileSync(path.join(publicDir, 'android-chrome-192x192.png'), out);
-    if (s === 512) fs.writeFileSync(path.join(publicDir, 'android-chrome-512x512.png'), out);
+    if (s === 180) {
+      fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.png'), out);
+      fs.writeFileSync(path.join(publicDir, 'apple-icon.png'), out);
+    }
+    if (s === 192) {
+      fs.writeFileSync(path.join(publicDir, 'android-chrome-192x192.png'), out);
+      fs.writeFileSync(path.join(publicDir, 'icon.png'), out);
+    }
+    if (s === 512) {
+      fs.writeFileSync(path.join(publicDir, 'android-chrome-512x512.png'), out);
+      fs.writeFileSync(path.join(publicDir, 'icon-512.png'), out);
+    }
   }
 
   const icoBuf = await pngToIco([
