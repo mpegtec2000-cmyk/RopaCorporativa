@@ -3280,6 +3280,42 @@ const modalCatalog = PRODUCTS.map(p => ({
     setTimeout(syncLiveCatalog, 3000);
   }
 
+  // Eventos globales para interactuar desde la barra de búsqueda del inicio (Header/Mobile)
+  window.addEventListener('filter-catalog-search', (e: any) => {
+    const query = e.detail?.query || '';
+    if (searchInput) {
+      searchInput.value = query;
+      searchTerm = normalizeText(query);
+      if (searchClearBtn) {
+        searchClearBtn.style.display = searchTerm ? 'inline-flex' : 'none';
+      }
+      activeCategory = 'all';
+      tabs.forEach((t) => {
+        if (t.getAttribute('data-filter') === 'all') {
+          t.classList.add('active');
+          t.setAttribute('aria-selected', 'true');
+        } else {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        }
+      });
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
+      updateMobileCategoryDisplay();
+
+      const target = document.getElementById('productos');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+
+  window.addEventListener('open-product-modal', (e: any) => {
+    if (e.detail?.id) {
+      openModal(e.detail.id, e.detail.color);
+    }
+  });
+
   // Inicializar estado al cargar
   updateVisibility();
   updateMobileCategoryDisplay();
