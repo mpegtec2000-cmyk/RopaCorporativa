@@ -60,6 +60,7 @@ export interface Product {
 }
 
 import catalogModelsData from './data/catalog-models.json';
+import catalogEppData from './data/catalog-epp.json';
 
 /**
  * Productos core de EPP y personalización para complementar el catálogo completo de vestuario
@@ -324,11 +325,12 @@ export const CORE_PRODUCTS: Product[] = [
 ];
 
 /**
- * Catálogo completo de la empresa: 220 productos (Core EPP + 212 productos extraídos y adaptados)
+ * Catálogo completo de la empresa: Vestuario técnico + Stock completo de EPP por categorías
  */
 export const PRODUCTS: Product[] = [
   ...CORE_PRODUCTS,
   ...(catalogModelsData.products as Product[]),
+  ...(catalogEppData as Product[]),
 ];
 
 export interface Category {
@@ -379,9 +381,23 @@ export const CATEGORIES: Category[] = [
     badgeBold: 'LÍNEA',
     badgeLight: 'EPP',
     bannerColor: 'rgba(45, 55, 72, 0.88)',
-    description: 'Equipos de Protección Personal certificados: calzado dieléctrico, cascos, lentes y guantes.',
+    description: 'Equipos de Protección Personal certificados: calzado de seguridad, guantes, protección auditiva, cascos, respiración y altura.',
     image: '/images/lineas/epp.jpg',
-    subcategories: ['Calzado Dieléctrico', 'Cascos de Seguridad', 'Guantes Técnicos', 'Lentes Anti-impacto', 'Protección Auditiva'],
+    subcategories: [
+      'Calzado de seguridad',
+      'Protección Manos',
+      'Protección Auditiva',
+      'Cascos de seguridad',
+      'Protección Respiratoria',
+      'Protección Vista',
+      'Protección Caída',
+      'Emergencia y Vialidad',
+      'Protección Dérmica',
+      'Duchas y lavaojos',
+      'Sistemas de bloqueo',
+      'Herramientas de Seguridad',
+      'Equipos e Instrumentos'
+    ],
   },
   {
     id: 'personalizada',

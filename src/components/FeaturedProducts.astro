@@ -84,10 +84,13 @@ const modalCatalog = PRODUCTS.map(p => ({
         </div>
         <div class="search-quick-hints">
           <span class="hint-label">Búsquedas rápidas:</span>
+          <button type="button" class="hint-btn" data-search-trigger="Calzado">Calzado</button>
+          <button type="button" class="hint-btn" data-search-trigger="Guantes">Guantes</button>
+          <button type="button" class="hint-btn" data-search-trigger="Auditiva">Auditiva</button>
+          <button type="button" class="hint-btn" data-search-trigger="Cascos">Cascos</button>
+          <button type="button" class="hint-btn" data-search-trigger="Respirador">Respirador</button>
           <button type="button" class="hint-btn" data-search-trigger="Softshell">Softshell</button>
           <button type="button" class="hint-btn" data-search-trigger="Cargo">Cargo</button>
-          <button type="button" class="hint-btn" data-search-trigger="Parka">Parka</button>
-          <button type="button" class="hint-btn" data-search-trigger="Polerón">Polerón</button>
         </div>
       </div>
     </div>
@@ -203,6 +206,30 @@ const modalCatalog = PRODUCTS.map(p => ({
       </button>
     </div>
 
+      <!-- Barra de Subfiltros EPP interactiva (Stock Treck) -->
+      <div class="epp-subfilters-container" id="epp-subfilters-container">
+        <div class="epp-subfilters-scroll">
+          <span class="epp-subfilter-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 13h20M4 13a8 8 0 0 1 16 0M12 4v4M9 13v3a3 3 0 0 0 6 0v-3"/></svg>
+            Secciones EPP:
+          </span>
+          <button type="button" class="epp-subfilter-chip active" data-epp-line="all">Todo EPP ({PRODUCTS.filter(p => p.category === 'EPP').length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="calzado de seguridad">Calzado ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('calzado')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección manos">Guantes ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('manos')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección auditiva">Auditiva ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('auditiva')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="cascos de seguridad">Cascos ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('cascos')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección respiratoria">Respiratoria ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('respiratoria')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección vista">Protección Vista ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('vista')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección caída">Protección Caída ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('caída') || (p.line || '').toLowerCase().includes('caida')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="emergencia y vialidad">Vialidad ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('vialidad')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="protección dérmica">Protección Dérmica ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('dérmica') || (p.line || '').toLowerCase().includes('dermica')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="duchas y lavaojos">Duchas y Lavaojos ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('duchas')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="sistemas de bloqueo">Bloqueo LOTO ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('bloqueo')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="herramientas de seguridad">Herramientas ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('herramientas')).length})</button>
+          <button type="button" class="epp-subfilter-chip" data-epp-line="equipos e instrumentos">Equipos ({PRODUCTS.filter(p => (p.line || '').toLowerCase().includes('equipos')).length})</button>
+        </div>
+      </div>
+
       <!-- Barra de estado y retroalimentación activa -->
       <div class="catalog-status-bar" id="catalog-status-bar">
         <div class="catalog-status-info">
@@ -222,6 +249,7 @@ const modalCatalog = PRODUCTS.map(p => ({
           data-id={product.id}
           data-base-id={product.baseId || product.id}
           data-category={product.category}
+          data-line={product.line ? product.line.toLowerCase() : ''}
           data-name={product.name.toLowerCase()}
           data-color={product.color ? product.color.toLowerCase() : ''}
           data-sku={product.sku ? product.sku.toLowerCase() : ''}
@@ -253,7 +281,7 @@ const modalCatalog = PRODUCTS.map(p => ({
           </div>
           <div class="product-info">
             <div class="product-cat-row">
-              <span class="product-cat">{product.category}</span>
+              <span class="product-cat">{product.line || product.category}</span>
               {product.colors && product.colors.length > 0 ? (
                 <span class="product-color-pill-tag" title={`${product.colors.length} colores disponibles`}>
                   <span class="color-dot-indicator" style={`background-color: ${product.colors[0].hex};`}></span>
@@ -369,6 +397,9 @@ const modalCatalog = PRODUCTS.map(p => ({
             </div>
           </div>
         </div>
+
+        <!-- Tira de miniaturas de galería interactiva -->
+        <div class="pmodal-thumbs-row" id="pmodal-thumbs" style="display: none;"></div>
 
         <!-- Garantías Corporativas en la columna de imagen -->
         <div class="pmodal-trust-cards">
@@ -1002,6 +1033,97 @@ const modalCatalog = PRODUCTS.map(p => ({
     border-color: rgba(255, 255, 255, 0.25);
   }
 
+  /* Barra de Subfiltros EPP (Treck Stock) */
+  .epp-subfilters-container {
+    display: none;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    width: 100%;
+    animation: fadeInSubfilters 0.25s ease-out;
+  }
+
+  .epp-subfilters-container.is-visible {
+    display: block;
+  }
+
+  @keyframes fadeInSubfilters {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .epp-subfilters-scroll {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 2px 10px 2px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .epp-subfilters-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .epp-subfilters-scroll::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+
+  .epp-subfilter-badge {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0369A1;
+    background: #E0F2FE;
+    padding: 6px 13px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #BAE6FD;
+    flex-shrink: 0;
+  }
+
+  .epp-subfilter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    border: 1px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+  }
+
+  .epp-subfilter-chip:hover {
+    background: #FFFFFF;
+    color: #0284C7;
+    border-color: #0284C7;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.12);
+  }
+
+  .epp-subfilter-chip.active {
+    background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+    color: #FFFFFF;
+    border-color: #0284C7;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
+  }
+
   /* Barra de estado en tiempo real */
   .catalog-status-bar {
     display: flex;
@@ -1631,6 +1753,56 @@ const modalCatalog = PRODUCTS.map(p => ({
     border: 1px solid rgba(15, 23, 42, 0.2);
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     flex-shrink: 0;
+  }
+
+  .pmodal-thumbs-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0 6px 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pmodal-thumbs-row::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .pmodal-thumbs-row::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+
+  .pmodal-thumb-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    border: 2px solid #E2E8F0;
+    background: #FFFFFF;
+    padding: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+
+  .pmodal-thumb-btn:hover {
+    border-color: #0284C7;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15);
+  }
+
+  .pmodal-thumb-btn.active {
+    border-color: #0284C7;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25);
+  }
+
+  .pmodal-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
   }
 
   .pmodal-trust-cards {
@@ -2284,7 +2456,7 @@ const modalCatalog = PRODUCTS.map(p => ({
 
   // Diccionario de sinónimos y mapeo semántico para el menú de navegación y catálogo
   const SYNONYMS: Record<string, string[]> = {
-    calzado: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico', 'puntera'],
+    calzado: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico', 'puntera', 'zapatilla'],
     botin: ['botin', 'zapato', 'calzado', 'bota'],
     botines: ['botin', 'zapato', 'calzado', 'bota'],
     zapato: ['zapato', 'botin', 'calzado', 'bota', 'dielectrico'],
@@ -2296,12 +2468,25 @@ const modalCatalog = PRODUCTS.map(p => ({
     lentes: ['lente', 'antiparra', 'uv', 'proteccion visual'],
     antiparra: ['antiparra', 'lente'],
     antiparras: ['antiparra', 'lente'],
-    guante: ['guante', 'cabritilla', 'nitrilo'],
-    guantes: ['guante', 'cabritilla', 'nitrilo'],
-    auditivo: ['auditivo', 'fono', 'oido', 'copa'],
-    auditiva: ['auditivo', 'fono', 'oido', 'copa'],
-    fono: ['fono', 'auditivo', 'oido'],
-    fonos: ['fono', 'auditivo', 'oido'],
+    guante: ['guante', 'cabritilla', 'nitrilo', 'pu', 'manos'],
+    guantes: ['guante', 'cabritilla', 'nitrilo', 'pu', 'manos'],
+    manos: ['guante', 'manos', 'cabritilla', 'nitrilo'],
+    auditivo: ['auditivo', 'fono', 'oido', 'copa', 'tapon'],
+    auditiva: ['auditivo', 'fono', 'oido', 'copa', 'tapon'],
+    fono: ['fono', 'auditivo', 'oido', 'copa'],
+    fonos: ['fono', 'auditivo', 'oido', 'copa'],
+    respirador: ['respirador', 'mascarilla', 'filtro', 'cartucho', 'p100', 'respiratoria'],
+    respiradores: ['respirador', 'mascarilla', 'filtro', 'cartucho', 'p100', 'respiratoria'],
+    mascarilla: ['mascarilla', 'respirador', 'filtro'],
+    arnes: ['arnes', 'caida', 'altura', 'eslinga', 'linea de vida'],
+    altura: ['arnes', 'caida', 'altura', 'eslinga'],
+    bloqueador: ['bloqueador', 'solar', 'dermica', 'fps'],
+    vialidad: ['vialidad', 'cono', 'baliza', 'emergencia', 'vial'],
+    bloqueo: ['bloqueo', 'candado', 'loto', 'pinza', 'aldaba'],
+    ducha: ['ducha', 'lavaojos', 'emergencia'],
+    duchas: ['ducha', 'lavaojos', 'emergencia'],
+    lavaojos: ['lavaojos', 'ducha', 'emergencia'],
+    herramientas: ['herramientas', 'alicate', 'destornillador', 'cuchillo', 'martillo'],
     pantalon: ['pantalon', 'cargo', 'bermuda', 'jean'],
     pantalones: ['pantalon', 'cargo', 'bermuda', 'jean'],
     cargo: ['cargo', 'pantalon', 'bolsillo'],
@@ -2404,11 +2589,31 @@ const modalCatalog = PRODUCTS.map(p => ({
     'jockey': (name) => name.includes('jockey') || name.includes('gorro'),
     'ropa ignifuga': (name) => name.includes('ignifug') || name.includes('antiestatic'),
     'cintas reflectantes': (name) => name.includes('cinta') || name.includes('reflectiv') || name.includes('reflex'),
-    'calzado dielectrico': (name) => name.includes('zapato') || name.includes('botin') || name.includes('calzado'),
-    'cascos de seguridad': (name) => name.includes('casco'),
-    'guantes tecnicos': (name) => name.includes('guante'),
-    'lentes anti-impacto': (name) => name.includes('lente') || name.includes('antiparra'),
-    'proteccion auditiva': (name) => name.includes('auditivo') || name.includes('fono'),
+    'calzado dielectrico': (name, cat, line) => line.includes('calzado') || name.includes('zapato') || name.includes('botin') || name.includes('calzado'),
+    'calzado de seguridad': (name, cat, line) => line.includes('calzado') || name.includes('zapato') || name.includes('botin') || name.includes('bota') || name.includes('calzado') || name.includes('zapatilla'),
+    'calzado': (name, cat, line) => line.includes('calzado') || name.includes('zapato') || name.includes('botin') || name.includes('bota') || name.includes('calzado') || name.includes('zapatilla'),
+    'calzados': (name, cat, line) => line.includes('calzado') || name.includes('zapato') || name.includes('botin') || name.includes('bota') || name.includes('calzado') || name.includes('zapatilla'),
+    'cascos de seguridad': (name, cat, line) => line.includes('cascos') || name.includes('casco'),
+    'casco': (name, cat, line) => line.includes('cascos') || name.includes('casco'),
+    'cascos': (name, cat, line) => line.includes('cascos') || name.includes('casco'),
+    'guantes tecnicos': (name, cat, line) => line.includes('manos') || name.includes('guante'),
+    'guantes': (name, cat, line) => line.includes('manos') || name.includes('guante'),
+    'guante': (name, cat, line) => line.includes('manos') || name.includes('guante'),
+    'proteccion manos': (name, cat, line) => line.includes('manos') || name.includes('guante'),
+    'lentes anti-impacto': (name, cat, line) => line.includes('vista') || name.includes('lente') || name.includes('antiparra'),
+    'proteccion vista': (name, cat, line) => line.includes('vista') || name.includes('lente') || name.includes('antiparra'),
+    'lentes': (name, cat, line) => line.includes('vista') || name.includes('lente') || name.includes('antiparra'),
+    'proteccion auditiva': (name, cat, line) => line.includes('auditiva') || name.includes('auditivo') || name.includes('fono') || name.includes('tapon'),
+    'proteccion respiratoria': (name, cat, line) => line.includes('respiratoria') || name.includes('respirador') || name.includes('mascarilla') || name.includes('filtro'),
+    'respirador': (name, cat, line) => line.includes('respiratoria') || name.includes('respirador') || name.includes('mascarilla'),
+    'proteccion caida': (name, cat, line) => line.includes('caida') || name.includes('arnes') || name.includes('altura') || name.includes('eslinga'),
+    'arnes': (name, cat, line) => line.includes('caida') || name.includes('arnes'),
+    'emergencia y vialidad': (name, cat, line) => line.includes('vialidad') || name.includes('cono') || name.includes('baliza') || name.includes('vial'),
+    'proteccion dermica': (name, cat, line) => line.includes('dermica') || name.includes('bloqueador') || name.includes('solar'),
+    'duchas y lavaojos': (name, cat, line) => line.includes('duchas') || name.includes('lavaojos') || name.includes('ducha'),
+    'sistemas de bloqueo': (name, cat, line) => line.includes('bloqueo') || name.includes('candado') || name.includes('loto'),
+    'herramientas de seguridad': (name, cat, line) => line.includes('herramientas') || name.includes('alicate') || name.includes('cuchillo'),
+    'equipos e instrumentos': (name, cat, line) => line.includes('equipos') || line.includes('instrumentos') || name.includes('detector'),
     'bordado computarizado': (name, cat) => cat.includes('Personalizada') || name.includes('bordado'),
     'estampado serigrafia/dtf': (name, cat) => cat.includes('Personalizada') || name.includes('estampado'),
     'parches corporativos': (name, cat) => cat.includes('Personalizada') || name.includes('parche'),
@@ -2461,6 +2666,35 @@ const modalCatalog = PRODUCTS.map(p => ({
     return false;
   }
 
+  const eppSubfiltersContainer = document.getElementById('epp-subfilters-container');
+  const eppChips = document.querySelectorAll('.epp-subfilter-chip');
+  let activeEppLine = 'all';
+
+  eppChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      eppChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeEppLine = chip.getAttribute('data-epp-line') || 'all';
+
+      if (activeCategory !== 'EPP') {
+        tabs.forEach((t) => {
+          const isEpp = t.getAttribute('data-filter') === 'EPP';
+          t.classList.toggle('active', isEpp);
+          t.setAttribute('aria-selected', isEpp ? 'true' : 'false');
+        });
+        activeCategory = 'EPP';
+        updateMobileCategoryDisplay();
+      }
+
+      if (eppSubfiltersContainer) {
+        eppSubfiltersContainer.classList.add('is-visible');
+      }
+
+      visibleLimit = BATCH_SIZE;
+      updateVisibility();
+    });
+  });
+
   function updateVisibility() {
     let matchedCards: HTMLElement[] = [];
 
@@ -2475,9 +2709,16 @@ const modalCatalog = PRODUCTS.map(p => ({
       const targetText = normalizeText(`${cardName} ${cardColor} ${cardSku} ${cardCategory} ${cardSummary} ${cardColors}`);
 
       const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+      let matchesEppLine = true;
+      if (activeCategory === 'EPP' && activeEppLine !== 'all') {
+        const cardLine = normalizeText(card.getAttribute('data-line') || '');
+        const cardN = normalizeText(cardName);
+        const filterL = normalizeText(activeEppLine);
+        matchesEppLine = cardLine.includes(filterL) || cardN.includes(filterL);
+      }
       const matchesSearch = matchesQuery(searchTerm, targetText, cardName, cardCategory, card.getAttribute('data-line') || '', cardSku);
 
-      if (matchesCategory && matchesSearch) {
+      if (matchesCategory && matchesEppLine && matchesSearch) {
         matchedCards.push(card);
       } else {
         card.style.display = 'none';
@@ -2513,6 +2754,9 @@ const modalCatalog = PRODUCTS.map(p => ({
       if (searchTerm) {
         const queryDisplay = searchInput?.value || searchTerm;
         statusTextEl.innerHTML = `Mostrando <strong>${matchedCards.length}</strong> resultados para "${queryDisplay}"${activeCategory !== 'all' ? ` en <strong>${activeCategory}</strong>` : ''}`;
+      } else if (activeCategory === 'EPP' && activeEppLine !== 'all') {
+        const cleanLineName = activeEppLine.charAt(0).toUpperCase() + activeEppLine.slice(1);
+        statusTextEl.innerHTML = `Mostrando <strong>${matchedCards.length}</strong> modelos en <strong>EPP - ${cleanLineName}</strong>`;
       } else if (activeCategory !== 'all') {
         statusTextEl.innerHTML = `Mostrando <strong>${matchedCards.length}</strong> modelos en <strong>${activeCategory}</strong>`;
       } else {
@@ -2530,6 +2774,15 @@ const modalCatalog = PRODUCTS.map(p => ({
       tab.classList.add('active');
       tab.setAttribute('aria-selected', 'true');
       activeCategory = tab.getAttribute('data-filter') || 'all';
+
+      if (activeCategory === 'EPP') {
+        if (eppSubfiltersContainer) eppSubfiltersContainer.classList.add('is-visible');
+      } else {
+        if (eppSubfiltersContainer) eppSubfiltersContainer.classList.remove('is-visible');
+        activeEppLine = 'all';
+        eppChips.forEach(c => c.classList.toggle('active', c.getAttribute('data-epp-line') === 'all'));
+      }
+
       visibleLimit = BATCH_SIZE;
       updateVisibility();
       updateMobileCategoryDisplay();
@@ -2928,6 +3181,30 @@ const modalCatalog = PRODUCTS.map(p => ({
       }
     }
 
+    // Miniaturas de galería interactiva
+    if (thumbsContainer) {
+      thumbsContainer.innerHTML = '';
+      const allImages = (prod.images && prod.images.length > 1) ? prod.images : [];
+      if (allImages.length > 1) {
+        thumbsContainer.style.display = 'flex';
+        allImages.forEach((imgUrl: string, idx: number) => {
+          const thumbBtn = document.createElement('button');
+          thumbBtn.type = 'button';
+          thumbBtn.className = `pmodal-thumb-btn${imgUrl === initialImg || idx === 0 ? ' active' : ''}`;
+          thumbBtn.setAttribute('aria-label', `Ver vista ${idx + 1}`);
+          thumbBtn.innerHTML = `<img src="${imgUrl}" alt="Vista ${idx + 1}" loading="lazy" width="56" height="56" />`;
+          thumbBtn.addEventListener('click', () => {
+            thumbsContainer.querySelectorAll('.pmodal-thumb-btn').forEach(b => b.classList.remove('active'));
+            thumbBtn.classList.add('active');
+            switchMainImage(imgUrl);
+          });
+          thumbsContainer.appendChild(thumbBtn);
+        });
+      } else {
+        thumbsContainer.style.display = 'none';
+      }
+    }
+
     if (qtyInput) qtyInput.value = '10';
     if (toastEl) toastEl.style.display = 'none';
     if (addBtnText) addBtnText.textContent = 'Agregar a Solicitud de Cotización';
@@ -3059,6 +3336,10 @@ const modalCatalog = PRODUCTS.map(p => ({
       const chosenImg = matchCol?.image || prod.image;
       const chosenHex = matchCol?.hex || prod.colorHex || '#CBD5E0';
 
+      const defaultSize = (prod.sizes && prod.sizes.length > 0)
+        ? (prod.sizes.includes('M') ? 'M' : prod.sizes[0])
+        : 'Estándar';
+
       const itemPayload = {
         id: prod.id,
         name: prod.name,
@@ -3066,7 +3347,7 @@ const modalCatalog = PRODUCTS.map(p => ({
         sku: prod.sku,
         image: chosenImg,
         qty: 10,
-        size: 'M',
+        size: defaultSize,
         color: chosenColor,
         colorHex: chosenHex,
       };
