@@ -45,6 +45,11 @@ export const POST: APIRoute = async ({ request }) => {
       personalizacion: body.personalizacion || 'Bordado Computarizado',
       plazo: body.plazo || '15 días hábiles',
       mensaje: body.mensaje || 'Solicitud de cotización para cuadrilla en faena alta cordillera.',
+      valor_estimado: typeof body.valor_estimado === 'number' ? body.valor_estimado : 2450000,
+      source: body.source || 'Meta Ads (Facebook)',
+      utm_source: body.utm_source || 'meta',
+      utm_medium: body.utm_medium || 'paid_social',
+      utm_campaign: body.utm_campaign || 'epp-mayorista-prueba',
       items: Array.isArray(body.items) && body.items.length > 0 ? body.items : [
         { producto: 'Parka Alta Visibilidad Fluor 3 en 1', categoria: 'Ropa de Seguridad', cantidad: 50, talla: 'L' },
         { producto: 'Pantalón Cargo Faena Ignífugo', categoria: 'Ropa Industrial', cantidad: 50, talla: '46' },
@@ -77,6 +82,12 @@ export const PATCH: APIRoute = async ({ request }) => {
     const id = body.id;
     const estado = body.estado || body.status;
     const notas = body.notas;
+    const valor_estimado =
+      body.valor_estimado !== undefined && body.valor_estimado !== null && body.valor_estimado !== ''
+        ? Number(body.valor_estimado)
+        : undefined;
+    const proximo_seguimiento =
+      typeof body.proximo_seguimiento === 'string' ? body.proximo_seguimiento : undefined;
 
     if (!id) {
       return new Response(JSON.stringify({ success: false, error: 'ID requerido' }), {
@@ -85,11 +96,14 @@ export const PATCH: APIRoute = async ({ request }) => {
       });
     }
 
-    await updateQuote(id, { estado, notas });
-    return new Response(JSON.stringify({ success: true, id, estado, notas }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await updateQuote(id, { estado, notas, valor_estimado, proximo_seguimiento });
+    return new Response(
+      JSON.stringify({ success: true, id, estado, notas, valor_estimado, proximo_seguimiento }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   } catch (err: any) {
     return new Response(JSON.stringify({ success: false, error: err.message }), {
       status: 500,

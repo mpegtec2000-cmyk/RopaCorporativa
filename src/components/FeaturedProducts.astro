@@ -2866,6 +2866,7 @@ const modalCatalog = PRODUCTS.map(p => ({
     });
   }
 
+  let searchTrackTimer: any = null;
   if (searchInput) {
     searchInput.addEventListener('input', function () {
       searchTerm = normalizeText(this.value || '');
@@ -2874,6 +2875,12 @@ const modalCatalog = PRODUCTS.map(p => ({
       }
       visibleLimit = BATCH_SIZE;
       updateVisibility();
+      clearTimeout(searchTrackTimer);
+      if (searchTerm.length >= 3) {
+        searchTrackTimer = setTimeout(() => {
+          (window as any).ZortexTrack?.track('search', { search_query: searchTerm });
+        }, 900);
+      }
     });
   }
 
@@ -3052,6 +3059,12 @@ const modalCatalog = PRODUCTS.map(p => ({
     const prod = catalogMap.get(id);
     if (!prod || !modalEl) return;
     currentModalProduct = prod;
+    (window as any).ZortexTrack?.track('view_product', {
+      product_id: prod.id,
+      product_name: prod.name,
+      category: prod.category,
+      sku: prod.sku || '',
+    });
 
     const baseColorObj = (prod.colors && prod.colors[0]) ? prod.colors[0] : { name: prod.color || 'Estándar', hex: prod.colorHex || '#0F172A', image: prod.image };
     selectedModalColor = initialColor || baseColorObj.name;

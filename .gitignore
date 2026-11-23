@@ -21,6 +21,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# local analytics dev log
+data/cms/analytics.json
+
 # macOS-specific files
 .DS_Store
 

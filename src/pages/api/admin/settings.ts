@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
 import { isAuthorizedRequest } from '../../../lib/cms/auth';
-import { getSettings, saveSettings } from '../../../lib/cms/store';
+import { getPublicSettings, saveSettings } from '../../../lib/cms/store';
 
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
   try {
-    const settings = await getSettings();
+    const settings = await getPublicSettings();
     return new Response(JSON.stringify({ success: true, settings }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

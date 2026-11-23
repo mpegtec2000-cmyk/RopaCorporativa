@@ -782,6 +782,14 @@ import { WHATSAPP_NUMBER } from '../config';
 
     saveCart(items);
 
+    (window as any).ZortexTrack?.track('add_to_cart', {
+      product_id: item.id,
+      product_name: item.name,
+      category: item.category || 'Vestuario',
+      sku: item.sku || '',
+      qty: qtyToAdd,
+    });
+
     // Animación de rebote en botón flotante
     const floatBtn = document.getElementById('floating-cart-btn');
     if (floatBtn) {
@@ -879,6 +887,12 @@ import { WHATSAPP_NUMBER } from '../config';
 
   if (goFormBtn) {
     goFormBtn.addEventListener('click', () => {
+      const items = getCart();
+      const totalUnits = items.reduce((acc, i) => acc + (i.qty || 1), 0);
+      (window as any).ZortexTrack?.track('initiate_checkout', {
+        qty: totalUnits,
+        models: items.length,
+      });
       closeDrawer();
       const sec = document.getElementById('cotizar');
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
@@ -890,6 +904,7 @@ import { WHATSAPP_NUMBER } from '../config';
       const items = getCart();
       if (items.length > 0) {
         try {
+          const leadEvId = (window as any).ZortexTrack?.genEventId('wa-lead');
           fetch('/api/cotizar', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -898,6 +913,7 @@ import { WHATSAPP_NUMBER } from '../config';
               nombre: 'Cliente Web',
               personalizacion: 'Consulta WhatsApp',
               mensaje: `Consulta iniciada por WhatsApp desde el carrito flotante (${items.length} productos)`,
+              attribution: (window as any).ZortexTrack?.getAttribution(leadEvId) || undefined,
               items: items.map(it => ({
                 producto: it.name,
                 categoria: it.category || null,

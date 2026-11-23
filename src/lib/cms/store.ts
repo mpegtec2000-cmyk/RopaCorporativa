@@ -35,6 +35,11 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   contactPhone: SITE.phone,
   contactAddress: SITE.address,
   topbarWhatsappText: 'Atención Directa por WhatsApp',
+  metaPixelId: '',
+  metaPixelEnabled: false,
+  metaDomainVerification: '',
+  metaCapiToken: '',
+  metaTestEventCode: '',
 };
 
 /* ------------------------------------------------------------------ */
@@ -364,17 +369,61 @@ export async function getSettings(): Promise<SiteSettings> {
   } catch (err) {
     console.error('[CMS] Error leyendo contenido:', err);
   }
-  const merged = { ...DEFAULT_SETTINGS, ...(stored || {}) };
+  const merged: SiteSettings = {
+    ...DEFAULT_SETTINGS,
+    ...(stored || {}),
+    metaPixelId: (stored?.metaPixelId ?? process.env.PUBLIC_META_PIXEL_ID ?? '').trim(),
+    metaPixelEnabled:
+      typeof stored?.metaPixelEnabled === 'boolean'
+        ? stored.metaPixelEnabled
+        : Boolean(stored?.metaPixelId || process.env.PUBLIC_META_PIXEL_ID),
+    metaDomainVerification: (stored?.metaDomainVerification ?? process.env.META_DOMAIN_VERIFICATION ?? '').trim(),
+    metaCapiToken: (stored?.metaCapiToken ?? process.env.META_CAPI_TOKEN ?? '').trim(),
+    metaTestEventCode: (stored?.metaTestEventCode ?? process.env.META_TEST_EVENT_CODE ?? '').trim(),
+  };
   settingsCache = { data: merged, at: Date.now() };
   return merged;
 }
 
-export async function saveSettings(input: Partial<SiteSettings>): Promise<SiteSettings> {
+/** Versión segura de settings para exponer en HTML público o API sin secretos (sin metaCapiToken). */
+export async function getPublicSettings(): Promise<SiteSettings> {
+  const s = await getSettings();
+  const hasToken = Boolean(s.metaCapiToken && s.metaCapiToken.trim().length > 8);
+  const { metaCapiToken: _secret, ...safe } = s;
+  return { ...safe, hasMetaCapiToken: hasToken };
+}
+
+export async function saveSettings(input: Partial<SiteSettings> & { clearMetaCapiToken?: boolean }): Promise<SiteSettings> {
+  const current = await getSettings();
   const clean: Partial<SiteSettings> = {};
-  (Object.keys(DEFAULT_SETTINGS) as (keyof SiteSettings)[]).forEach((k) => {
-    if (typeof input[k] === 'string') clean[k] = String(input[k]).trim();
+  const stringKeys: (keyof SiteSettings)[] = [
+    'heroBadge',
+    'heroTitle',
+    'heroLead',
+    'contactEmail',
+    'contactPhone',
+    'contactAddress',
+    'topbarWhatsappText',
+    'metaPixelId',
+    'metaDomainVerification',
+    'metaTestEventCode',
+  ];
+  stringKeys.forEach((k) => {
+    if (typeof input[k] === 'string') {
+      (clean as any)[k] = String(input[k]).trim();
+    }
   });
-  const merged = { ...(await getSettings()), ...clean };
+  if (typeof input.metaPixelEnabled === 'boolean') {
+    clean.metaPixelEnabled = input.metaPixelEnabled;
+  }
+  if (input.clearMetaCapiToken) {
+    clean.metaCapiToken = '';
+  } else if (typeof input.metaCapiToken === 'string' && input.metaCapiToken.trim() !== '') {
+    clean.metaCapiToken = input.metaCapiToken.trim();
+  }
+
+  const merged: SiteSettings = { ...current, ...clean };
+  delete merged.hasMetaCapiToken;
 
   if ((await getBackend()) === 'supabase') {
     const { error } = await getSupabase()
@@ -385,7 +434,9 @@ export async function saveSettings(input: Partial<SiteSettings>): Promise<SiteSe
     await writeJson(SETTINGS_FILE, merged);
   }
   settingsCache = null;
-  return merged;
+  const hasToken = Boolean(merged.metaCapiToken && merged.metaCapiToken.trim().length > 8);
+  const { metaCapiToken: _secret, ...safe } = merged;
+  return { ...safe, hasMetaCapiToken: hasToken };
 }
 
 /* ------------------------------------------------------------------ */
@@ -401,29 +452,110 @@ export interface NewQuoteInput {
   personalizacion?: string;
   plazo?: string;
   mensaje?: string;
+  valor_estimado?: number;
+  proximo_seguimiento?: string;
+  source?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  fbclid?: string;
   items: QuoteItem[];
 }
 
+interface QuoteCrmMeta {
+  valor_estimado?: number | null;
+  proximo_seguimiento?: string | null;
+  source?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_content?: string | null;
+  fbclid?: string | null;
+}
+
+const CRM_META_FILE = path.join(DATA_DIR, 'crm-quote-meta.json');
+
+async function readCrmMetaMap(): Promise<Record<string, QuoteCrmMeta>> {
+  try {
+    if ((await getBackend()) === 'supabase') {
+      const { data } = await getSupabase().from(T_SETTINGS).select('value').eq('key', 'crm_quote_meta').maybeSingle();
+      if (data?.value && typeof data.value === 'object') return data.value as Record<string, QuoteCrmMeta>;
+      return {};
+    }
+    return (await readJson<Record<string, QuoteCrmMeta>>(CRM_META_FILE)) || {};
+  } catch {
+    return {};
+  }
+}
+
+async function saveCrmMetaForQuote(id: string, meta: Partial<QuoteCrmMeta>): Promise<void> {
+  try {
+    const map = await readCrmMetaMap();
+    map[id] = { ...(map[id] || {}), ...meta };
+    if ((await getBackend()) === 'supabase') {
+      await getSupabase()
+        .from(T_SETTINGS)
+        .upsert({ key: 'crm_quote_meta', value: map, updated_at: new Date().toISOString() });
+    } else if (!isReadOnlyEnvironment()) {
+      await writeJson(CRM_META_FILE, map);
+    }
+  } catch (err) {
+    console.warn('[CRM] No se pudo guardar metadato auxiliar:', err);
+  }
+}
+
+function isMissingColumnError(err: any): boolean {
+  const msg = String(err?.message || '').toLowerCase();
+  return (
+    err?.code === 'PGRST204' ||
+    err?.code === '42703' ||
+    msg.includes('could not find the') ||
+    (msg.includes('column') && msg.includes('does not exist'))
+  );
+}
+
 export async function createQuote(input: NewQuoteInput): Promise<string> {
+  const baseRow = {
+    empresa: input.empresa,
+    rut: input.rut || null,
+    nombre: input.nombre,
+    telefono: input.telefono || null,
+    correo: input.correo || null,
+    personalizacion: input.personalizacion || null,
+    plazo: input.plazo || null,
+    mensaje: input.mensaje || null,
+    estado: 'nuevo',
+  };
+  const crmFields: QuoteCrmMeta = {
+    valor_estimado: Number.isFinite(input.valor_estimado) ? Number(input.valor_estimado) : 0,
+    proximo_seguimiento: input.proximo_seguimiento || null,
+    source: input.source || null,
+    utm_source: input.utm_source || null,
+    utm_medium: input.utm_medium || null,
+    utm_campaign: input.utm_campaign || null,
+    utm_content: input.utm_content || null,
+    fbclid: input.fbclid || null,
+  };
+
   // 1. Si Supabase está configurado, intentar guardar siempre en la base de datos
   if (isSupabaseConfigured) {
     try {
       const sb = getSupabase();
-      const { data: quote, error } = await sb
+      let usedShadowMeta = false;
+      let { data: quote, error } = await sb
         .from('quotes')
-        .insert({
-          empresa: input.empresa,
-          rut: input.rut || null,
-          nombre: input.nombre,
-          telefono: input.telefono || null,
-          correo: input.correo || null,
-          personalizacion: input.personalizacion || null,
-          plazo: input.plazo || null,
-          mensaje: input.mensaje || null,
-          estado: 'nuevo',
-        })
+        .insert({ ...baseRow, ...crmFields })
         .select('id')
         .single();
+
+      if (error && isMissingColumnError(error)) {
+        // Fallback transparente si aún no se ejecutó analytics-crm-migration.sql
+        usedShadowMeta = true;
+        const retry = await sb.from('quotes').insert(baseRow).select('id').single();
+        quote = retry.data;
+        error = retry.error;
+      }
 
       if (error) {
         if (
@@ -442,6 +574,10 @@ export async function createQuote(input: NewQuoteInput): Promise<string> {
         throw new Error('No se pudo crear la cotización en Supabase.');
       }
 
+      if (usedShadowMeta && Object.values(crmFields).some((v) => v !== null && v !== 0 && v !== '')) {
+        await saveCrmMetaForQuote(quote.id as string, crmFields);
+      }
+
       if (input.items.length) {
         const { error: itemsError } = await sb.from('quote_items').insert(
           input.items.map((it) => ({
@@ -458,7 +594,6 @@ export async function createQuote(input: NewQuoteInput): Promise<string> {
       }
       return quote.id as string;
     } catch (err: any) {
-      // En entornos de solo lectura (como Vercel) no es posible escribir archivos locales
       if (isReadOnlyEnvironment()) {
         throw err;
       }
@@ -480,14 +615,8 @@ export async function createQuote(input: NewQuoteInput): Promise<string> {
   quotes.unshift({
     id,
     created_at: new Date().toISOString(),
-    empresa: input.empresa,
-    rut: input.rut || null,
-    nombre: input.nombre,
-    telefono: input.telefono || null,
-    correo: input.correo || null,
-    personalizacion: input.personalizacion || null,
-    plazo: input.plazo || null,
-    mensaje: input.mensaje || null,
+    ...baseRow,
+    ...crmFields,
     estado: 'nuevo',
     notas: null,
     items: input.items,
@@ -498,6 +627,7 @@ export async function createQuote(input: NewQuoteInput): Promise<string> {
 
 export async function getQuotes(): Promise<Quote[]> {
   try {
+    const metaMap = await readCrmMetaMap();
     if (isSupabaseConfigured) {
       const { data, error } = await getSupabase()
         .from('quotes')
@@ -505,30 +635,75 @@ export async function getQuotes(): Promise<Quote[]> {
         .order('created_at', { ascending: false })
         .limit(500);
       if (!error && data) {
-        return data.map((q: any) => ({ ...q, estado: q.estado || 'nuevo', items: q.items || [] }));
+        return data.map((q: any) => {
+          const shadow = metaMap[q.id] || {};
+          return {
+            ...shadow,
+            ...q,
+            valor_estimado: q.valor_estimado ?? shadow.valor_estimado ?? 0,
+            proximo_seguimiento: q.proximo_seguimiento ?? shadow.proximo_seguimiento ?? null,
+            source: q.source ?? shadow.source ?? null,
+            utm_source: q.utm_source ?? shadow.utm_source ?? null,
+            utm_medium: q.utm_medium ?? shadow.utm_medium ?? null,
+            utm_campaign: q.utm_campaign ?? shadow.utm_campaign ?? null,
+            utm_content: q.utm_content ?? shadow.utm_content ?? null,
+            fbclid: q.fbclid ?? shadow.fbclid ?? null,
+            estado: q.estado || 'nuevo',
+            items: q.items || [],
+          };
+        });
       }
     }
-    return (await readJson<Quote[]>(QUOTES_FILE)) || [];
+    const local = (await readJson<Quote[]>(QUOTES_FILE)) || [];
+    return local.map((q) => ({ ...(metaMap[q.id] || {}), ...q }));
   } catch (err) {
     console.error('[CMS] Error leyendo cotizaciones:', err);
     return [];
   }
 }
 
-export async function updateQuote(id: string, updates: { estado?: QuoteStatus; notas?: string }): Promise<void> {
-  const patch: Record<string, unknown> = {};
-  if (updates.estado) patch.estado = updates.estado;
-  if (typeof updates.notas === 'string') patch.notas = updates.notas;
+export async function updateQuote(
+  id: string,
+  updates: {
+    estado?: QuoteStatus;
+    notas?: string;
+    valor_estimado?: number;
+    proximo_seguimiento?: string;
+  }
+): Promise<void> {
+  const basePatch: Record<string, unknown> = {};
+  const crmPatch: Partial<QuoteCrmMeta> = {};
+  if (updates.estado) basePatch.estado = updates.estado;
+  if (typeof updates.notas === 'string') basePatch.notas = updates.notas;
+  if (typeof updates.valor_estimado === 'number' && Number.isFinite(updates.valor_estimado)) {
+    crmPatch.valor_estimado = Math.max(0, Math.round(updates.valor_estimado));
+  }
+  if (typeof updates.proximo_seguimiento === 'string') {
+    crmPatch.proximo_seguimiento = updates.proximo_seguimiento.trim() || null;
+  }
+
+  const fullPatch = { ...basePatch, ...crmPatch };
 
   if (isSupabaseConfigured) {
-    const { error } = await getSupabase().from('quotes').update(patch).eq('id', id);
+    const sb = getSupabase();
+    const { error } = await sb.from('quotes').update(fullPatch).eq('id', id);
     if (!error) return;
+    if (isMissingColumnError(error)) {
+      if (Object.keys(basePatch).length > 0) {
+        const retry = await sb.from('quotes').update(basePatch).eq('id', id);
+        if (retry.error && isReadOnlyEnvironment()) throw new Error(retry.error.message);
+      }
+      if (Object.keys(crmPatch).length > 0) {
+        await saveCrmMetaForQuote(id, crmPatch);
+      }
+      return;
+    }
     if (isReadOnlyEnvironment()) throw new Error(error.message);
   }
   const quotes = (await readJson<Quote[]>(QUOTES_FILE)) || [];
   await writeJson(
     QUOTES_FILE,
-    quotes.map((q) => (q.id === id ? { ...q, ...patch } : q))
+    quotes.map((q) => (q.id === id ? { ...q, ...fullPatch } : q))
   );
 }
 
