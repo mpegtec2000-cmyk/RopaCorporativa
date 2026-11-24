@@ -1,6 +1,9 @@
 ---
-import { WHATSAPP_NUMBER } from '../config';
-const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero cotizar')}`;
+import { formatWhatsappDigits } from '../config';
+import { getSettings } from '../lib/cms/store';
+const settings = await getSettings();
+const waNumber = formatWhatsappDigits(settings.contactPhone);
+const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Hola, quiero cotizar')}`;
 ---
 
 <a class="wa-float" href={waUrl} target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp">

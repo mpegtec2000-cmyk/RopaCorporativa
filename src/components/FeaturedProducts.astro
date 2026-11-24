@@ -1,8 +1,9 @@
 ---
-import { WHATSAPP_NUMBER } from '../config';
-import { getPublicProducts } from '../lib/cms/store';
+import { formatWhatsappDigits } from '../config';
+import { getPublicProducts, getSettings } from '../lib/cms/store';
 
-const PRODUCTS = await getPublicProducts();
+const [PRODUCTS, settings] = await Promise.all([getPublicProducts(), getSettings()]);
+const waNumber = formatWhatsappDigits(settings.contactPhone);
 
 const categories = [
   { name: 'Todos', filter: 'all', count: PRODUCTS.length, icon: 'grid' },
@@ -34,7 +35,7 @@ const modalCatalog = PRODUCTS.map(p => ({
 }));
 ---
 
-<section id="productos" class="reveal" data-wa={WHATSAPP_NUMBER}>
+<section id="productos" class="reveal" data-wa={waNumber}>
   <div class="products-wrap">
     <div class="products-header">
       <div class="products-title-col">

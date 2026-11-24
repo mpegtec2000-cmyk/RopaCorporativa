@@ -29,11 +29,18 @@ export const SITE = {
 } as const;
 
 /**
- * Número de WhatsApp (solo dígitos, con código de país).
- * En producción se lee de import.meta.env.PUBLIC_WHATSAPP_NUMBER
+ * Número oficial de WhatsApp Zortex (solo dígitos, con código de país).
  */
-export const WHATSAPP_NUMBER =
-  import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '56958639727';
+export const WHATSAPP_NUMBER = '56958639727';
+
+/** Normaliza un teléfono visible (ej: "+56 9 5863 9727") a dígitos para wa.me. */
+export function formatWhatsappDigits(phone?: string | null): string {
+  const digits = String(phone || '').replace(/\D/g, '');
+  if (digits.length >= 11) return digits;
+  if (digits.length === 9 && digits.startsWith('9')) return `56${digits}`;
+  if (digits.length === 8) return `569${digits}`;
+  return WHATSAPP_NUMBER;
+}
 
 /**
  * Productos disponibles para el cotizador.

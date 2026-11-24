@@ -1,9 +1,10 @@
 ---
-import { SITE, WHATSAPP_NUMBER } from '../config';
+import { SITE, formatWhatsappDigits } from '../config';
 import { getSettings } from '../lib/cms/store';
 
 const settings = await getSettings();
 const phone = settings.contactPhone || SITE.phone;
+const waNumber = formatWhatsappDigits(phone);
 const email = settings.contactEmail || SITE.email;
 const address = settings.contactAddress || SITE.address;
 ---
@@ -259,7 +260,7 @@ const address = settings.contactAddress || SITE.address;
         <span class="legal-dot">&bull;</span>
         <a href="#como-funciona">Condiciones Comerciales</a>
         <span class="legal-dot">&bull;</span>
-        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer">Mesa WhatsApp Directa</a>
+        <a href={`https://wa.me/${waNumber}`} target="_blank" rel="noopener noreferrer">Mesa WhatsApp Directa</a>
       </div>
     </div>
   </div>

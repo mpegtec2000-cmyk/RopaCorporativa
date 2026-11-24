@@ -1,5 +1,9 @@
 ---
-import { WHATSAPP_NUMBER } from '../config';
+import { formatWhatsappDigits } from '../config';
+import { getSettings } from '../lib/cms/store';
+
+const settings = await getSettings();
+const waNumber = formatWhatsappDigits(settings.contactPhone);
 ---
 
 <!-- ========================================================= -->
@@ -26,7 +30,7 @@ import { WHATSAPP_NUMBER } from '../config';
 </button>
 
 <!-- Drawer / Panel Lateral Deslizable de Cotización -->
-<div id="quote-cart-drawer" class="cart-drawer-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+<div id="quote-cart-drawer" class="cart-drawer-overlay" data-wa={waNumber} aria-hidden="true" role="dialog" aria-modal="true">
   <div class="cart-drawer-backdrop" id="cart-drawer-backdrop"></div>
   
   <aside class="cart-drawer-panel" id="cart-drawer-panel">
@@ -112,7 +116,7 @@ import { WHATSAPP_NUMBER } from '../config';
 
         <a
           id="cart-wa-btn"
-          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          href={`https://wa.me/${waNumber}`}
           target="_blank"
           rel="noopener noreferrer"
           class="cart-btn-wa"
@@ -722,6 +726,10 @@ import { WHATSAPP_NUMBER } from '../config';
 <script>
   import { WHATSAPP_NUMBER } from '../config';
 
+  function getActiveWaNumber(): string {
+    return document.getElementById('quote-cart-drawer')?.getAttribute('data-wa') || WHATSAPP_NUMBER;
+  }
+
   // Sistema de Carrito Global para Cotizaciones
   const STORAGE_KEY = 'zortex_quote_cart';
 
@@ -1044,8 +1052,9 @@ import { WHATSAPP_NUMBER } from '../config';
 
     // Actualizar link de WhatsApp con el desglose exacto
     if (waBtn) {
+      const activeWa = getActiveWaNumber();
       if (items.length === 0) {
-        waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, me gustaría cotizar vestuario corporativo y EPP al por mayor.')}`;
+        waBtn.href = `https://wa.me/${activeWa}?text=${encodeURIComponent('Hola, me gustaría cotizar vestuario corporativo y EPP al por mayor.')}`;
       } else {
         const lines = [
           'Hola Zortex! Quisiera solicitar cotización al por mayor para los siguientes productos:',
@@ -1062,7 +1071,7 @@ import { WHATSAPP_NUMBER } from '../config';
         lines.push('');
         lines.push(`Total de unidades: ${totalUnits}`);
         lines.push('¿Me podrían enviar la cotización formal con precios por volumen y tiempos de entrega?');
-        waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+        waBtn.href = `https://wa.me/${activeWa}?text=${encodeURIComponent(lines.join('\n'))}`;
       }
     }
   }

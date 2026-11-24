@@ -1,11 +1,12 @@
 ---
-import { WHATSAPP_NUMBER } from '../config';
-import { getPublicProducts } from '../lib/cms/store';
+import { formatWhatsappDigits } from '../config';
+import { getPublicProducts, getSettings } from '../lib/cms/store';
 
-const PRODUCTS = await getPublicProducts();
+const [PRODUCTS, settings] = await Promise.all([getPublicProducts(), getSettings()]);
+const waNumber = formatWhatsappDigits(settings.contactPhone);
 ---
 
-<section id="cotizar" class="quote-section" data-wa={WHATSAPP_NUMBER} data-products={JSON.stringify(PRODUCTS)}>
+<section id="cotizar" class="quote-section" data-wa={waNumber} data-products={JSON.stringify(PRODUCTS)}>
   <div class="wrap">
     <div class="quote-header">
       <span class="quote-eyebrow">SOLICITUD COMERCIAL B2B • PRECIOS MAYORISTAS</span>
