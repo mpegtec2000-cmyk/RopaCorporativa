@@ -5,7 +5,7 @@ import { PRODUCT_CATEGORIES } from '../lib/cms/types';
 export const prerender = true;
 ---
 
-<Layout title="SaaS CMS ZORTEX | Panel de Administración B2B" noindex={true}>
+<Layout title="ZORTEX | Panel de Administración" noindex={true}>
   <div class="saas-shell" id="saas-shell">
     
     <!-- =====================================================================
@@ -15,7 +15,6 @@ export const prerender = true;
       <div class="auth-box">
         <div class="auth-brand">
           <img src="/images/zortex-logo-dark.png" alt="ZORTEX" class="auth-logo" />
-          <span class="auth-pill">PORTAL SAAS B2B</span>
         </div>
         
         <div class="auth-icon-wrap">
@@ -26,7 +25,6 @@ export const prerender = true;
         </div>
 
         <h1 class="auth-title">Ingreso al Sistema</h1>
-        <p class="auth-desc">Administración de Catálogo, Carga de Imágenes, Cotizaciones y Contenido en Vivo</p>
 
         <form id="login-form" class="auth-form" autocomplete="off">
           <div class="field-block">
@@ -36,7 +34,7 @@ export const prerender = true;
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              <input type="text" id="login-user" name="username" placeholder="ZORTEX" value="ZORTEX" required autofocus />
+              <input type="text" id="login-user" name="username" placeholder="Ingresa tu usuario" autocomplete="username" required autofocus />
             </div>
           </div>
 
@@ -47,9 +45,8 @@ export const prerender = true;
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <input type="password" id="login-pass" name="password" placeholder="••••••••" required />
+              <input type="password" id="login-pass" name="password" placeholder="••••••••" autocomplete="current-password" required />
             </div>
-            <div class="auth-hint">Clave oficial: <code>zortex</code></div>
           </div>
 
           <div id="login-err" class="alert-box error" style="display: none;">
@@ -57,7 +54,7 @@ export const prerender = true;
           </div>
 
           <button type="submit" class="btn-main" id="btn-login">
-            <span>Iniciar Sesión en el SaaS</span>
+            <span>Ingresar</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -1189,7 +1186,7 @@ export const prerender = true;
   .auth-title {
     font-size: 22px;
     font-weight: 800;
-    margin: 0 0 6px;
+    margin: 0 0 24px;
     color: var(--saas-text-main);
   }
 
