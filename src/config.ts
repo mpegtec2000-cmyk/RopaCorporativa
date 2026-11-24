@@ -23,7 +23,7 @@ export const SITE = {
   /** Región */
   region: 'Región Metropolitana',
   /** Email de ventas */
-  email: 'contacto@zortex.cl',
+  email: 'jmanzur@jortex.cl',
   /** Teléfono de contacto (display) */
   phone: '+56 9 5863 9727',
 } as const;
