@@ -35,12 +35,63 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   contactPhone: SITE.phone,
   contactAddress: SITE.address,
   topbarWhatsappText: 'Atención Directa por WhatsApp',
-  metaPixelId: '',
-  metaPixelEnabled: false,
+  metaPixelId: '2526844321476728',
+  metaPixelEnabled: true,
   metaDomainVerification: '',
   metaCapiToken: '',
   metaTestEventCode: '',
 };
+
+const SYS_PREFIX = '__sys_';
+
+/**
+ * Almacenamiento KV resiliente en Supabase:
+ * 1. Usa `cms_settings` si existe.
+ * 2. Si `cms_settings` aún no se migró, guarda un registro oculto (`__sys_<key>`, `is_active: false`)
+ *    en `cms_products` (ya existente en producción) para que funcione 100% en vivo en Vercel sin SQL extra.
+ */
+export async function readSystemKv<T>(key: string): Promise<T | null> {
+  if (!isSupabaseConfigured) return null;
+  const sb = getSupabase();
+  try {
+    const { data, error } = await sb.from(T_SETTINGS).select('value').eq('key', key).maybeSingle();
+    if (!error) return (data?.value as T) ?? null;
+  } catch {}
+  try {
+    const { data, error } = await sb
+      .from(T_PRODUCTS)
+      .select('data')
+      .eq('id', `${SYS_PREFIX}${key}`)
+      .maybeSingle();
+    if (!error && data?.data) return (data.data as any).value as T;
+  } catch {}
+  return null;
+}
+
+export async function writeSystemKv(key: string, value: unknown): Promise<boolean> {
+  if (!isSupabaseConfigured) return false;
+  const sb = getSupabase();
+  const now = new Date().toISOString();
+  try {
+    const { error } = await sb.from(T_SETTINGS).upsert({ key, value, updated_at: now });
+    if (!error) return true;
+  } catch {}
+  try {
+    const { error } = await sb.from(T_PRODUCTS).upsert({
+      id: `${SYS_PREFIX}${key}`,
+      sku: null,
+      name: `[SYSTEM] ${key}`,
+      category: '__system__',
+      is_active: false,
+      is_featured: false,
+      sort_order: 999999,
+      data: { value },
+      updated_at: now,
+    });
+    if (!error) return true;
+  } catch {}
+  return false;
+}
 
 /* ------------------------------------------------------------------ */
 /* Detección de backend                                                */
@@ -232,8 +283,11 @@ export async function getAllProducts(): Promise<{ products: CmsProduct[]; seeded
       if (!data || data.length < 1000) break;
     }
     if (rows.length > 0) {
-      products = rows.map(rowToProduct);
-      seeded = true;
+      products = rows
+        .filter((r) => !String(r.id || '').startsWith(SYS_PREFIX) && r.category !== '__system__')
+        .map(rowToProduct);
+      seeded = products.length > 0;
+      if (!seeded) products = baseCatalog();
     } else {
       products = baseCatalog();
     }
@@ -361,8 +415,7 @@ export async function getSettings(): Promise<SiteSettings> {
   let stored: Partial<SiteSettings> | null = null;
   try {
     if ((await getBackend()) === 'supabase') {
-      const { data } = await getSupabase().from(T_SETTINGS).select('value').eq('key', 'site').maybeSingle();
-      stored = (data?.value as Partial<SiteSettings>) || null;
+      stored = await readSystemKv<Partial<SiteSettings>>('site');
     } else {
       stored = await readJson<Partial<SiteSettings>>(SETTINGS_FILE);
     }
@@ -372,11 +425,11 @@ export async function getSettings(): Promise<SiteSettings> {
   const merged: SiteSettings = {
     ...DEFAULT_SETTINGS,
     ...(stored || {}),
-    metaPixelId: (stored?.metaPixelId ?? process.env.PUBLIC_META_PIXEL_ID ?? '').trim(),
+    metaPixelId: (stored?.metaPixelId ?? process.env.PUBLIC_META_PIXEL_ID ?? DEFAULT_SETTINGS.metaPixelId ?? '').trim(),
     metaPixelEnabled:
       typeof stored?.metaPixelEnabled === 'boolean'
         ? stored.metaPixelEnabled
-        : Boolean(stored?.metaPixelId || process.env.PUBLIC_META_PIXEL_ID),
+        : Boolean(stored?.metaPixelId || process.env.PUBLIC_META_PIXEL_ID || DEFAULT_SETTINGS.metaPixelEnabled),
     metaDomainVerification: (stored?.metaDomainVerification ?? process.env.META_DOMAIN_VERIFICATION ?? '').trim(),
     metaCapiToken: (stored?.metaCapiToken ?? process.env.META_CAPI_TOKEN ?? '').trim(),
     metaTestEventCode: (stored?.metaTestEventCode ?? process.env.META_TEST_EVENT_CODE ?? '').trim(),
@@ -426,10 +479,8 @@ export async function saveSettings(input: Partial<SiteSettings> & { clearMetaCap
   delete merged.hasMetaCapiToken;
 
   if ((await getBackend()) === 'supabase') {
-    const { error } = await getSupabase()
-      .from(T_SETTINGS)
-      .upsert({ key: 'site', value: merged, updated_at: new Date().toISOString() });
-    if (error) throw new Error(error.message);
+    const ok = await writeSystemKv('site', merged);
+    if (!ok) throw new Error('No se pudo guardar la configuración en Supabase.');
   } else {
     await writeJson(SETTINGS_FILE, merged);
   }
@@ -479,8 +530,8 @@ const CRM_META_FILE = path.join(DATA_DIR, 'crm-quote-meta.json');
 async function readCrmMetaMap(): Promise<Record<string, QuoteCrmMeta>> {
   try {
     if ((await getBackend()) === 'supabase') {
-      const { data } = await getSupabase().from(T_SETTINGS).select('value').eq('key', 'crm_quote_meta').maybeSingle();
-      if (data?.value && typeof data.value === 'object') return data.value as Record<string, QuoteCrmMeta>;
+      const val = await readSystemKv<Record<string, QuoteCrmMeta>>('crm_quote_meta');
+      if (val && typeof val === 'object') return val;
       return {};
     }
     return (await readJson<Record<string, QuoteCrmMeta>>(CRM_META_FILE)) || {};
@@ -494,9 +545,7 @@ async function saveCrmMetaForQuote(id: string, meta: Partial<QuoteCrmMeta>): Pro
     const map = await readCrmMetaMap();
     map[id] = { ...(map[id] || {}), ...meta };
     if ((await getBackend()) === 'supabase') {
-      await getSupabase()
-        .from(T_SETTINGS)
-        .upsert({ key: 'crm_quote_meta', value: map, updated_at: new Date().toISOString() });
+      await writeSystemKv('crm_quote_meta', map);
     } else if (!isReadOnlyEnvironment()) {
       await writeJson(CRM_META_FILE, map);
     }

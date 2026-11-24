@@ -10,7 +10,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { getSupabase, isSupabaseConfigured } from '../supabase';
-import { getQuotes, isReadOnlyEnvironment } from './store';
+import { getQuotes, isReadOnlyEnvironment, readSystemKv, writeSystemKv } from './store';
 import type { AnalyticsEvent, AnalyticsEventType } from './types';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'cms');
@@ -159,12 +159,8 @@ async function writeLocalEvents(events: AnalyticsEvent[]): Promise<void> {
 async function readBufferEvents(): Promise<AnalyticsEvent[]> {
   try {
     if (isSupabaseConfigured) {
-      const { data } = await getSupabase()
-        .from('cms_settings')
-        .select('value')
-        .eq('key', BUFFER_KEY)
-        .maybeSingle();
-      if (Array.isArray(data?.value)) return data.value as AnalyticsEvent[];
+      const kv = await readSystemKv<AnalyticsEvent[]>(BUFFER_KEY);
+      if (Array.isArray(kv)) return kv;
     }
   } catch {}
   return readLocalEvents();
@@ -175,10 +171,8 @@ async function appendBufferEvent(ev: AnalyticsEvent): Promise<void> {
   const next = [ev, ...existing].slice(0, MAX_BUFFER_EVENTS);
   try {
     if (isSupabaseConfigured) {
-      const { error } = await getSupabase()
-        .from('cms_settings')
-        .upsert({ key: BUFFER_KEY, value: next, updated_at: new Date().toISOString() });
-      if (!error) return;
+      const ok = await writeSystemKv(BUFFER_KEY, next);
+      if (ok) return;
     }
   } catch {}
   await writeLocalEvents(next);
