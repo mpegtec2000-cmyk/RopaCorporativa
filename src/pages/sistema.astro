@@ -955,7 +955,7 @@ export const prerender = true;
               
               <!-- Previsualización en Vivo de Imagen -->
               <div class="prod-img-stage" id="modal-img-preview-box">
-                <img id="m-preview-img" src="/images/catalogo/polera-corporativa.webp" alt="Previsualización" />
+                <img id="m-preview-img" src="/images/zortex-logo-dark.png" alt="Previsualización" />
                 <span class="preview-badge" id="m-preview-badge">Vista Previa</span>
               </div>
 
@@ -3976,7 +3976,7 @@ export const prerender = true;
             <tr class="${isActive ? '' : 'row-inactive'}" data-id="${p.id}">
               <td>
                 <div class="tbl-thumb-box" data-action="quick-photo" data-id="${p.id}" title="Clic para cambiar la foto de este producto">
-                  <img src="${p.image || '/images/catalogo/polera-corporativa.webp'}" alt="${escapeHtml(p.name)}" class="tbl-thumb" onerror="this.src='/images/catalogo/polera-corporativa.webp'" />
+                  <img src="${p.image || '/images/zortex-logo-dark.png'}" alt="${escapeHtml(p.name)}" class="tbl-thumb" onerror="this.src='/images/zortex-logo-dark.png'" />
                   <div class="tbl-thumb-cam-hint">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                   </div>
@@ -4157,7 +4157,7 @@ export const prerender = true;
         if (mProdCategory) mProdCategory.value = prod.category || 'Ropa Corporativa';
         if (mProdLine) mProdLine.value = prod.line || '';
         if (mProdImage) mProdImage.value = prod.image || '';
-        if (mPreviewImg) mPreviewImg.src = prod.image || '/images/catalogo/polera-corporativa.webp';
+        if (mPreviewImg) mPreviewImg.src = prod.image || '/images/zortex-logo-dark.png';
         if (mProdSummary) mProdSummary.value = prod.summary || '';
         if (mProdSizes) mProdSizes.value = Array.isArray(prod.sizes) ? prod.sizes.join(', ') : 'S, M, L, XL';
         if (mProdActive) mProdActive.checked = prod.isActive !== false;
@@ -4167,7 +4167,7 @@ export const prerender = true;
         if (prodForm) prodForm.reset();
         if (modalProdId) modalProdId.value = '';
         if (mProdActive) mProdActive.checked = true;
-        if (mPreviewImg) mPreviewImg.src = '/images/catalogo/polera-corporativa.webp';
+        if (mPreviewImg) mPreviewImg.src = '/images/zortex-logo-dark.png';
         if (mProdSizes) mProdSizes.value = 'S, M, L, XL, XXL';
         state.editingOriginalColors = [];
       }
@@ -4187,13 +4187,13 @@ export const prerender = true;
     // Cargar previsualización de imagen al escribir URL
     if (mProdImage && mPreviewImg) {
       mProdImage.addEventListener('input', () => {
-        mPreviewImg.src = mProdImage.value.trim() || '/images/catalogo/polera-corporativa.webp';
+        mPreviewImg.src = mProdImage.value.trim() || '/images/zortex-logo-dark.png';
       });
     }
 
     if (btnSyncUrlPreview && mProdImage && mPreviewImg) {
       btnSyncUrlPreview.addEventListener('click', () => {
-        mPreviewImg.src = mProdImage.value.trim() || '/images/catalogo/polera-corporativa.webp';
+        mPreviewImg.src = mProdImage.value.trim() || '/images/zortex-logo-dark.png';
       });
     }
 

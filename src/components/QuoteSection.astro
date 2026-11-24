@@ -299,7 +299,9 @@ const waNumber = formatWhatsappDigits(settings.contactPhone);
         const sizeSelect = document.createElement('select');
         sizeSelect.className = 'size-select';
         sizeSelect.setAttribute('aria-label', 'Talla de ' + item.name);
-        SIZES.forEach(function (s) {
+        const sizeChoices =
+          item.size && !SIZES.includes(item.size) ? [item.size, ...SIZES] : SIZES;
+        sizeChoices.forEach(function (s) {
           const opt = document.createElement('option');
           opt.value = s;
           opt.textContent = s;
